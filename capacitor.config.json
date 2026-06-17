@@ -1,0 +1,8 @@
+{
+  "appId": "com.legacybyvilla.binks",
+  "appName": "Binks",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

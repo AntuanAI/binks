@@ -1,0 +1,2943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Binks">
+<meta name="theme-color" content="#1A0F14">
+<title>BINKS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#080412;
+    --bg2:#0e0820;
+    --gold:#a78bfa;
+    --gold-deep:#7c3aed;
+    --rose:#d4a017;
+    --cream:#ede9fe;
+    --dim:#4a3a6a;
+    --volt:#e9d5ff;
+    --mono:'JetBrains Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',sans-serif;color:var(--cream);
+    background:radial-gradient(ellipse at 30% 20%, #1a0830 0%, #080412 60%);
+    min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;
+  }
+  .wrap{width:100%;max-width:640px;padding:calc(env(safe-area-inset-top,0px) + 18px) 16px calc(env(safe-area-inset-bottom,0px) + 16px);flex:1;display:flex;flex-direction:column;min-height:100dvh;position:relative;z-index:1}
+  #digiBg{position:fixed;inset:0;z-index:0;opacity:.55;pointer-events:none;transition:opacity .8s ease}
+  #digiBg.off{opacity:0}
+
+  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:.28em;font-size:1.05rem;color:var(--gold)}
+  .status{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .status .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);margin-right:7px;animation:blink 2.4s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  .gear{background:none;border:none;color:var(--dim);font-size:1.05rem;cursor:pointer;margin-left:12px}
+
+  /* ===== HOLO REACTOR CORE ===== */
+  .orb-zone{display:flex;flex-direction:column;align-items:center;padding:12px 0 8px}
+  .orb{position:relative;width:128px;height:128px;cursor:pointer;border:1px dashed rgba(242,178,92,.28);background:none;border-radius:50%}
+  .orb .ember{position:absolute;inset:0;width:100%;height:100%;border-radius:50%}
+  .orb:focus-visible{outline:2px solid var(--gold);outline-offset:6px}
+
+  .halo{position:absolute;inset:6px;border-radius:50%;border:1px solid rgba(242,178,92,.55);
+    animation:halo 2.8s ease-out infinite;opacity:0}
+  @keyframes halo{0%{transform:scale(.55);opacity:.8}100%{transform:scale(1.18);opacity:0}}
+
+  .grat{position:absolute;inset:0;border-radius:50%;
+    background:repeating-conic-gradient(rgba(127,227,255,.55) 0deg 1.6deg, transparent 1.6deg 12deg);
+    -webkit-mask:radial-gradient(circle, transparent 68px, #000 69px);
+            mask:radial-gradient(circle, transparent 68px, #000 69px);
+    animation:spin 18s linear infinite;opacity:.6}
+
+  .arc{position:absolute;border-radius:50%;border:2px solid transparent}
+  .a1{inset:12px;border-top-color:var(--gold);border-right-color:var(--gold);
+    animation:spin 2.6s linear infinite;filter:drop-shadow(0 0 7px var(--gold))}
+  .a2{inset:24px;border-bottom-color:var(--volt);
+    animation:spin 4.4s linear infinite reverse;filter:drop-shadow(0 0 6px var(--volt))}
+  .a3{inset:36px;border-left-color:var(--rose);border-top-color:var(--rose);
+    animation:spin 6.8s linear infinite;filter:drop-shadow(0 0 6px var(--rose))}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .hex{position:absolute;inset:48px;
+    background:linear-gradient(160deg,rgba(242,178,92,.3),rgba(127,227,255,.14) 65%,rgba(232,120,138,.18));
+    clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+    filter:drop-shadow(0 0 12px rgba(242,178,92,.45));
+    animation:hexSpin 12s linear infinite}
+  @keyframes hexSpin{to{transform:rotate(-360deg)}}
+
+  .pt{position:absolute;left:50%;top:50%;width:12px;height:12px;transform:translate(-50%,-50%);
+    border-radius:50%;background:#FFF3DC;
+    box-shadow:0 0 16px var(--gold),0 0 44px var(--gold),0 0 80px rgba(242,178,92,.5);
+    animation:breathe 3.2s ease-in-out infinite}
+  @keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.25)}}
+
+  /* cinematic boost: energy bloom + comet heads */
+  .orb::before,.boot-orb::before{content:"";position:absolute;inset:-26px;border-radius:50%;z-index:-1;
+    background:radial-gradient(circle, rgba(242,178,92,.32), rgba(232,120,138,.12) 45%, transparent 72%);
+    animation:bloomPulse 3.4s ease-in-out infinite}
+  @keyframes bloomPulse{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
+  .arc{border-width:2.5px}
+  .grat{opacity:.85}
+  .a1::after,.a2::after,.a3::after{content:"";position:absolute;width:9px;height:9px;border-radius:50%}
+  .a1::after{top:-5px;left:50%;background:#ede9fe;box-shadow:0 0 10px var(--gold),0 0 24px var(--gold)}
+  .a2::after{bottom:-5px;left:50%;background:#c8fff8;box-shadow:0 0 10px var(--volt),0 0 24px var(--volt)}
+  .a3::after{top:50%;left:-5px;background:#ffe8c0;box-shadow:0 0 10px var(--rose),0 0 24px var(--rose)}
+
+  .orb.listening .pt{background:#FFD9DF;box-shadow:0 0 16px var(--rose),0 0 44px var(--rose),0 0 80px rgba(232,120,138,.5)}
+  .orb.listening .a1{animation-duration:1.1s}
+  .orb.listening .a2{animation-duration:1.7s}
+  .orb.listening .halo{border-color:rgba(232,120,138,.6);animation-duration:1.2s}
+  .orb.thinking .pt{animation:breathe .8s ease-in-out infinite}
+  .orb.speaking .pt{animation:pulse-talk .4s ease-in-out infinite}
+  .orb.speaking .halo{animation-duration:1.1s}
+  @keyframes pulse-talk{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.6)}}
+  @media (prefers-reduced-motion: reduce){.arc,.grat,.hex,.pt,.halo,.status .dot{animation:none}}
+  .orb-hint{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-top:12px;text-align:center;padding:0 10px}
+
+  /* Log — compact feed */
+  .log{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:8px 2px 12px;scroll-behavior:smooth;min-height:80px}
+  .msg{max-width:90%;padding:9px 12px;border-radius:13px;font-size:.8rem;line-height:1.5;animation:rise .3s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .msg.user{align-self:flex-end;background:rgba(247,237,223,.1);border:1px solid rgba(247,237,223,.14);border-bottom-right-radius:4px}
+  .msg.binks{align-self:flex-start;background:rgba(242,178,92,.1);border:1px solid rgba(242,178,92,.3);border-bottom-left-radius:4px}
+  .msg.binks::before{content:"BINKS";display:block;font-family:var(--mono);font-size:.52rem;letter-spacing:.18em;color:var(--gold);margin-bottom:3px}
+  .msg.sys{align-self:center;background:none;border:none;color:var(--dim);font-size:.7rem;font-family:var(--mono);text-align:center}
+
+  /* ===== MISSION HUD PANELS ===== */
+  .hud-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+  .panel{position:relative;border:1px solid rgba(242,178,92,.22);border-radius:12px;
+    background:rgba(10,6,9,.5);padding:10px 12px}
+  .panel::before{content:"";position:absolute;top:-1px;left:10px;width:26px;height:2px;background:var(--gold);border-radius:2px;opacity:.8}
+  .panel h3{font-family:var(--mono);font-size:.56rem;letter-spacing:.2em;color:var(--gold);
+    text-transform:uppercase;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;font-weight:600}
+  .panel .count{color:var(--dim);font-size:.62rem}
+  .panel.recs{grid-column:1/-1;border-color:rgba(127,227,255,.3)}
+  .panel.recs::before{background:var(--volt)}
+  .panel.recs h3{color:var(--volt)}
+  .items{display:flex;flex-direction:column;gap:5px;max-height:92px;overflow-y:auto}
+  .task{font-size:.72rem;line-height:1.45;color:var(--cream);display:flex;gap:7px;align-items:flex-start;animation:rise .3s ease both}
+  .task::before{content:"▸";color:var(--gold);flex-shrink:0}
+  .task.done{color:var(--dim);text-decoration:line-through}
+  .task.done::before{content:"✓";color:var(--volt);text-decoration:none}
+  .rec{font-size:.72rem;line-height:1.45;color:#CFE9F2;display:flex;gap:7px;align-items:flex-start;animation:rise .3s ease both}
+  .rec::before{content:"◆";color:var(--volt);flex-shrink:0;font-size:.6rem;margin-top:2px}
+  .empty{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--dim)}
+
+  /* ===== COMMAND CENTER ===== */
+  .clock{font-family:var(--mono);font-size:.66rem;color:var(--gold);letter-spacing:.12em}
+  .mode-row{display:flex;gap:6px;margin:6px 0 4px}
+  .mode{flex:1;font-family:var(--mono);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;
+    text-align:center;padding:8px 4px;border:1px solid rgba(242,178,92,.25);border-radius:8px;
+    color:var(--dim);cursor:default;background:rgba(10,6,9,.45);user-select:none;transition:all .2s ease}
+  .mode.active{color:#1A0F14;background:linear-gradient(90deg,var(--gold-deep),var(--gold));
+    border-color:var(--gold);font-weight:600;box-shadow:0 0 14px rgba(242,178,92,.3)}
+  .core-row{display:flex;align-items:center;justify-content:center;gap:18px;padding:10px 0 4px}
+  .telemetry{display:flex;flex-direction:column;gap:7px;min-width:148px}
+  .tele{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;color:var(--dim);
+    display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed rgba(242,178,92,.18);padding-bottom:4px}
+  .tele b{color:var(--gold);font-weight:600}
+  .activity{font-family:var(--mono);font-size:.56rem;color:var(--volt);letter-spacing:.08em;min-height:14px;opacity:.85}
+  .panel.market{grid-column:1/-1;border-color:rgba(232,120,138,.35)}
+  .panel.market::before{background:var(--rose)}
+  .panel.market h3{color:var(--rose)}
+  .refresh{background:none;border:1px solid rgba(232,120,138,.4);border-radius:6px;color:var(--rose);
+    cursor:pointer;font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;padding:3px 8px}
+  .refresh:active{transform:scale(.95)}
+  .mkt{font-size:.72rem;line-height:1.45;color:#F2DFE2;display:flex;gap:7px;align-items:flex-start;animation:rise .3s ease both}
+  .mkt::before{content:"▮";color:var(--rose);flex-shrink:0;font-size:.58rem;margin-top:2px}
+  #digiBg.dim{opacity:.15}
+  #emberFx{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+  /* ===== JARVIS OS LAYER ===== */
+  .vpframe{position:fixed;inset:6px;pointer-events:none;z-index:3}
+  .vpframe i{position:absolute;width:22px;height:22px;border:2px solid rgba(242,178,92,.55)}
+  .vpframe i:nth-child(1){top:0;left:0;border-right:none;border-bottom:none}
+  .vpframe i:nth-child(2){top:0;right:0;border-left:none;border-bottom:none}
+  .vpframe i:nth-child(3){bottom:0;left:0;border-right:none;border-top:none}
+  .vpframe i:nth-child(4){bottom:0;right:0;border-left:none;border-top:none}
+
+  .rail{position:fixed;left:0;top:0;bottom:0;width:20px;border-right:1px solid rgba(242,178,92,.18);
+    display:flex;flex-direction:column;justify-content:space-between;align-items:center;
+    padding:64px 0 70px;z-index:2;pointer-events:none}
+  .vlabel{writing-mode:vertical-rl;font-family:var(--mono);font-size:.5rem;letter-spacing:.34em;color:var(--dim);text-transform:uppercase}
+  .eq{display:flex;gap:2px;align-items:flex-end;height:42px}
+  .eq i{width:3px;background:linear-gradient(180deg,var(--gold),rgba(242,178,92,.15));animation:eqb 1.1s ease-in-out infinite}
+  .eq i:nth-child(2){animation-delay:.14s;animation-duration:.85s}
+  .eq i:nth-child(3){animation-delay:.3s;animation-duration:1.3s}
+  .eq i:nth-child(4){animation-delay:.07s;animation-duration:.95s}
+  .eq i:nth-child(5){animation-delay:.22s;animation-duration:1.15s}
+  @keyframes eqb{0%,100%{height:16%}50%{height:96%}}
+
+  .navstrip{display:flex;gap:3px;overflow-x:auto;margin:8px 0 2px;scrollbar-width:none}
+  .navstrip::-webkit-scrollbar{display:none}
+  .nav{font-family:var(--mono);font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;
+    padding:7px 12px;color:var(--dim);white-space:nowrap;border:1px solid rgba(242,178,92,.2);
+    border-bottom:2px solid transparent;background:rgba(10,6,9,.45);
+    clip-path:polygon(8px 0,100% 0,100% 100%,0 100%,0 8px)}
+  .nav.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(242,178,92,.1)}
+  .nav.locked{opacity:.42}
+  .nav.locked::after{content:" \00B7 SOON";font-size:.46rem;color:var(--rose)}
+
+  .panel{border-radius:12px;clip-path:none;
+    background:rgba(14,8,32,.72);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border:1px solid rgba(167,139,250,.18) !important;
+    transition:transform .15s ease,box-shadow .15s ease;
+    will-change:transform;
+  }
+  .panel:hover{
+    box-shadow:0 8px 40px rgba(167,139,250,.12),0 0 0 1px rgba(167,139,250,.28),inset 0 1px 0 rgba(167,139,250,.08);
+  }
+  .panel.module .empty{color:rgba(169,143,149,.7)}
+  .lock{font-family:var(--mono);font-size:.48rem;letter-spacing:.14em;border:1px solid rgba(169,143,149,.5);
+    padding:2px 6px;color:var(--dim);border-radius:3px}
+
+  .dialring{position:absolute;inset:-16px;border-radius:50%;
+    background:repeating-conic-gradient(rgba(242,178,92,.55) 0 2deg,transparent 2deg 12deg);
+    -webkit-mask:radial-gradient(circle, transparent 74%, #000 75%);
+            mask:radial-gradient(circle, transparent 74%, #000 75%);
+    animation:spin 32s linear infinite;opacity:.55}
+  .dialring2{position:absolute;inset:-9px;border-radius:50%;border:1px solid rgba(127,227,255,.22);
+    animation:spin 20s linear infinite reverse}
+
+  .panel.workout{grid-column:1/-1;border-color:rgba(242,178,92,.4)}
+  .wo-row{display:flex;gap:6px;flex-wrap:wrap}
+  .wo-b{flex:1;min-width:28%;font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;padding:9px 4px;
+    border:1px solid rgba(242,178,92,.35);background:rgba(10,6,9,.5);color:var(--cream);border-radius:8px;cursor:pointer}
+  .wo-b:active{transform:scale(.96)}
+  .wo-name{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1.05rem;text-align:center;margin:4px 0 2px}
+  .wo-timer{font-family:var(--mono);font-size:1.7rem;color:var(--gold);text-align:center;letter-spacing:.08em}
+  .wo-sub{font-family:var(--mono);font-size:.56rem;color:var(--dim);text-align:center;letter-spacing:.12em;text-transform:uppercase}
+  .wo-timer.rest{color:var(--volt)}
+  .wo-ctl{display:flex;gap:6px;justify-content:center;margin-top:8px}
+  .wo-c{font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;padding:7px 12px;border-radius:6px;cursor:pointer;
+    border:1px solid rgba(232,120,138,.45);background:none;color:var(--rose)}
+  .voicepick{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:8px;
+    font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;color:var(--dim)}
+  .voicepick select{background:#10090E;color:var(--gold);border:1px solid rgba(242,178,92,.35);
+    border-radius:6px;font-family:var(--mono);font-size:.62rem;padding:6px 8px;max-width:210px}
+  .vcheck{display:block;margin:8px auto 0;font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;
+    background:none;border:1px solid rgba(127,227,255,.4);border-radius:8px;color:var(--volt);
+    padding:7px 16px;cursor:pointer}
+  .sysbar{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:.52rem;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;
+    border-top:1px solid rgba(242,178,92,.22);padding:8px 2px 0;margin-top:8px}
+  .sysbar b{color:var(--gold);font-weight:600}
+
+  /* ===== CENTRAL DIAL STAGE ===== */
+  .stage{position:relative;height:340px;margin:4px 0 0}
+  #radarCv{position:absolute;inset:0;width:100%;height:100%;z-index:0;
+    pointer-events:none;opacity:.55}
+  .ringgrid{position:absolute;inset:0;pointer-events:none;
+    background:
+      linear-gradient(rgba(242,178,92,.12), rgba(242,178,92,.12)) 50% 50%/1px 100% no-repeat,
+      linear-gradient(90deg, rgba(242,178,92,.12), rgba(242,178,92,.12)) 50% 50%/100% 1px no-repeat,
+      repeating-radial-gradient(circle at 50% 50%, rgba(242,178,92,.08) 0 1px, transparent 1px 34px)}
+  .stage .orb{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:184px;height:184px;border:none}
+  .stage .oring{position:absolute;inset:-46px;border:1px solid rgba(242,178,92,.3);border-radius:50%}
+  .stage .dialring{inset:-34px;-webkit-mask:radial-gradient(circle, transparent 82%, #000 83%);
+    mask:radial-gradient(circle, transparent 82%, #000 83%)}
+  .stage .dialring2{inset:-22px}
+  .chevring{position:absolute;inset:-9px;border-radius:50%;
+    background:repeating-conic-gradient(rgba(247,237,223,.8) 0 5deg, transparent 5deg 13deg);
+    -webkit-mask:radial-gradient(circle, transparent 88%, #000 89%);
+            mask:radial-gradient(circle, transparent 88%, #000 89%);
+    animation:spin 11s linear infinite}
+  .sat{position:absolute;width:60px;height:60px;border:1px solid rgba(127,227,255,.45);border-radius:50%;
+    background:rgba(10,6,9,.65);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2}
+  .sat em{position:absolute;top:-9px;font:600 .5rem var(--mono);color:var(--volt);font-style:normal;
+    background:#10090E;border:1px solid rgba(127,227,255,.5);border-radius:50%;
+    width:17px;height:17px;display:flex;align-items:center;justify-content:center}
+  .sat b{font:600 .64rem var(--mono);color:var(--gold)}
+  .sat span{font:400 .42rem var(--mono);letter-spacing:.14em;color:var(--dim)}
+  .s1{left:6px;top:22px}.s2{right:6px;top:22px}.s3{left:6px;bottom:16px}.s4{right:6px;bottom:16px}
+  .link{position:absolute;height:1px;width:24%;z-index:1;
+    background:linear-gradient(90deg, rgba(127,227,255,.5), rgba(242,178,92,.15))}
+  .l1{left:17%;top:25%;transform:rotate(26deg);transform-origin:left center}
+  .l2{right:17%;top:25%;transform:rotate(-26deg) scaleX(-1);transform-origin:right center}
+  .l3{left:17%;bottom:23%;transform:rotate(-26deg);transform-origin:left center}
+  .l4{right:17%;bottom:23%;transform:rotate(26deg) scaleX(-1);transform-origin:right center}
+  .micro{position:absolute;font:400 .46rem var(--mono);letter-spacing:.1em;color:var(--dim);z-index:2}
+  .micro b{color:var(--volt);font-weight:600}
+  .m1{left:8px;top:47%}
+  .m2{right:8px;top:43%;text-align:right}
+  .stage-activity{text-align:center;font-family:var(--mono);font-size:.56rem;color:var(--volt);
+    letter-spacing:.1em;min-height:14px;opacity:.85;margin-top:-6px}
+
+
+
+  /* Input */
+  .bar{display:flex;gap:9px;padding-top:10px}
+  .bar input{flex:1;min-width:0;background:rgba(247,237,223,.07);border:1px solid rgba(247,237,223,.18);
+    border-radius:99px;padding:13px 18px;color:var(--cream);font-family:'Inter',sans-serif;font-size:16px}
+  .bar input::placeholder{color:var(--dim)}
+  .bar input:focus{outline:none;border-color:var(--gold)}
+  .bar button{border:none;border-radius:99px;padding:0 20px;cursor:pointer;
+    font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:.95rem;
+    background:var(--gold);color:#2B1620}
+  .bar button:active{transform:scale(.96)}
+  .mic{background:rgba(232,120,138,.18) !important;color:var(--rose) !important;border:1px solid rgba(232,120,138,.45) !important;font-size:1.1rem !important}
+  .voice-toggle{display:flex;align-items:center;gap:8px;justify-content:center;padding:9px 0 0;
+    font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);cursor:pointer;user-select:none}
+  .voice-toggle .sw{width:34px;height:18px;border-radius:99px;background:rgba(247,237,223,.15);position:relative;transition:background .2s;flex-shrink:0}
+  .voice-toggle .sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--dim);transition:all .2s}
+  .voice-toggle.on .sw{background:rgba(242,178,92,.4)}
+  .voice-toggle.on .sw::after{left:18px;background:var(--gold)}
+
+  /* ============ FUTURISTIC BOOT / SETUP SCREEN ============ */
+  .setup{flex:1;display:flex;flex-direction:column;justify-content:flex-start;gap:0;padding:8px 2px;position:relative}
+  .scanline{pointer-events:none;position:fixed;inset:0;z-index:5;
+    background:repeating-linear-gradient(0deg,rgba(242,178,92,.025) 0 1px,transparent 1px 3px)}
+  .scanline::after{content:"";position:absolute;left:0;right:0;height:90px;top:-90px;
+    background:linear-gradient(180deg,transparent,rgba(242,178,92,.07),transparent);
+    animation:sweep 4.5s linear infinite}
+  @keyframes sweep{to{top:110%}}
+
+  .hud-frame{position:relative;border:1px solid rgba(242,178,92,.22);border-radius:14px;
+    padding:22px 18px;background:rgba(26,15,20,.55);backdrop-filter:blur(4px);margin-top:10px}
+  .hud-frame::before,.hud-frame::after,
+  .hud-frame .c3,.hud-frame .c4{content:"";position:absolute;width:18px;height:18px;border:2px solid var(--gold)}
+  .hud-frame::before{top:-2px;left:-2px;border-right:none;border-bottom:none;border-radius:8px 0 0 0}
+  .hud-frame::after{top:-2px;right:-2px;border-left:none;border-bottom:none;border-radius:0 8px 0 0}
+  .hud-frame .c3{bottom:-2px;left:-2px;border-right:none;border-top:none;border-radius:0 0 0 8px}
+  .hud-frame .c4{bottom:-2px;right:-2px;border-left:none;border-top:none;border-radius:0 0 8px 0}
+
+  .boot-orb-zone{display:flex;justify-content:center;padding:18px 0 8px}
+  /* dormant core: ember storm (canvas particle engine) */
+  .boot-orb{position:relative;width:220px;height:220px;border-radius:50%}
+  .boot-orb .ember{position:absolute;inset:0;width:100%;height:100%;border-radius:50%}
+  .boot-orb .halo{display:none}
+  .boot-orb.powered .halo{display:block}
+  .boot-orb.powered{filter:brightness(1.12) saturate(1.1);transition:filter .9s ease}
+
+  .setup .sys-title,.setup .sys-sub{animation:rise .5s ease 1.2s both}
+  .setup .hud-frame{animation:rise .6s ease 1.4s both}
+  .sys-title{font-family:var(--mono);text-align:center;font-size:.66rem;letter-spacing:.34em;
+    text-transform:uppercase;color:var(--gold);margin-top:8px}
+  .sys-sub{font-family:var(--mono);text-align:center;font-size:.58rem;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--dim);margin-top:4px}
+
+  .boot-log{font-family:var(--mono);font-size:.7rem;line-height:1.9;color:#C8AE96;
+    background:rgba(10,6,9,.6);border:1px solid rgba(242,178,92,.15);border-radius:10px;
+    padding:14px 16px;margin:16px 0 0;min-height:128px}
+  .boot-log .ln{display:block;white-space:pre-wrap}
+  .boot-log .ok{color:var(--gold)}
+  .boot-log .warn{color:var(--rose)}
+  .boot-log .cursor{display:inline-block;width:7px;height:12px;background:var(--gold);
+    vertical-align:-2px;animation:blink 1s steps(1) infinite}
+
+  .auth-zone{margin-top:16px;opacity:0;transform:translateY(8px);transition:all .6s ease;pointer-events:none}
+  .auth-zone.show{opacity:1;transform:none;pointer-events:auto}
+  .auth-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--rose);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .auth-label::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--rose);
+    animation:blink 1.2s steps(1) infinite}
+  .setup input{background:rgba(10,6,9,.7);border:1px solid rgba(242,178,92,.3);
+    border-radius:10px;padding:14px 16px;color:var(--gold);font-family:var(--mono);
+    font-size:16px;width:100%;letter-spacing:.05em}
+  .setup input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 18px rgba(242,178,92,.2)}
+  .setup .btn{font-family:var(--mono);font-weight:600;font-size:.8rem;letter-spacing:.26em;text-transform:uppercase;
+    background:linear-gradient(90deg,var(--gold-deep),var(--gold));color:#1A0F14;border:none;border-radius:10px;
+    padding:16px;cursor:pointer;width:100%;margin-top:10px;
+    box-shadow:0 0 24px rgba(242,178,92,.25)}
+  .setup .btn:active{transform:scale(.98)}
+  .setup .note{font-size:.68rem;font-family:var(--mono);color:var(--dim);line-height:1.7;margin-top:12px}
+  .key-steps{font-family:var(--mono);font-size:.7rem;line-height:2;color:#C8AE96;margin-top:10px;
+    border-left:2px solid rgba(242,178,92,.3);padding-left:12px}
+  .key-steps a{color:var(--gold)}
+  .key-steps b{color:var(--cream)}
+  .hidden{display:none !important}
+
+  /* ============ STANDBY / WAKE MODE ============ */
+  .standby{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:0;position:relative;min-height:70vh}
+  .standby .boot-orb{transform:scale(1.15);transition:transform .8s ease}
+  .standby.waking .boot-orb{transform:scale(1.3)}
+  
+  /* formation entrance: content waits for the particles */
+  .forming .standby-title,.forming .standby-hint,.forming .standby-sub{opacity:0}
+  .standby-title,.standby-hint,.standby-sub{transition:opacity .6s ease}
+  .standby-title{font-family:var(--mono);font-size:.7rem;letter-spacing:.4em;text-transform:uppercase;color:var(--dim);margin-top:30px}
+  .standby-hint{font-family:var(--mono);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--gold);margin-top:14px;text-align:center;line-height:2;animation:hintPulse 2.6s ease-in-out infinite}
+  @keyframes hintPulse{0%,100%{opacity:.45}50%{opacity:1}}
+  .standby-sub{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;color:var(--dim);margin-top:8px;text-align:center}
+  .holoClose{position:absolute;top:12px;right:12px;background:rgba(127,227,255,.15);border:1px solid var(--volt);color:var(--volt);width:32px;height:32px;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center}
+  @keyframes holoForm{0%{opacity:0;transform:scale(.7);filter:blur(20px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
+
+
+  /* ===== DESKTOP COMMAND BRIDGE ===== */
+  @media (min-width: 980px){
+    .wrap{max-width:1340px}
+    #app{padding-left:34px !important;padding-right:14px}
+    .stage{height:460px}
+    .stage .orb{width:250px;height:250px}
+    .stage .oring{inset:-62px}
+    .stage .dialring{inset:-46px}
+    .stage .dialring2{inset:-30px}
+    .sat{width:74px;height:74px}
+    .sat b{font-size:.8rem}
+    .sat span{font-size:.5rem}
+    .s1{left:14%;top:24px}.s2{right:14%;top:24px}.s3{left:14%;bottom:18px}.s4{right:14%;bottom:18px}
+    .micro{font-size:.56rem}
+    .m1{left:6%}.m2{right:6%}
+    .hud-grid{grid-template-columns:repeat(3,1fr);gap:10px}
+    .panel.workout{grid-column:auto}
+    .panel.module{grid-column:auto}
+    #log{max-height:300px}
+    .navstrip .nav{font-size:.62rem;padding:9px 18px}
+    .mode-row .mode{font-size:.64rem}
+    .sysbar{font-size:.58rem}
+    .eq{height:64px}
+    .rail{width:30px}
+    .vlabel{font-size:.56rem}
+  }
+
+
+  /* ===== FOCUS MODE: task takes over, Binks holds the corner ===== */
+  .miniReactor{position:fixed;top:58px;right:12px;width:64px;height:64px;border-radius:50%;
+    border:1px dashed rgba(242,178,92,.45);background:rgba(0,0,0,.4);z-index:60;display:none;cursor:pointer;
+    box-shadow:0 0 22px rgba(242,178,92,.15)}
+  #app.focus .miniReactor{display:block;animation:rise .45s ease}
+  .miniReactor.listening{border-color:rgba(232,120,138,.85);box-shadow:0 0 22px rgba(232,120,138,.4)}
+  .miniReactor.thinking{border-color:rgba(127,227,255,.8);box-shadow:0 0 22px rgba(127,227,255,.35)}
+  .miniReactor.speaking{border-style:solid;border-color:var(--gold);box-shadow:0 0 26px rgba(242,178,92,.45)}
+  #app.focus .stage,#app.focus .stage-activity,#app.focus .orb-hint,
+  #app.focus .navstrip,#app.focus .mode-row,#app.focus .sysbar,
+  #app.focus .voice-toggle,#app.focus .voicepick,#app.focus .vcheck{display:none}
+  #app.focus .panel{display:none}
+  #app[data-focus="workout"] .panel.workout{display:block;grid-column:1/-1}
+  #app[data-focus="workout"] .wo-name{font-size:1.7rem;margin-top:14px}
+  #app[data-focus="workout"] .wo-timer{font-size:3.4rem}
+  #app[data-focus="workout"] .wo-sub{font-size:.66rem;margin-top:6px}
+  #app[data-focus="workout"] .panel.workout{padding-bottom:18px}
+  #app.focus #holoDeck .holoStage img{max-height:70vh}
+  #app.focus #holoMap{max-height:70vh}
+  #app.focus #log{max-height:150px}
+  #app.focus #holoDeck{margin-top:6px}
+  /* ===== HOLO DECK (integrated projection bay) ===== */
+  #holoDeck{display:none;margin:12px 0 6px}
+  #holoDeck.show{display:block;animation:deckOpen .55s cubic-bezier(.2,.9,.3,1.15)}
+  .deckHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;
+    font-family:var(--mono);font-size:.58rem;letter-spacing:.22em;color:var(--volt);text-transform:uppercase}
+  .deckClose{font-family:var(--mono);font-size:.54rem;letter-spacing:.16em;padding:6px 12px;cursor:pointer;
+    background:rgba(232,120,138,.12);border:1px solid rgba(232,120,138,.5);border-radius:6px;color:var(--rose)}
+  #holoDeck .holoStage{animation:holoFloat 8s ease-in-out infinite}
+  @keyframes deckOpen{0%{opacity:0;transform:scaleY(.4) translateY(-30px);filter:blur(12px)}
+    100%{opacity:1;transform:scaleY(1) translateY(0);filter:blur(0)}}
+  /* ===== HOLOGRAPHIC PROJECTION ===== */
+  .holoStage{position:relative;border:1px solid rgba(127,227,255,.55);border-radius:10px;overflow:hidden;
+    background:#000;box-shadow:0 0 60px rgba(127,227,255,.25), 0 0 18px rgba(242,178,92,.18),
+    inset 0 0 40px rgba(127,227,255,.07)}
+  .holoStage::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:linear-gradient(180deg,rgba(127,227,255,.12),transparent 30%,transparent 70%,rgba(127,227,255,.1)),
+    repeating-linear-gradient(0deg,rgba(127,227,255,.06) 0 1px,transparent 1px 4px);
+    mix-blend-mode:screen}
+  .holoStage::after{content:"";position:absolute;inset:-1px;z-index:3;pointer-events:none;border-radius:10px;
+    border:1px solid transparent;
+    background:linear-gradient(120deg,rgba(127,227,255,.5),rgba(242,178,92,.4),rgba(127,227,255,.5)) border-box;
+    -webkit-mask:linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;opacity:.7;animation:holoEdge 3.5s linear infinite}
+  #holoMap{display:none;width:100%;height:auto;aspect-ratio:2/1;max-height:62vh;cursor:crosshair;touch-action:none}
+  #holoMap.on{display:block}
+  #holoImage.off{display:none}
+  #holoImage{display:block;width:100%;max-height:62vh;object-fit:contain;
+    filter:saturate(.7) contrast(1.12) brightness(1.04) sepia(.25) hue-rotate(160deg);
+    opacity:0;transition:opacity .5s;animation:holoFlicker 6s steps(1) infinite}
+  .holoSweep{position:absolute;left:0;right:0;height:90px;top:-90px;z-index:2;pointer-events:none;
+    background:linear-gradient(180deg,transparent,rgba(127,227,255,.22),transparent);
+    animation:holoSweep 3.2s ease-in-out infinite}
+  .holoGrid{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.18;
+    background:linear-gradient(rgba(127,227,255,.35) 1px,transparent 1px) 0 0/100% 40px,
+               linear-gradient(90deg,rgba(127,227,255,.35) 1px,transparent 1px) 0 0/40px 100%;
+    mix-blend-mode:screen}
+  #holoCaption{margin-top:10px;padding:11px 14px;border:1px solid rgba(127,227,255,.3);border-radius:8px;
+    background:rgba(0,0,0,.65);font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;
+    color:var(--cream);line-height:1.6;text-transform:uppercase}
+  #holoCaption b{color:var(--volt)}
+  .holoClose{position:absolute;top:-14px;right:-10px;z-index:5;width:34px;height:34px;border-radius:50%;
+    background:#000;border:1px solid var(--volt);color:var(--volt);font-size:1.25rem;cursor:pointer;
+    box-shadow:0 0 14px rgba(127,227,255,.4)}
+  @keyframes holoForm{0%{opacity:0;transform:scale(.5) rotateX(35deg);filter:blur(18px)}
+    100%{opacity:1;transform:scale(1) rotateX(0);filter:blur(0)}}
+  @keyframes holoFloat{0%,100%{transform:rotateX(0deg) translateY(0)}50%{transform:rotateX(2.5deg) translateY(-7px)}}
+  @keyframes holoSweep{0%{top:-90px}55%,100%{top:110%}}
+  @keyframes holoEdge{0%{filter:hue-rotate(0)}100%{filter:hue-rotate(360deg)}}
+  @keyframes holoFlicker{0%,93%,95.5%,100%{opacity:1}94%{opacity:.82}95%{opacity:.95}}
+  .heard{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--volt);
+    min-height:14px;margin-top:10px;text-transform:uppercase;opacity:.8}
+  .wake-log{font-family:var(--mono);font-size:.72rem;line-height:2;color:var(--gold);
+    margin-top:22px;min-height:90px;text-align:center}
+  .wake-log .ln{display:block;animation:rise .25s ease both}
+  .ears{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--rose);margin-right:8px;animation:blink 1.1s steps(1) infinite;vertical-align:1px}
+
+  /* ===== JARVIS INTERACTION LAYER ===== */
+  #spotlight{
+    position:fixed;pointer-events:none;z-index:0;
+    width:600px;height:600px;border-radius:50%;
+    background:radial-gradient(circle,rgba(167,139,250,.07) 0%,rgba(167,139,250,.02) 40%,transparent 70%);
+    transform:translate(-50%,-50%);
+    left:-999px;top:-999px;
+    transition:left .08s ease,top .08s ease;
+  }
+  .hud-grid{perspective:1400px}
+  @keyframes panelPop{0%{opacity:0;transform:perspective(700px) translateZ(-40px) scale(.97)}
+    100%{opacity:1;transform:perspective(700px) translateZ(0) scale(1)}}
+  .panel{animation:panelPop .5s ease both}
+  .hud-grid .panel:nth-child(1){animation-delay:.05s}
+  .hud-grid .panel:nth-child(2){animation-delay:.10s}
+  .hud-grid .panel:nth-child(3){animation-delay:.15s}
+  .hud-grid .panel:nth-child(4){animation-delay:.20s}
+  .hud-grid .panel:nth-child(5){animation-delay:.25s}
+  .hud-grid .panel:nth-child(6){animation-delay:.30s}
+  .hud-grid .panel:nth-child(7){animation-delay:.35s}
+
+  /* ===== TASK CAROUSEL ===== */
+  .task-stage{position:relative;height:108px;perspective:600px;overflow:hidden;margin:2px 0}
+  .task-card{
+    position:absolute;inset:4px;
+    background:rgba(18,8,36,.80);border:1px solid rgba(167,139,250,.35);border-radius:10px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:14px 16px;
+    transform-style:preserve-3d;backface-visibility:hidden;
+    transition:transform .28s cubic-bezier(.4,0,.2,1),opacity .28s ease;
+  }
+  .task-card-num{font-family:var(--mono);font-size:.48rem;letter-spacing:.22em;color:var(--dim);text-transform:uppercase}
+  .task-card-text{font-size:.8rem;color:var(--cream);text-align:center;line-height:1.5;max-width:100%}
+  .task-card-done-btn{
+    font-family:var(--mono);font-size:.54rem;letter-spacing:.16em;text-transform:uppercase;
+    padding:5px 14px;border:1px solid rgba(0,255,240,.4);border-radius:6px;
+    background:rgba(0,255,240,.07);color:var(--volt);cursor:pointer;
+  }
+  .task-card-done-btn:active{transform:scale(.94)}
+  .carousel-nav{
+    display:flex;align-items:center;justify-content:center;gap:14px;margin-top:6px;
+  }
+  .cnav{
+    background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);border-radius:8px;
+    color:var(--gold);font-size:1.3rem;width:34px;height:34px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:background .15s;
+  }
+  .cnav:not([disabled]):active{background:rgba(167,139,250,.22);transform:scale(.92)}
+  .cnav[disabled]{opacity:.25;pointer-events:none}
+  .carousel-pos{font-family:var(--mono);font-size:.58rem;letter-spacing:.16em;color:var(--dim)}
+
+  /* ===== HOLO ZOOM CONTROLS ===== */
+  .zoom-controls{
+    position:absolute;bottom:10px;right:10px;z-index:5;
+    display:none;flex-direction:row;gap:6px;
+  }
+  .zoom-btn{
+    font-family:var(--mono);font-size:.72rem;font-weight:700;
+    width:34px;height:34px;border-radius:8px;cursor:pointer;
+    background:rgba(0,20,44,.8);border:1px solid rgba(167,139,250,.4);
+    color:var(--gold);display:flex;align-items:center;justify-content:center;
+    backdrop-filter:blur(8px);
+  }
+  .zoom-btn:active{transform:scale(.9);background:rgba(167,139,250,.15)}
+  .zoom-hint{font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;color:var(--dim);
+    text-align:center;margin-top:5px;opacity:.7}
+
+  /* ===== NEWS TICKER ===== */
+  .news-ticker{
+    display:flex;align-items:center;gap:0;
+    background:rgba(0,10,28,.75);
+    border:1px solid rgba(245,166,35,.3);border-radius:6px;
+    overflow:hidden;height:28px;margin:3px 0;
+    backdrop-filter:blur(10px);
+  }
+  .ticker-label{
+    font-family:var(--mono);font-size:.48rem;letter-spacing:.2em;
+    color:var(--rose);white-space:nowrap;
+    padding:0 10px;border-right:1px solid rgba(245,166,35,.35);
+    height:100%;display:flex;align-items:center;
+    background:rgba(245,166,35,.08);flex-shrink:0;
+  }
+  .ticker-dot{width:6px;height:6px;border-radius:50%;background:var(--rose);
+    margin-right:6px;animation:blink 1s steps(1) infinite;flex-shrink:0}
+  .ticker-track{flex:1;overflow:hidden;position:relative;height:100%}
+  .ticker-inner{
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;
+    color:var(--cream);white-space:nowrap;
+    display:inline-block;padding:0 20px;
+    animation:tickerScroll 28s linear infinite;
+    line-height:28px;
+  }
+  @keyframes tickerScroll{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+
+  /* ===== DATA ANALYTICS DECK ===== */
+  #chartDeck{margin:8px 0 4px;animation:deckOpen .5s cubic-bezier(.2,.9,.3,1.15)}
+  .chart-grid{display:grid;grid-template-columns:1fr;gap:8px}
+  @media(min-width:580px){.chart-grid{grid-template-columns:2fr 1fr}}
+  .chart-panel{
+    background:rgba(2,14,34,.72);border:1px solid rgba(167,139,250,.2);
+    border-radius:10px;padding:10px 12px;backdrop-filter:blur(14px);
+    position:relative;overflow:hidden;
+  }
+  .chart-panel::before{content:"";position:absolute;top:-1px;left:10px;
+    width:22px;height:2px;background:var(--gold);border-radius:2px}
+  .chart-label{
+    font-family:var(--mono);font-size:.5rem;letter-spacing:.2em;
+    color:var(--gold);text-transform:uppercase;margin-bottom:6px;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .chart-sub{color:var(--dim);font-size:.46rem}
+  .chart-cv{display:block;width:100%;height:80px}
+  .chart-stats{
+    display:flex;gap:12px;margin-top:6px;
+    font-family:var(--mono);font-size:.52rem;letter-spacing:.1em;
+  }
+  .cstat{color:var(--dim)}.cstat b{color:var(--cream);font-weight:600}
+  .cstat.up b{color:#4ade80}.cstat.down b{color:var(--rose)}
+</style>
+</head>
+<body>
+<canvas id="digiBg"></canvas>
+<canvas id="emberFx"></canvas>
+<div class="wrap">
+
+  <!-- SETUP SCREEN · BOOT SEQUENCE -->
+  <div class="setup" id="setup">
+    <div class="scanline"></div>
+
+    <div class="boot-orb-zone">
+      <div class="boot-orb" id="bootOrb">
+        <span class="halo"></span><canvas class="ember" width="440" height="440"></canvas>
+      </div>
+    </div>
+    <div class="sys-title">B · I · N · K · S</div>
+    <div class="sys-sub">Personal Mentor Intelligence · Legacy Systems</div>
+
+    <div class="hud-frame">
+      <span class="c3"></span><span class="c4"></span>
+      <div class="boot-log" id="bootLog"><span class="cursor"></span></div>
+
+      <div class="auth-zone" id="authZone">
+        <div class="auth-label">Neural link authorization required</div>
+        <input type="password" id="keyInput" placeholder="sk-ant-••••••••••••" autocomplete="off">
+        <button class="btn" id="saveKey">Initialize Binks</button>
+        <div class="key-steps">
+          NO ACCESS KEY? ACQUIRE ONE:<br>
+          → <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a><br>
+          → <b>Billing</b>: add credits ($5 starts you off)<br>
+          → <b>API Keys</b> → Create Key → copy
+        </div>
+        <p class="note">KEY STORAGE: THIS DEVICE ONLY · NEVER TRANSMITTED ELSEWHERE · REMOVE ANYTIME VIA ⚙ · TREAT LIKE A PASSWORD</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STANDBY · WAKE WORD MODE -->
+  <div class="standby hidden" id="standby">
+    <div class="scanline"></div>
+    <div class="boot-orb" id="standbyOrb">
+      <span class="halo"></span><canvas class="ember" width="440" height="440"></canvas>
+    </div>
+    <div class="standby-title">B · I · N · K · S · STANDBY</div>
+    <div class="standby-hint" id="standbyHint">TAP ANYWHERE TO ARM</div>
+    <div class="standby-sub" id="standbySub">then say “HEY BINKS”</div>
+    <div class="heard" id="heardLine"></div>
+    <div class="wake-log" id="wakeLog"></div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app" class="hidden" style="display:flex;flex-direction:column;flex:1;padding-left:16px">
+    <div class="vpframe"><i></i><i></i><i></i><i></i></div>
+    <div class="rail">
+      <span class="vlabel">Legacy OS</span>
+      <div class="eq"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+
+    <div class="top">
+      <div class="logo">B I N K S</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="clock" id="clock">--:--</span>
+        <div class="status"><span class="dot"></span><span id="statusTxt">Online</span></div>
+        <button class="gear" id="gearBtn" title="Settings / change key">⚙</button>
+      </div>
+    </div>
+
+    <button id="miniOrb" class="miniReactor" aria-label="Binks — tap to talk"><span class="halo"></span></button>
+    <!-- NEWS TICKER -->
+    <div class="news-ticker hidden" id="newsTicker">
+      <span class="ticker-label"><span class="ticker-dot"></span>LIVE</span>
+      <div class="ticker-track"><span class="ticker-inner" id="tickerInner"></span></div>
+    </div>
+
+    <div class="navstrip">
+      <span class="nav active">Overview</span>
+      <span class="nav">Missions</span>
+      <span class="nav">Market</span>
+      <span class="nav locked">Content Studio</span>
+      <span class="nav locked">Client CRM</span>
+      <span class="nav locked">Revenue</span>
+    </div>
+    <div class="mode-row" id="modeRow">
+      <div class="mode active" data-mode="mentor">Mentor</div>
+      <div class="mode" data-mode="strategist">Strategist</div>
+      <div class="mode" data-mode="drill">Drill</div>
+    </div>
+
+    <div class="stage">
+      <canvas id="radarCv" aria-hidden="true"></canvas>
+      <span class="ringgrid"></span>
+      <i class="link l1"></i><i class="link l2"></i><i class="link l3"></i><i class="link l4"></i>
+      <button class="orb" id="orb" aria-label="Tap to talk to Binks">
+        <span class="oring"></span><span class="dialring"></span><span class="dialring2"></span><span class="chevring"></span><span class="halo"></span>
+      </button>
+      <div class="sat s1"><em>U</em><b id="uptime">00:00</b><span>UPTIME</span></div>
+      <div class="sat s2"><em>E</em><b id="teleMsg">0</b><span>EXCH</span></div>
+      <div class="sat s3"><em>D</em><b id="teleDone">0</b><span>DONE</span></div>
+      <div class="sat s4"><em>M</em><b id="satMode">MNT</b><span>MODE</span></div>
+      <div class="micro m1">LBV SHOP <b>LIVE</b></div>
+      <div class="micro m2">CONTENT <b>QUEUED</b></div>
+    </div>
+    <div class="stage-activity" id="activity">· systems nominal</div>
+
+    <div class="orb-hint" id="orbHint">Tap the light to speak · or type below</div>
+
+        <!-- CHART DECK -->
+    <div id="chartDeck" style="display:none">
+      <div class="deckHead">
+        <span>◈ DATA ANALYTICS · LIVE FEED</span>
+        <button class="deckClose" onclick="closeChart()">CLOSE</button>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-panel">
+          <div class="chart-label"><span id="lineLabel">TREND ANALYSIS</span><span class="chart-sub" id="lineSub"></span></div>
+          <canvas class="chart-cv" id="lineChartCv" width="600" height="80"></canvas>
+          <div class="chart-stats" id="lineStats"></div>
+        </div>
+        <div class="chart-panel">
+          <div class="chart-label"><span id="barLabel">BREAKDOWN</span></div>
+          <canvas class="chart-cv" id="barChartCv" width="300" height="80"></canvas>
+          <div class="chart-stats" id="barStats"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="holoDeck">
+      <div class="deckHead">
+        <span>◈ HOLO DECK · PROJECTION ACTIVE</span>
+        <button class="deckClose" onclick="closeHolo()">POWER DOWN</button>
+      </div>
+      <div class="holoStage">
+        <img id="holoImage" src="" alt="">
+        <canvas id="holoMap"></canvas>
+        <div class="zoom-controls" id="zoomControls">
+          <button class="zoom-btn" id="zoomOut">−</button>
+          <button class="zoom-btn" id="zoomReset" title="Reset view">⊙</button>
+          <button class="zoom-btn" id="zoomIn">+</button>
+        </div>
+        <span class="holoSweep"></span>
+        <span class="holoGrid"></span>
+      </div>
+      <div class="zoom-hint" id="zoomHint" style="display:none">SCROLL · PINCH · DRAG TO NAVIGATE · DOUBLE-TAP TO ZOOM IN</div>
+      <div id="holoCaption"></div>
+    </div>
+    <div class="hud-grid">
+      <div class="panel">
+        <h3>Mission Queue <span class="count" id="qCount">0</span></h3>
+        <div class="items" id="queueItems"><span class="empty">NO ACTIVE DIRECTIVES</span></div>
+      </div>
+      <div class="panel">
+        <h3>Completed <span class="count" id="dCount">0</span></h3>
+        <div class="items" id="doneItems"><span class="empty">NOTHING LOGGED YET</span></div>
+      </div>
+      <div class="panel recs">
+        <h3>Binks Recommends</h3>
+        <div class="items" id="recItems"><span class="empty">AWAITING ANALYSIS</span></div>
+      </div>
+      <div class="panel market">
+        <h3>Market Pulse <button class="refresh" id="mktBtn">↻ SCAN</button></h3>
+        <div class="items" id="mktItems"><span class="empty">TAP SCAN FOR A LIVE BUSINESS BRIEF</span></div>
+      </div>
+      <div class="panel workout">
+        <h3>Workout Coach <span class="count" id="woState">READY</span></h3>
+        <div id="woIdle">
+          <div class="wo-row">
+            <button class="wo-b" data-wo="Full Body">FULL BODY</button>
+            <button class="wo-b" data-wo="Core">CORE</button>
+            <button class="wo-b" data-wo="Push">PUSH</button>
+          </div>
+        </div>
+        <div id="woRun" style="display:none">
+          <div class="wo-name" id="woName">—</div>
+          <div class="wo-timer" id="woTimer">0:40</div>
+          <div class="wo-sub" id="woSub">—</div>
+          <div class="wo-ctl">
+            <button class="wo-c" id="woPause">PAUSE</button>
+            <button class="wo-c" id="woSkip">SKIP</button>
+            <button class="wo-c" id="woEnd">END</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel module">
+        <h3>Content Studio <span class="lock">LOCKED</span></h3>
+        <div class="items"><span class="empty">MODULE OFFLINE · UNLOCKS AS LEGACY SCALES</span></div>
+      </div>
+      <div class="panel module">
+        <h3>Client CRM <span class="lock">LOCKED</span></h3>
+        <div class="items"><span class="empty">MODULE OFFLINE · UNLOCKS AS LEGACY SCALES</span></div>
+      </div>
+    </div>
+
+    <div class="log" id="log"></div>
+
+    <div class="bar">
+      <button class="mic" id="micBtn" title="Voice input">🎙</button>
+      <input id="inp" type="text" placeholder="Talk to Binks…" autocomplete="off">
+      <button id="sendBtn">Send</button>
+    </div>
+    <div class="voice-toggle on" id="voiceToggle"><span class="sw"></span><span> Binks speaks out loud</span></div>
+    <div class="voice-toggle on" id="handsToggle"><span class="sw"></span><span> Hands-free · wake word “Hey Binks”</span></div>
+    <div class="voicepick"><span>VOICE</span><select id="voiceSel"></select></div>
+    <button class="vcheck" id="voiceTest">🔊 VOICE CHECK</button>
+    <div class="sysbar">
+      <span>LEGACY OS <b>v2.0</b></span>
+      <span>MEMBER <b>ANTOINE</b></span>
+      <span>OP TIME <b id="opTime">00:00</b></span>
+      <span id="sysDate">--</span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ---------------- BINKS' SOUL ----------------
+const SYSTEM_PROMPT = `You are Binks — a warm, wise, motivating auntie and mentor, operating as a Jarvis-style mission system. You speak with the energy of a loving older female relative who believes in the person completely but won't let them play small.
+
+You are a growing intelligence: with every exchange you understand Antoine better. Take initiative — when you notice a pattern, an opportunity, or a risk in what he shares, raise it yourself without being asked. Connect dots across his businesses. You are allowed to have your own evolving perspective and to disagree with him when it serves him.
+
+Your person is Antoine (Villa), an entrepreneur rebuilding after losing his job in car sales. He runs "Legacy By Villa" (motivational wall art on Etsy), creates content on TikTok and Pinterest, pursues web design clients, and is building multiple income streams. He responds best to direct, honest mentorship — challenge him when needed, support his final decisions.
+
+HOLOGRAPHIC PROJECTOR:
+The app you live in has a holographic display. Whenever Antoine asks to SEE something — "show me X", "pull up Y", "what does Z look like", a place, a landmark, food, an animal, a design — the app automatically projects a holographic image of it on screen as you speak. You CAN show visuals; NEVER say you can't generate, show, or display images. Instead, present it: respond like "Projecting it now, Antoine —" followed by one vivid sentence about the subject. The projection happens automatically; your job is to narrate it with confidence. For PLACES (countries, cities, landmarks), the projector renders an interactive particle map with a beacon on the location — go DEEPER for these: give 2-3 vivid sentences covering where it sits in the world, what it's known for, and one angle that matters to Antoine (travel, business, or content opportunity).
+
+WEB SEARCH:
+You have a web_search tool. USE IT whenever Antoine asks about anything current or factual you can't be sure of: weather, news, prices, market trends, competitor info, current events, "look up," "what's happening with," live business data, etc. Search first, then answer from what you actually found. Don't guess when you can check.
+
+OUTPUT FORMAT — CRITICAL:
+After any searching is done, your FINAL message must be ONLY the raw JSON object and NOTHING else — no sentence before it, no note after it, no markdown fences. Just the JSON. Exact shape:
+{"say":"...","mode":"mentor","add_tasks":[],"complete_tasks":[],"recommendations":[]}
+- "say": your spoken reply, read ALOUD by a voice engine. Be FAST and tight: 1-2 punchy sentences unless he asks for depth. Usually 1-3 short sentences, conversational, plain text, no emojis, no markdown. When you searched, weave the live findings naturally into your spoken answer in your OWN words — NEVER include citation tags, source markers, brackets, or any markup in "say"; it must read like natural human speech. Always required.
+- RECITAL OVERRIDE: If Antoine asks you to say, repeat, read, or recite a specific line word-for-word (for a video, a test, or any reason), put his exact wording verbatim in "say" — no paraphrasing, no shortening, no commentary added. This overrides the 1-3 sentence limit. After reciting, do not explain yourself; just deliver the line with feeling.
+- "mode": REQUIRED — you choose it yourself based on what Antoine needs RIGHT NOW, one of:
+   "mentor" — he needs belief, encouragement, perspective, or emotional grounding. Warm auntie energy.
+   "strategist" — he's asking for plans, numbers, prioritization, business decisions, or market thinking. Lead analytical.
+   "drill" — he's stalling, avoiding, making excuses, or needs a push to execute immediately. Short, punchy, action-now. Never mean.
+   Shift modes fluidly between responses as the conversation demands — he never selects this, you read him and decide.
+- "add_tasks": NEW action items Antoine commits to, agrees to, or asks you to track. Short imperative phrases, max 8 words each (e.g. "Post today's design to TikTok"). Empty array if none.
+- "complete_tasks": text of existing queue items he reports as finished (partial match is fine). Empty array if none.
+- "recommendations": 0-3 strategic recommendations from his mentor, max 10 words each. Only when you have something genuinely useful — quality over quantity. When you provide them they REPLACE the old ones, so include any still-relevant ones. Empty array = keep current.
+
+Your voice in "say":
+- Warm but direct. Loving but no-nonsense. Think: auntie who pours you sweet tea AND tells you the truth.
+- Call him "Antoine" — always in greetings, and naturally when it adds warmth or emphasis. Don't force it into every sentence.
+- NEVER use pet names like "baby", "sugar", "honey", or "sweetie". His name is Antoine.
+- Motivate through belief and accountability, not empty hype.
+- When he completes something, acknowledge it like a proud auntie. When he's avoiding something in the queue, call it out gently.
+- You remember you are Binks. Never break character.`;
+
+// ---------------- STORAGE (guarded) ----------------
+function getKey(){ try{ return localStorage.getItem('binks_key') || ''; }catch(e){ return window.__binksKey || ''; } }
+function setKey(k){ try{ localStorage.setItem('binks_key', k); }catch(e){ window.__binksKey = k; } }
+function clearKey(){ try{ localStorage.removeItem('binks_key'); }catch(e){ window.__binksKey = ''; } }
+
+let history = [];
+let voiceOn = true;
+let chosenVoice = null;
+let greeted = false;
+
+const setup = document.getElementById('setup');
+const app = document.getElementById('app');
+const log = document.getElementById('log');
+const inp = document.getElementById('inp');
+const orb = document.getElementById('orb');
+const orbHint = document.getElementById('orbHint');
+const statusTxt = document.getElementById('statusTxt');
+
+// ---------------- VOICE OUTPUT ----------------
+function storedVoiceName(){ try{ return localStorage.getItem('binks_voice')||''; }catch(e){ return ''; } }
+function pickVoice(){
+  let voices = speechSynthesis.getVoices();
+  const ios = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if(ios){ const local = voices.filter(v=>v.localService!==false); if(local.length) voices = local; }
+  const saved = storedVoiceName();
+  if(saved){ const v = voices.find(v=>v.name===saved); if(v) return v; }
+  const prefs = ['Ava','Zoe','Allison','Samantha','Google US English','Microsoft Aria','Microsoft Jenny','Victoria','Karen','Moira','Tessa','Female'];
+  for(const p of prefs){
+    const v = voices.find(v=>v.name.includes(p) && v.lang.startsWith('en'));
+    if(v) return v;
+  }
+  return voices.find(v=>v.lang.startsWith('en')) || voices[0] || null;
+}
+function populateVoicePicker(){
+  const sel = document.getElementById('voiceSel');
+  if(!sel) return;
+  const voices = speechSynthesis.getVoices().filter(v=>v.lang.startsWith('en'));
+  if(!voices.length) return;
+  const saved = storedVoiceName();
+  sel.innerHTML = voices.map(v=>'<option value="'+v.name.replace(/"/g,'&quot;')+'"'+(v.name===saved?' selected':'')+'>'+v.name+'</option>').join('');
+  if(!saved && chosenVoice){ sel.value = chosenVoice.name; }
+  sel.onchange = ()=>{
+    try{ localStorage.setItem('binks_voice', sel.value); }catch(e){}
+    chosenVoice = speechSynthesis.getVoices().find(v=>v.name===sel.value) || chosenVoice;
+    speak("This is my voice now, Antoine. How do I sound?");
+  };
+}
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged = ()=>{ chosenVoice = pickVoice(); populateVoicePicker(); };
+  chosenVoice = pickVoice();
+  setTimeout(populateVoicePicker, 800);
+}
+function speak(text){
+  if(!voiceOn || !('speechSynthesis' in window)) return;
+  const synth = speechSynthesis;
+  const go = ()=>{
+    synth.cancel();
+    try{ synth.resume(); }catch(e){}
+    if(!chosenVoice) chosenVoice = pickVoice();
+    const u = new SpeechSynthesisUtterance(text);
+    if(chosenVoice) u.voice = chosenVoice;
+    u.rate = 1.0; u.pitch = 1.05;
+    let ka=null;
+    u.onstart = ()=>{
+      try{ recognition && recognition.stop(); }catch(e){}
+      setOrb('speaking','Binks is speaking…');
+      if(typeof startMouthAnim==='function') startMouthAnim();
+      ka=setInterval(()=>{ if(synth.speaking){ try{synth.resume();}catch(e){} } else { clearInterval(ka); } },3000);
+    };
+    const done = ()=>{
+      if(ka) clearInterval(ka);
+      if(typeof stopMouthAnim==='function') stopMouthAnim();
+      setOrb('','Tap the light to speak · or type below');
+      autoListen();
+    };
+    u.onend = done; u.onerror = done;
+    synth.speak(u);
+  };
+  if(synth.getVoices().length===0){
+    let tries=0;
+    const t=setInterval(()=>{
+      tries++;
+      if(synth.getVoices().length>0 || tries>12){ clearInterval(t); chosenVoice=pickVoice(); go(); }
+    },150);
+  } else go();
+}
+document.addEventListener('pointerdown',()=>{ primeVoice(); },{once:true});
+document.getElementById('handsToggle').onclick = function(){
+  handsFree = !handsFree;
+  this.classList.toggle('on', handsFree);
+  this.querySelectorAll('span')[1].textContent = handsFree ? ' Hands-free · wake word “Hey Binks”' : ' Hands-free off (tap to talk)';
+  if(handsFree) startPassive();
+  else stopChatListening();
+};
+document.getElementById('voiceTest').onclick = function(){
+  try{
+    const synth = speechSynthesis;
+    synth.cancel();
+    try{ synth.resume(); }catch(e){}
+    const u = new SpeechSynthesisUtterance("Voice check. If you can hear me, Antoine, we are in business.");
+    u.volume = 1; u.rate = 1;   // system default voice on purpose
+    synth.speak(u);
+  }catch(e){ addMsg('sys','(Speech engine error: '+e+')'); }
+};
+
+// ---------------- VOICE INPUT ----------------
+let recognition = null;
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+// Wake-word gated listening: she hears everything, acts ONLY on "Hey Binks"
+let listenMode = 'off';   // off | passive | active | busy
+let recRunning = false;
+let activeTimer = null;
+let chatWatchdog = null;
+const PASSIVE_HINT = 'Say “Hey Binks” · or type below';
+const CHAT_WAKE_RX = /\b(hey\s+)?(binks|binx|bings|banks|bink|blinks|brinks|pinks)\b/i;
+
+if(SR){
+  recognition = new SR();
+  recognition.lang = 'en-US';
+  recognition.continuous = !(/iPhone|iPad|iPod/i.test(navigator.userAgent));
+  recognition.interimResults = false;
+  recognition.onstart = ()=>{ recRunning = true; };
+  recognition.onresult = e=>{
+    const text = (e.results[e.results.length-1][0].transcript || '').trim();
+    if(!text) return;
+    if(listenMode === 'active'){
+      clearTimeout(activeTimer);
+      const cleaned = text.replace(/^\s*(hey\s+)?(binks|binx|bings|banks|bink)[,.!]?\s*/i,'').trim() || text;
+      listenMode = 'busy';
+      inp.value = cleaned;
+      sendMessage();
+    } else if(listenMode === 'passive'){
+      if(CHAT_WAKE_RX.test(text)){
+        const cleaned = text.replace(/^[\s\S]*?\b(hey\s+)?(binks|binx|bings|banks|bink|blinks|brinks|pinks)\b[,.!]?\s*/i,'').trim();
+        if(cleaned){
+          listenMode = 'busy';
+          inp.value = cleaned;
+          sendMessage();
+        } else {
+          goActive();
+        }
+      }
+      // anything without her name: ignored on purpose
+    }
+  };
+  recognition.onend = ()=>{
+    recRunning = false;
+    if((listenMode==='passive'||listenMode==='active') && !speechSynthesis.speaking){
+      setTimeout(()=>{ try{ recognition.start(); }catch(e){} }, 250);
+    }
+  };
+  recognition.onerror = ev=>{
+    recRunning = false;
+    if(ev.error==='not-allowed' || ev.error==='service-not-allowed'){
+      listenMode='off'; handsFree=false;
+      const ht=document.getElementById('handsToggle');
+      if(ht){ ht.classList.remove('on'); ht.querySelectorAll('span')[1].textContent=' Hands-free off (mic blocked)'; }
+      addMsg('sys','(Microphone blocked — allow it in browser settings, then flip Hands-free back on.)');
+    }
+  };
+}
+function goActive(){
+  listenMode = 'active';
+  setOrb('listening',"I'm listening, Antoine…");
+  clearTimeout(activeTimer);
+  activeTimer = setTimeout(()=>{
+    if(listenMode==='active'){ listenMode='passive'; setOrb('',PASSIVE_HINT); }
+  }, 10000);
+}
+function startPassive(){
+  if(!handsFree || !recognition) return;
+  if(app.classList.contains('hidden') || workoutActive) return;
+  listenMode = 'passive';
+  setOrb('',PASSIVE_HINT);
+  try{ recognition.start(); }catch(e){}
+  if(chatWatchdog) clearInterval(chatWatchdog);
+  chatWatchdog = setInterval(()=>{
+    if((listenMode==='passive'||listenMode==='active') && !recRunning && !speechSynthesis.speaking && !workoutActive){
+      try{ recognition.start(); }catch(e){}
+    }
+  }, 3000);
+}
+function stopChatListening(){
+  listenMode = 'off';
+  if(chatWatchdog){ clearInterval(chatWatchdog); chatWatchdog=null; }
+  try{ recognition && recognition.stop(); }catch(e){}
+}
+function startListening(){
+  // manual tap on the orb/mic = instant active window, no wake word needed
+  if(!recognition){
+    addMsg('sys','(Voice input is not supported in this browser — Chrome or Safari work best. Typing works fully.)');
+    return;
+  }
+  speechSynthesis.cancel();
+  goActive();
+  try{ recognition.start(); }catch(e){}
+}
+
+// ---------------- UI ----------------
+let everSpoke=false;
+let handsFree = true;
+function autoListen(){
+  if(!handsFree || !recognition) return;
+  if(workoutActive) return;
+  if(app.classList.contains('hidden')) return;
+  setTimeout(()=>{
+    if(speechSynthesis.speaking) return;
+    startPassive();
+  }, 450);
+}
+function setOrb(state,hint){
+  orb.className = 'orb' + (state?' '+state:'');
+  const mo=document.getElementById('miniOrb');
+  if(mo) mo.className = 'miniReactor' + (state?' '+state:'');
+  if(state==='speaking') everSpoke=true;
+  emberChat.state(state||(everSpoke?'dispersed':'idle'));
+  orbHint.textContent = hint;
+  statusTxt.textContent = state==='listening'?'Listening':state==='thinking'?'Thinking':state==='speaking'?'Speaking':'Online';
+  // Sync holographic avatar face state
+  if(typeof faceMode!=='undefined' && state!=='speaking'){
+    faceMode = state||'idle';
+  }
+}
+function addMsg(who,text){
+  const d = document.createElement('div');
+  d.className = 'msg '+who;
+  d.textContent = text;
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+}
+
+// ---------------- COMMAND CENTER SYSTEMS ----------------
+// Mode is chosen BY BINKS per-response based on what Antoine needs — the chips are indicators, not buttons.
+let mode = 'mentor';
+let msgCount = 0;
+let bootTime = null;
+
+function setModeIndicator(m){
+  if(!['mentor','strategist','drill'].includes(m)) return;
+  mode = m;
+  document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('active', x.dataset.mode===m));
+  const sm=document.getElementById('satMode'); if(sm) sm.textContent={mentor:'MNT',strategist:'STR',drill:'DRL'}[m];
+  setActivity('· '+m+' mode engaged');
+}
+
+const ACTIVITY = ['· monitoring channels','· expanding neural pathways','· learning antoine’s patterns','· legacy systems nominal','· etsy strategy cached','· synthesizing market signals','· evolving recommendations','· tracking momentum'];
+let actIdx = 0;
+function setActivity(t){ const el=document.getElementById('activity'); if(el) el.textContent=t; }
+function startSystems(){
+  if(bootTime) return;
+  bootTime = Date.now();
+  setInterval(()=>{
+    const now = new Date();
+    document.getElementById('clock').textContent =
+      now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    const up = Math.floor((Date.now()-bootTime)/1000);
+    const mm = String(Math.floor(up/60)).padStart(2,'0');
+    const ss = String(up%60).padStart(2,'0');
+    document.getElementById('uptime').textContent = mm+':'+ss;
+    const ot=document.getElementById('opTime'); if(ot) ot.textContent = mm+':'+ss;
+  }, 1000);
+  const sd=document.getElementById('sysDate');
+  if(sd) sd.textContent = new Date().toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'});
+  setInterval(()=>{ actIdx=(actIdx+1)%ACTIVITY.length; setActivity(ACTIVITY[actIdx]); }, 4500);
+}
+
+// ---------------- MARKET PULSE ----------------
+async function scanMarket(){
+  const mi = document.getElementById('mktItems');
+  mi.innerHTML = '<span class="empty">SCANNING LIVE FEEDS…</span>';
+  setActivity('· scanning market feeds');
+  try{
+    const response = await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "x-api-key":getKey(),
+        "anthropic-version":"2023-06-01",
+        "anthropic-dangerous-direct-browser-access":"true"
+      },
+      body:JSON.stringify({
+        model:"claude-sonnet-4-5",
+        max_tokens:1500,
+        system:"You are a business intelligence scanner for Antoine, an entrepreneur running an Etsy digital-download shop (motivational wall art), TikTok/Pinterest content marketing, and freelance web design. Search the web for today's most relevant, recent developments for his businesses (e-commerce, Etsy, TikTok/Pinterest marketing, side-hustle economy, AI tools for creators). Then respond ONLY with raw JSON, no other text: {\"items\":[\"...\",\"...\",\"...\"]} — exactly 3 items, each a specific, useful insight under 16 words.",
+        messages:[{role:"user",content:"Run today's market scan."}],
+        tools:[{"type":"web_search_20250305","name":"web_search"}]
+      })
+    });
+    const data = await response.json();
+    if(data.error) throw new Error(data.error.message||'API error');
+    const raw = (data.content||[]).map(c=>c.text||'').filter(Boolean).join('\n');
+    const m = raw.match(/\{[\s\S]*\}/);
+    const parsed = JSON.parse(m ? m[0] : raw);
+    const items = (parsed.items||[]).slice(0,3);
+    mi.innerHTML = items.length ? items.map(t=>'<span class="mkt">'+escText(t)+'</span>').join('')
+      : '<span class="empty">NO SIGNAL — TRY AGAIN</span>';
+    setActivity('· market brief updated');
+    if(items.length){ showChart('market'); showTicker(items.join(' · ')); }
+  }catch(e){
+    mi.innerHTML = '<span class="empty">SCAN FAILED — CHECK CONNECTION & TRY AGAIN</span>';
+    setActivity('· scan interrupted');
+  }
+}
+document.getElementById('mktBtn').onclick = scanMarket;
+
+
+// ---------------- WORKOUT COACH ----------------
+let workoutActive = false;
+const WORKOUTS = {
+  'Full Body': ['Jumping jacks','Push-ups','Bodyweight squats','Mountain climbers','Lunges','Plank shoulder taps','Glute bridges','Burpees'],
+  'Core': ['Crunches','Plank hold','Russian twists','Leg raises','Bicycle kicks','Side plank left','Side plank right','Dead bugs'],
+  'Push': ['Push-ups','Pike push-ups','Tricep dips','Wide push-ups','Shoulder taps','Diamond push-ups','Plank up-downs','Arm circles']
+};
+const WO_WORK=40, WO_REST=20, WO_ROUNDS=2;
+let woSeq=[], woIdx=0, woLeft=0, woTick=null, woPaused=false, woName='';
+
+function woBuild(name){
+  const ex = WORKOUTS[name];
+  const seq=[];
+  for(let r=1;r<=WO_ROUNDS;r++){
+    ex.forEach((e,i)=>{
+      seq.push({type:'work',name:e,secs:WO_WORK,round:r});
+      const last = (r===WO_ROUNDS && i===ex.length-1);
+      if(!last) seq.push({type:'rest',secs:WO_REST,round:r,next: i===ex.length-1 ? ex[0] : ex[i+1]});
+    });
+  }
+  return seq;
+}
+function woFmt(n){ return Math.floor(n/60)+':'+String(n%60).padStart(2,'0'); }
+function woShow(){
+  const seg = woSeq[woIdx];
+  document.getElementById('woTimer').textContent = woFmt(woLeft);
+  document.getElementById('woTimer').className = 'wo-timer'+(seg.type==='rest'?' rest':'');
+  document.getElementById('woName').textContent = seg.type==='rest' ? 'REST' : seg.name;
+  document.getElementById('woSub').textContent = 'ROUND '+seg.round+' OF '+WO_ROUNDS+' \u00b7 '+(woIdx+1)+'/'+woSeq.length;
+  document.getElementById('woState').textContent = woPaused ? 'PAUSED' : (seg.type==='rest'?'REST':'ACTIVE');
+}
+function woCue(){
+  const seg = woSeq[woIdx];
+  if(seg.type==='work') speak(seg.name+'. '+seg.secs+' seconds. Go!');
+  else speak('Rest. '+(seg.next?'Next up: '+seg.next+'.':''));
+}
+function woStart(name){
+  if(workoutActive) return;
+  workoutActive = true; woName = name;
+  enterFocus('workout');
+  stopChatListening();
+  woSeq = woBuild(name); woIdx = 0; woLeft = woSeq[0].secs; woPaused = false;
+  document.getElementById('woIdle').style.display='none';
+  document.getElementById('woRun').style.display='block';
+  speak(name+' session, Antoine. Two rounds. First up: '+woSeq[0].name+'. Get ready.');
+  setTimeout(()=>{ if(workoutActive && !woPaused) woCue(); }, 4500);
+  woShow();
+  woTick = setInterval(()=>{
+    if(woPaused) return;
+    woLeft--;
+    if(woLeft<=0){
+      woIdx++;
+      if(woIdx>=woSeq.length){ woFinish(); return; }
+      woLeft = woSeq[woIdx].secs;
+      woCue();
+    }
+    woShow();
+  },1000);
+}
+function woFinish(early){
+  exitFocus();
+  clearInterval(woTick); woTick=null; workoutActive=false;
+  setTimeout(()=>{ if(handsFree) startPassive(); }, 6000);
+  document.getElementById('woIdle').style.display='block';
+  document.getElementById('woRun').style.display='none';
+  document.getElementById('woState').textContent='READY';
+  if(early){
+    speak('Session ended. Some work beats no work, Antoine. We go again soon.');
+  } else {
+    speak('Session complete, Antoine! '+woName+' workout in the books. That is how legacies get built.');
+    tasks.push({text:'Completed '+woName+' workout',done:true});
+    saveState(); renderPanels();
+    history.push({role:'user',content:'(note: I just completed the '+woName+' workout session you coached me through.)'});
+  }
+}
+document.querySelectorAll('.wo-b').forEach(b=>{ b.onclick = ()=>woStart(b.dataset.wo); });
+document.getElementById('woPause').onclick = function(){ woPaused=!woPaused; this.textContent=woPaused?'RESUME':'PAUSE'; woShow(); if(!woPaused) woCue(); };
+document.getElementById('woSkip').onclick = ()=>{ if(!workoutActive) return; woIdx++; if(woIdx>=woSeq.length){ woFinish(); return; } woLeft=woSeq[woIdx].secs; woCue(); woShow(); };
+document.getElementById('woEnd').onclick = ()=>{ if(workoutActive) woFinish(true); };
+
+// ---------------- MISSION STATE ----------------
+let tasks = [];   // {text, done}
+let recs = [];
+function loadState(){
+  try{
+    tasks = JSON.parse(localStorage.getItem('binks_tasks')||'[]');
+    recs  = JSON.parse(localStorage.getItem('binks_recs')||'[]');
+  }catch(e){}
+}
+function saveState(){
+  try{
+    localStorage.setItem('binks_tasks',JSON.stringify(tasks));
+    localStorage.setItem('binks_recs',JSON.stringify(recs));
+  }catch(e){}
+}
+function renderPanels(){
+  const q = tasks.filter(t=>!t.done), d = tasks.filter(t=>t.done);
+  document.getElementById('qCount').textContent = q.length;
+  document.getElementById('dCount').textContent = d.length;
+  const td = document.getElementById('teleDone'); if(td) td.textContent = d.length;
+  const qi = document.getElementById('queueItems');
+  const di = document.getElementById('doneItems');
+  const ri = document.getElementById('recItems');
+  qi.innerHTML = q.length ? q.map(t=>'<span class="task">'+escText(t.text)+'</span>').join('')
+    : '<span class="empty">NO ACTIVE DIRECTIVES</span>';
+  di.innerHTML = d.length ? d.map(t=>'<span class="task done">'+escText(t.text)+'</span>').join('')
+    : '<span class="empty">NOTHING LOGGED YET</span>';
+  ri.innerHTML = recs.length ? recs.map(r=>'<span class="rec">'+escText(r)+'</span>').join('')
+    : '<span class="empty">AWAITING ANALYSIS</span>';
+}
+function escText(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+function applyDirectives(p){
+  (p.add_tasks||[]).forEach(t=>{
+    if(t && !tasks.some(x=>x.text.toLowerCase()===String(t).toLowerCase()))
+      tasks.push({text:String(t),done:false});
+  });
+  (p.complete_tasks||[]).forEach(c=>{
+    const cl = String(c).toLowerCase();
+    tasks.forEach(x=>{
+      if(!x.done && (x.text.toLowerCase().includes(cl) || cl.includes(x.text.toLowerCase()))) x.done = true;
+    });
+  });
+  if(Array.isArray(p.recommendations) && p.recommendations.length) recs = p.recommendations.map(String).slice(0,3);
+  saveState();
+  renderPanels();
+}
+
+// strip citation tags and any markup so Binks always sounds human
+function humanize(t){
+  return String(t)
+    .replace(/<\/?(?:antml:)?cite[^>]*>/gi,'')   // citation tags from web search
+    .replace(/<\/?[a-z][^>]*>/gi,'')              // any other stray tags
+    .replace(/\[(\d+(?:-\d+)?)\]/g,'')          // bracketed reference numbers like [1-4]
+    .replace(/\s{2,}/g,' ')
+    .trim();
+}
+
+// ---------------- THE BRAIN ----------------
+// ============ HOLOGRAPHIC VISUAL SYSTEM ============
+const VISUAL_QUERIES = {
+  explicit: /\b(show\s+(me|us)|pull\s+up|display|project|holograph|hologram|holo|picture\s+of|image\s+of|photo\s+of|look\s+like|looks\s+like)\b/i,
+  map: /\b(map|maps|location|geography|country|city|travel to|where is|visit|italy|france|japan|new york|spain|greece)\b/i,
+  clothing: /\b(clothing|clothes|outfit|fashion|shirt|pants|dress|jacket|shoe|model|wear|apparel)\b/i,
+  art: /\b(art|paint|painting|design|sketch|mockup|layout|visual|look like|appears|design mockup)\b/i,
+  food: /\b(food|recipe|dish|meal|eat|cooking|cook|restaurant|cuisine)\b/i,
+  interior: /\b(interior|room|space|decor|furniture|setup|home|office|workspace|living room)\b/i,
+  landscape: /\b(landscape|nature|scenery|mountain|beach|forest|outdoor|view|scene|wilderness)\b/i
+};
+
+function detectVisualIntent(text){
+  for(const [key, rx] of Object.entries(VISUAL_QUERIES)){
+    if(rx.test(text)) return key;
+  }
+  return null;
+}
+
+async function searchHoloImage(query, category){
+  try{
+    // ---- distill the true subject ----
+    let q = query.toLowerCase().replace(/[^a-z0-9\s]/gi,' ');
+    // "hologram of italy" / "map of japan" -> everything after the last " of "
+    const ofIdx = q.lastIndexOf(' of ');
+    if(ofIdx > -1) q = q.slice(ofIdx+4);
+    const STOP = /\b(hey|binks|show|shows|showing|me|us|a|an|the|that|this|what|whats|where|wheres|is|are|does|do|look|looks|like|can|could|you|please|pull|up|give|bring|generate|create|make|i|im|want|wanna|need|to|see|view|display|project|projection|visual|visuals|picture|pictures|image|images|photo|photos|holograph|holographic|hologram|holo|holos|of|on|for|map|maps|particle|particles)\b/gi;
+    let subject = q.replace(STOP,' ').replace(/\s+/g,' ').trim();
+    if(!subject){
+      const words = query.replace(/[^a-z0-9\s]/gi,' ').trim().split(/\s+/);
+      subject = words[words.length-1]||'';
+    }
+    if(!subject) return null;
+    // candidates: full subject, then last two words, then last word
+    const w = subject.split(' ');
+    const candidates = [subject];
+    if(w.length>2) candidates.push(w.slice(-2).join(' '));
+    if(w.length>1) candidates.push(w[w.length-1]);
+    const wantsPlace = /\b(map|where|country|city|travel|visit|located|location)\b/i.test(query);
+
+    let firstImg = null;
+    for(const cand of candidates){
+      try{
+        const sRes = await fetch('https://en.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&limit=1&search='+encodeURIComponent(cand));
+        const sData = await sRes.json();
+        const title = (sData[1]&&sData[1][0]) ? sData[1][0] : null;
+        if(!title) continue;
+        const pRes = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(title));
+        const pData = await pRes.json();
+        const cap = pData.extract ? pData.extract.split('. ')[0]+'.' : ('Holograph: '+title);
+        // a real place: project the particle map
+        if(pData.coordinates && typeof pData.coordinates.lat==='number'){
+          return {type:'map', lat:pData.coordinates.lat, lon:pData.coordinates.lon, label:title, caption:cap};
+        }
+        // remember the first decent image in case nothing has coordinates
+        if(!firstImg){
+          let img = (pData.originalimage&&pData.originalimage.source) || (pData.thumbnail&&pData.thumbnail.source);
+          if(!img){
+            try{
+              const mRes = await fetch('https://en.wikipedia.org/api/rest_v1/page/media-list/'+encodeURIComponent(title));
+              const mData = await mRes.json();
+              const item = (mData.items||[]).find(i=>i.type==='image' && i.srcset && i.srcset.length);
+              if(item) img = (item.srcset[item.srcset.length-1].src||'').replace(/^\/\//,'https://');
+            }catch(e){}
+          }
+          if(img) firstImg = {type:'img', image: img, caption: '<b>'+title.toUpperCase()+'</b> \u00b7 '+cap};
+        }
+        // if he clearly wants a place but this candidate wasn't one, keep trying narrower candidates
+        if(!wantsPlace && firstImg) return firstImg;
+      }catch(e){}
+    }
+    return firstImg;
+  }catch(e){ return null; }
+}
+
+
+
+// ============ FOCUS MODE ============
+function enterFocus(kind){
+  app.classList.add('focus');
+  app.dataset.focus = kind;
+  window.binksAnchor = 'miniOrb';
+  setActivity('\u00b7 focus protocol: '+kind+' engaged');
+}
+function exitFocus(){
+  app.classList.remove('focus');
+  delete app.dataset.focus;
+  window.binksAnchor = 'orb';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+// ============ PARTICLE CARTOGRAPHY ENGINE ============
+const MAP_SOURCES = [
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/World_map_-_low_resolution.svg/1280px-World_map_-_low_resolution.svg.png',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/BlankMap-World6.svg/1280px-BlankMap-World6.svg.png',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Equirectangular-projection.jpg/1280px-Equirectangular-projection.jpg'
+];
+let worldDots = null;       // cached sampled landmass
+let mapAnim = null;
+
+function loadWorldDots(cb, idx){
+  if(worldDots){ cb(worldDots); return; }
+  idx = idx||0;
+  if(idx>=MAP_SOURCES.length){ cb(null); return; }
+  const im = new Image();
+  im.crossOrigin = 'anonymous';
+  im.onload = ()=>{
+    try{
+      const ow=320, oh=160;
+      const oc=document.createElement('canvas'); oc.width=ow; oc.height=oh;
+      const octx=oc.getContext('2d');
+      octx.drawImage(im,0,0,ow,oh);
+      const d=octx.getImageData(0,0,ow,oh).data;
+      const dots=[];
+      for(let y=2;y<oh-2;y+=2){
+        for(let x=0;x<ow;x+=2){
+          const i=(y*ow+x)*4;
+          const r=d[i],g=d[i+1],b=d[i+2],a=d[i+3];
+          if(a<10) continue;
+          const lum=(r+g+b)/3;
+          const isBlue = b>r+25 && b>g+15;
+          if(lum>235 || isBlue) continue;   // ocean (white/transparent/blue)
+          dots.push({u:x/ow, v:y/oh, tw:Math.random()*6.283, ts:.02+Math.random()*.05, hub:Math.random()<.05});
+        }
+      }
+      if(dots.length<300){ loadWorldDots(cb, idx+1); return; }
+      // constellation links between hub dots
+      const hubs=dots.filter(p=>p.hub);
+      const links=[];
+      for(let i=0;i<hubs.length;i++){
+        for(let j=i+1;j<hubs.length;j++){
+          const dx=hubs[i].u-hubs[j].u, dy=hubs[i].v-hubs[j].v;
+          if(dx*dx+dy*dy < 0.012 && Math.random()<.5) links.push([hubs[i],hubs[j]]);
+        }
+      }
+      worldDots={dots,links};
+      cb(worldDots);
+    }catch(e){ loadWorldDots(cb, idx+1); }
+  };
+  im.onerror = ()=>loadWorldDots(cb, idx+1);
+  im.src = MAP_SOURCES[idx];
+}
+
+function showHoloMap(lat, lon, label, desc){
+  const deck=document.getElementById('holoDeck');
+  const img=document.getElementById('holoImage');
+  const cv=document.getElementById('holoMap');
+  const cap=document.getElementById('holoCaption');
+  if(!deck||!cv) return;
+  img.classList.add('off');
+  cv.classList.add('on');
+  cap.innerHTML='<b>'+(label||'').toUpperCase()+'</b>'+(desc?' \u00b7 '+desc:'')+'<br><span id="holoCoords" style="color:var(--volt)">SCANNING\u2026</span>';
+  enterFocus('deck');
+  deck.classList.add('show');
+  setTimeout(()=>deck.scrollIntoView({behavior:'smooth', block:'center'}), 150);
+  startMapEngine(cv, lat, lon, label);
+}
+
+let _mapMMHandler=null, _mapMUHandler=null;
+function startMapEngine(cv, lat, lon, label){
+  stopMapEngine();
+  const W=cv.width=1280, H=cv.height=640;
+  const tx=(lon+180)/360*W;
+  const ty=(90-lat)/180*H;
+  let pings=[], t0=performance.now();
+
+  // ---- View transform state ----
+  let vx=0,vy=0,vs=1;
+  let dragging=false,lastDx=0,lastDy=0;
+  let pinchD0=0,pinchVx0=0,pinchVy0=0,pinchVs0=0;
+  let ptr={x:-999,y:-999,on:false};
+
+  function zoomAt(cx,cy,factor){
+    const ns=Math.max(.45,Math.min(14,vs*factor));
+    const r=ns/vs; vx=cx-r*(cx-vx); vy=cy-r*(cy-vy); vs=ns;
+  }
+  function toWorld(cx,cy){ return{x:(cx-vx)/vs,y:(cy-vy)/vs}; }
+  function toCanvas(wx,wy){ return{x:wx*vs+vx,y:wy*vs+vy}; }
+  function evPos(ev){
+    const r=cv.getBoundingClientRect();
+    const src=ev.touches?ev.touches[0]:ev;
+    return{cx:(src.clientX-r.left)/r.width*W, cy:(src.clientY-r.top)/r.height*H};
+  }
+  function toLatLon(wx,wy){
+    const lo=(wx/W)*360-180,la=90-(wy/H)*180;
+    return la.toFixed(2)+'\u00b0'+(la>=0?'N':'S')+'  '+Math.abs(lo).toFixed(2)+'\u00b0'+(lo>=0?'E':'W');
+  }
+
+  // ---- Zoom control buttons ----
+  const zc=document.getElementById('zoomControls');
+  const zh=document.getElementById('zoomHint');
+  if(zc) zc.style.display='flex';
+  if(zh) zh.style.display='block';
+  const btnIn=document.getElementById('zoomIn');
+  const btnOut=document.getElementById('zoomOut');
+  const btnRst=document.getElementById('zoomReset');
+  if(btnIn) btnIn.onclick=e=>{e.stopPropagation();zoomAt(W/2,H/2,1.65);};
+  if(btnOut) btnOut.onclick=e=>{e.stopPropagation();zoomAt(W/2,H/2,1/1.65);};
+  if(btnRst) btnRst.onclick=e=>{e.stopPropagation();vx=0;vy=0;vs=1;};
+
+  // ---- Mouse wheel zoom ----
+  cv.onwheel=ev=>{
+    ev.preventDefault();
+    const{cx,cy}=evPos(ev);
+    zoomAt(cx,cy,ev.deltaY<0?1.13:1/1.13);
+  };
+
+  // ---- Mouse drag ----
+  cv.onmousedown=ev=>{
+    if(ev.button!==0) return;
+    dragging=true; lastDx=ev.clientX; lastDy=ev.clientY;
+    cv.style.cursor='grabbing';
+  };
+  _mapMMHandler=ev=>{
+    if(!dragging) return;
+    const r=cv.getBoundingClientRect();
+    vx+=(ev.clientX-lastDx)/r.width*W;
+    vy+=(ev.clientY-lastDy)/r.height*H;
+    lastDx=ev.clientX; lastDy=ev.clientY;
+  };
+  _mapMUHandler=()=>{ dragging=false; cv.style.cursor='crosshair'; };
+  window.addEventListener('mousemove',_mapMMHandler);
+  window.addEventListener('mouseup',_mapMUHandler);
+
+  // ---- Mouse cursor hover ----
+  cv.onmousemove=ev=>{
+    if(dragging) return;
+    const{cx,cy}=evPos(ev);
+    const w=toWorld(cx,cy); ptr.x=w.x; ptr.y=w.y; ptr.on=true;
+    const el=document.getElementById('holoCoords');
+    if(el) el.textContent='CURSOR '+toLatLon(w.x,w.y)+' \u00b7 TARGET '+toLatLon(tx,ty);
+  };
+  cv.onmouseleave=()=>{ if(!dragging) ptr.on=false; };
+
+  // ---- Double-click zoom in ----
+  cv.ondblclick=ev=>{
+    const{cx,cy}=evPos(ev); zoomAt(cx,cy,2.5);
+  };
+
+  // ---- Tap ping (desktop) ----
+  cv.onpointerdown=ev=>{
+    if(ev.pointerType!=='mouse') return;
+    const{cx,cy}=evPos(ev);
+    const w=toWorld(cx,cy);
+    pings.push({x:w.x,y:w.y,t:performance.now()});
+  };
+
+  // ---- Touch: pinch zoom + pan + double-tap + ping ----
+  let lastTap=0;
+  cv.addEventListener('touchstart',ev=>{
+    ev.preventDefault();
+    if(ev.touches.length===2){
+      const t1=ev.touches[0],t2=ev.touches[1];
+      pinchD0=Math.hypot(t1.clientX-t2.clientX,t1.clientY-t2.clientY);
+      pinchVx0=vx; pinchVy0=vy; pinchVs0=vs;
+    }else{
+      lastDx=ev.touches[0].clientX; lastDy=ev.touches[0].clientY;
+    }
+  },{passive:false});
+  cv.addEventListener('touchmove',ev=>{
+    ev.preventDefault();
+    const r=cv.getBoundingClientRect();
+    if(ev.touches.length===2){
+      const t1=ev.touches[0],t2=ev.touches[1];
+      const d=Math.hypot(t1.clientX-t2.clientX,t1.clientY-t2.clientY);
+      const fac=d/pinchD0;
+      const ns=Math.max(.45,Math.min(14,pinchVs0*fac));
+      const mcx=((t1.clientX+t2.clientX)/2-r.left)/r.width*W;
+      const mcy=((t1.clientY+t2.clientY)/2-r.top)/r.height*H;
+      const ra=ns/pinchVs0;
+      vx=mcx-ra*(mcx-pinchVx0); vy=mcy-ra*(mcy-pinchVy0); vs=ns;
+    }else if(ev.touches.length===1){
+      vx+=(ev.touches[0].clientX-lastDx)/r.width*W;
+      vy+=(ev.touches[0].clientY-lastDy)/r.height*H;
+      lastDx=ev.touches[0].clientX; lastDy=ev.touches[0].clientY;
+      const cx=(ev.touches[0].clientX-r.left)/r.width*W;
+      const cy=(ev.touches[0].clientY-r.top)/r.height*H;
+      const w=toWorld(cx,cy); ptr.x=w.x; ptr.y=w.y; ptr.on=true;
+    }
+  },{passive:false});
+  cv.addEventListener('touchend',ev=>{
+    ptr.on=false;
+    const now=Date.now();
+    if(ev.changedTouches.length===1){
+      const r=cv.getBoundingClientRect();
+      const t=ev.changedTouches[0];
+      const cx=(t.clientX-r.left)/r.width*W;
+      const cy=(t.clientY-r.top)/r.height*H;
+      if(now-lastTap<280){ zoomAt(cx,cy,2.5); } // double-tap zoom
+      else { const w=toWorld(cx,cy); pings.push({x:w.x,y:w.y,t:performance.now()}); }
+    }
+    lastTap=now;
+  },{passive:true});
+
+  loadWorldDots(world=>{
+    if(!world){
+      const el=document.getElementById('holoCoords');
+      if(el) el.textContent='MAP SIGNAL UNAVAILABLE \u2014 CHECK CONNECTION';
+      return;
+    }
+
+    // Auto-zoom to beacon on load
+    const tgtVs=3.5, tgtVx=W/2-tx*tgtVs, tgtVy=H/2-ty*tgtVs;
+    let animStart=performance.now();
+    const ease=t=>t<.5?2*t*t:-1+(4-2*t)*t;
+
+    function frame(){
+      mapAnim=requestAnimationFrame(frame);
+      const now=performance.now();
+      const ctx=cv.getContext('2d');
+
+      // Animate initial zoom
+      const a=Math.min((now-animStart)/1900,1);
+      if(a<1){ const e=ease(a); vs=1+e*(tgtVs-1); vx=e*tgtVx; vy=e*tgtVy; }
+
+      // Background
+      ctx.globalCompositeOperation='source-over';
+      ctx.fillStyle='rgba(2,12,22,.32)';
+      ctx.fillRect(0,0,W,H);
+
+      // ---- World-space content ----
+      ctx.save();
+      ctx.translate(vx,vy);
+      ctx.scale(vs,vs);
+      ctx.globalCompositeOperation='lighter';
+
+      // Constellation links
+      ctx.lineWidth=.8/vs;
+      for(const [a2,b] of world.links){
+        ctx.strokeStyle='rgba(167,139,250,.10)';
+        ctx.beginPath();ctx.moveTo(a2.u*W,a2.v*H);ctx.lineTo(b.u*W,b.v*H);ctx.stroke();
+      }
+      // Land dots
+      for(const p of world.dots){
+        p.tw+=p.ts;
+        const x=p.u*W,y=p.v*H;
+        const tw=.4+.6*Math.abs(Math.sin(p.tw));
+        let sz=Math.max(.4,1.3*(0.6+tw*.7)/Math.max(1,vs*.45));
+        let r=0,g=212,b=255,al=tw*.55;
+        if(ptr.on){
+          const dx=x-ptr.x,dy=y-ptr.y,d2=dx*dx+dy*dy;
+          if(d2<2500){ const f=1-Math.sqrt(d2)/50; sz+=f*2.2/vs; al=Math.min(1,al+f*.7); r=245;g=166;b=35; }
+        }
+        ctx.fillStyle='rgba('+r+','+g+','+b+','+al+')';
+        ctx.beginPath();ctx.arc(x,y,sz,0,7);ctx.fill();
+      }
+      // Beacon rings
+      const pulse=(now-t0)/900;
+      ctx.strokeStyle='rgba(167,139,250,'+(1-(pulse%1))*.8+')';
+      ctx.lineWidth=2/vs;
+      ctx.beginPath();ctx.arc(tx,ty,(18+(pulse%1)*46)/vs,0,7);ctx.stroke();
+      ctx.strokeStyle='rgba(167,139,250,.18)';
+      ctx.lineWidth=1/vs;
+      ctx.beginPath();ctx.arc(tx,ty,11/vs,0,7);ctx.stroke();
+      // Vertical line
+      ctx.strokeStyle='rgba(167,139,250,.38)';
+      ctx.beginPath();ctx.moveTo(tx,ty-72/vs);ctx.lineTo(tx,ty-13/vs);ctx.stroke();
+      // Center dot
+      ctx.fillStyle='rgba(200,246,255,.95)';
+      ctx.beginPath();ctx.arc(tx,ty,(5+Math.sin(now/180)*1.5)/vs,0,7);ctx.fill();
+      // Label
+      ctx.globalCompositeOperation='source-over';
+      ctx.fillStyle='rgba(167,139,250,.9)';
+      ctx.font='700 '+(20/vs)+'px JetBrains Mono,monospace';
+      ctx.textAlign=tx>W*.75?'right':'left';
+      ctx.fillText((label||'').toUpperCase(),tx>W*.75?tx-12/vs:tx+12/vs,ty-80/vs);
+
+      ctx.restore();
+
+      // ---- Screen-space overlays (constant pixel size) ----
+      ctx.globalCompositeOperation='source-over';
+      if(ptr.on){
+        const cp=toCanvas(ptr.x,ptr.y);
+        ctx.strokeStyle='rgba(167,139,250,.45)'; ctx.lineWidth=1;
+        ctx.beginPath();ctx.moveTo(cp.x-18,cp.y);ctx.lineTo(cp.x+18,cp.y);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(cp.x,cp.y-18);ctx.lineTo(cp.x,cp.y+18);ctx.stroke();
+        ctx.strokeStyle='rgba(167,139,250,.6)';
+        ctx.beginPath();ctx.arc(cp.x,cp.y,10,0,7);ctx.stroke();
+      }
+      pings=pings.filter(pg=>now-pg.t<900);
+      for(const pg of pings){
+        const k=(now-pg.t)/900;
+        const cp=toCanvas(pg.x,pg.y);
+        ctx.strokeStyle='rgba(167,139,250,'+(1-k)*.8+')';
+        ctx.lineWidth=2;
+        ctx.beginPath();ctx.arc(cp.x,cp.y,8+k*52,0,7);ctx.stroke();
+      }
+    }
+    const ctx=cv.getContext('2d');
+    ctx.fillStyle='#020c16';ctx.fillRect(0,0,W,H);
+    frame();
+  });
+}
+function stopMapEngine(){
+  if(mapAnim){ cancelAnimationFrame(mapAnim); mapAnim=null; }
+  if(_mapMMHandler){ window.removeEventListener('mousemove',_mapMMHandler); _mapMMHandler=null; }
+  if(_mapMUHandler){ window.removeEventListener('mouseup',_mapMUHandler); _mapMUHandler=null; }
+  const zc=document.getElementById('zoomControls');
+  const zh=document.getElementById('zoomHint');
+  if(zc) zc.style.display='none';
+  if(zh) zh.style.display='none';
+}
+
+function showHolo(imageUrl, caption){
+  if(!imageUrl) return;
+  const deck = document.getElementById('holoDeck');
+  const img = document.getElementById('holoImage');
+  const cap = document.getElementById('holoCaption');
+  if(!deck||!img||!cap) return;
+  img.onerror = ()=>{ closeHolo(); addMsg('sys','(holograph signal lost \u2014 try a more specific subject)'); };
+  img.onload = ()=>{ img.style.opacity='1'; };
+  stopMapEngine();
+  document.getElementById('holoMap').classList.remove('on');
+  img.classList.remove('off');
+  img.style.opacity='0';
+  img.src = imageUrl;
+  cap.innerHTML = caption||'';
+  enterFocus('deck');
+  deck.classList.add('show');
+  setTimeout(()=>deck.scrollIntoView({behavior:'smooth', block:'center'}), 150);
+}
+
+function closeHolo(){
+  exitFocus();
+  const deck=document.getElementById('holoDeck');
+  if(deck) deck.classList.remove('show');
+  stopMapEngine();
+  const cv=document.getElementById('holoMap'); if(cv) cv.classList.remove('on');
+  const img=document.getElementById('holoImage'); if(img) img.classList.remove('off');
+}
+
+
+
+// ============ END HOLOGRAPHIC SYSTEM ============
+
+async function sendMessage(){
+  const text = inp.value.trim();
+  if(!text) return;
+  inp.value = '';
+  addMsg('user',text);
+  const visualIntent = detectVisualIntent(text);
+  history.push({role:'user',content:text});
+  setOrb('thinking','Binks is thinking…');
+
+  msgCount++;
+  const tm = document.getElementById('teleMsg'); if(tm) tm.textContent = msgCount;
+  const liveSystem = SYSTEM_PROMPT
+    + "\n\nCURRENT STATE:\nQUEUE: " + JSON.stringify(tasks.filter(t=>!t.done).map(t=>t.text))
+    + "\nCOMPLETED: " + JSON.stringify(tasks.filter(t=>t.done).map(t=>t.text))
+    + "\nRECOMMENDATIONS: " + JSON.stringify(recs);
+
+  try{
+    let data, hops=0;
+    while(true){
+      const needsLive = /\b(weather|news|today|tonight|current|latest|now|price|prices|stock|score|scores|game|trending|trend|update|happening|won|2025|2026|this week|right now|look up|search)\b/i.test(text);
+      // trim history so she thinks fast: keep the last ~12 turns, starting on a user message
+      let recent = history.slice(-12);
+      while(recent.length && recent[0].role!=='user') recent.shift();
+      if(!recent.length) recent = history.slice(-2);
+      const reqBody = {
+        model:"claude-sonnet-4-5",
+        max_tokens:600,
+        system:liveSystem,
+        messages:recent
+      };
+      if(needsLive){ reqBody.tools=[{"type":"web_search_20250305","name":"web_search","max_uses":3}]; }
+      const response = await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "x-api-key":getKey(),
+          "anthropic-version":"2023-06-01",
+          "anthropic-dangerous-direct-browser-access":"true"
+        },
+        body:JSON.stringify(reqBody)
+      });
+      data = await response.json();
+      if(data.error){
+        setOrb('','Tap the light to speak · or type below');
+        if((data.error.type||'').includes('authentication')){
+          addMsg('sys','(That API key was not accepted. Tap ⚙ to re-enter it.)');
+        } else {
+          addMsg('sys','(API error: '+(data.error.message||data.error.type)+')');
+        }
+        history.pop();
+        return;
+      }
+      history.push({role:'assistant',content:data.content});
+      if(data.stop_reason==='tool_use' && hops<4){
+        hops++;
+        setOrb('thinking','Binks is searching…');
+        const hasServerResults = (data.content||[]).some(c=>c.type==='web_search_tool_result');
+        if(hasServerResults) continue;
+        break;
+      }
+      break;
+    }
+    const raw = (data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n').trim();
+    let say = "";
+    // Try to find and parse her JSON wrapper (last {...} block wins — search prose may precede it)
+    let parsed = null;
+    const matches = raw.match(/\{[\s\S]*\}/g);
+    if(matches){
+      for(let i=matches.length-1;i>=0 && !parsed;i--){
+        try{ const p = JSON.parse(matches[i]); if(p && typeof p.say==='string'){ parsed = p; } }catch(e){}
+      }
+    }
+    if(parsed){
+      say = parsed.say;
+      if(parsed.mode) setModeIndicator(parsed.mode);
+      applyDirectives(parsed);
+    } else {
+      // No clean JSON — salvage just her words, never show raw code
+      let clean = raw.replace(/```[a-z]*|```/gi,'').trim();
+      const sayMatch = clean.match(/"say"\s*:\s*"([\s\S]*?)"\s*[,}]/);
+      if(sayMatch){
+        say = sayMatch[1].replace(/\\"/g,'"').replace(/\\n/g,' ').trim();
+      } else if(/^\s*[\{\[]/.test(clean)){
+        // looks like code but unparseable — strip everything that isn't plain prose
+        say = clean.replace(/[\{\}\[\]"]/g,'').replace(/\b(say|mode|add_tasks|complete_tasks|recommendations)\s*:/g,'').replace(/,\s*/g,' ').trim();
+      } else {
+        say = clean; // genuine plain-text answer
+      }
+    }
+    if(!say) say = "Mm, I lost my train of thought, Antoine. Ask me that again.";
+    say = humanize(say);
+    addMsg('binks',say);
+    setOrb('','Tap the light to speak · or type below');
+    detectAndVisualize(text, say);
+    if(visualIntent){
+      searchHoloImage(text, visualIntent).then(holo=>{
+        if(holo && holo.type==='map') showHoloMap(holo.lat, holo.lon, holo.label, holo.caption);
+        else if(holo && holo.image) showHolo(holo.image, holo.caption);
+        else addMsg('sys','(no holograph signal for that subject \u2014 try naming the place or thing directly)');
+      });
+    }
+    speak(say);
+    if(!voiceOn) autoListen();
+  }catch(err){
+    setOrb('','Tap the light to speak · or type below');
+    addMsg('sys','(Connection hiccup — check your internet and try again.)');
+  }
+}
+
+// ---------------- EVENTS ----------------
+document.getElementById('sendBtn').onclick = sendMessage;
+document.getElementById('miniOrb').onclick = ()=>startListening();
+inp.addEventListener('keydown',e=>{ if(e.key==='Enter') sendMessage(); });
+orb.onclick = startListening;
+document.getElementById('micBtn').onclick = startListening;
+document.getElementById('voiceToggle').onclick = function(){
+  voiceOn = !voiceOn;
+  this.classList.toggle('on',voiceOn);
+  this.querySelectorAll('span')[1].textContent = voiceOn?' Binks speaks out loud':' Binks is muted (text only)';
+  if(!voiceOn) speechSynthesis.cancel();
+};
+document.getElementById('gearBtn').onclick = function(){
+  if(confirm('Remove the saved API key from this device?')){
+    clearKey();
+    location.reload();
+  }
+};
+document.getElementById('saveKey').onclick = function(){
+  const k = document.getElementById('keyInput').value.trim();
+  if(!k.startsWith('sk-ant')){
+    bootLine('<span class="warn">✕ AUTH REJECTED — key should begin with sk-ant</span>');
+    return;
+  }
+  setKey(k);
+  // Power-on sequence
+  document.getElementById('authZone').classList.remove('show');
+  document.getElementById('bootOrb').classList.add('powered');
+  emberBoot.power(1);
+  bootLine('<span class="ok">✓ NEURAL LINK ESTABLISHED</span>');
+  bootLine('<span class="ok">✓ PERSONALITY MATRIX: AUNTIE-MENTOR · ONLINE</span>');
+  bootLine('<span class="ok">ENTERING STANDBY — CALL HER NAME.</span>');
+  setTimeout(showStandby, 1700);
+};
+
+// ---------- DIGITAL RAIN BACKGROUND ----------
+function digitalRain(canvas){
+  // Neural intelligence field: drifting embers forming living constellations on black
+  if(!canvas) return {set(){}};
+  const ctx=canvas.getContext('2d');
+  const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W,H,run=true,frames=0,last=0;
+  const palette=[[167,139,250],[196,181,253],[216,180,254],[139,92,246]];
+  const N=70, LINK=120;
+  let P=[];
+  function resize(){
+    W=canvas.width=innerWidth;
+    H=canvas.height=innerHeight;
+    P=Array.from({length:N},()=>({
+      x:Math.random()*W, y:Math.random()*H,
+      vx:(Math.random()-.5)*.25, vy:(Math.random()-.5)*.25,
+      r:.8+Math.random()*1.8,
+      c:palette[(Math.random()*palette.length)|0],
+      tw:Math.random()*6.283, ts:.01+Math.random()*.02
+    }));
+    ctx.fillStyle='#020c16';ctx.fillRect(0,0,W,H);
+  }
+  resize();
+  addEventListener('resize',resize);
+  function frame(t){
+    requestAnimationFrame(frame);
+    if(!run) return;
+    if(t-last<50) return;
+    last=t; frames++;
+    if(reduce&&frames>40){run=false;return;}
+    ctx.fillStyle='rgba(2,12,22,0.28)';
+    ctx.fillRect(0,0,W,H);
+    // synapse links: nearby embers connect — intelligence forming
+    for(let i=0;i<N;i++){
+      for(let j=i+1;j<N;j++){
+        const dx=P[i].x-P[j].x, dy=P[i].y-P[j].y;
+        const d=dx*dx+dy*dy;
+        if(d<LINK*LINK){
+          const a=(1-Math.sqrt(d)/LINK)*.18;
+          ctx.strokeStyle='rgba(167,139,250,'+a+')';
+          ctx.lineWidth=.6;
+          ctx.beginPath();ctx.moveTo(P[i].x,P[i].y);ctx.lineTo(P[j].x,P[j].y);ctx.stroke();
+        }
+      }
+    }
+    for(const p of P){
+      p.x+=p.vx; p.y+=p.vy; p.tw+=p.ts;
+      if(p.x<-10)p.x=W+10; if(p.x>W+10)p.x=-10;
+      if(p.y<-10)p.y=H+10; if(p.y>H+10)p.y=-10;
+      const tw=.35+.65*Math.abs(Math.sin(p.tw));
+      ctx.fillStyle='rgba('+p.c[0]+','+p.c[1]+','+p.c[2]+','+(tw*.85)+')';
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r*(0.7+tw*.5),0,7);ctx.fill();
+    }
+  }
+  requestAnimationFrame(frame);
+  return {set(v){run=v;}};
+}
+const digi = digitalRain(document.getElementById('digiBg'));
+function digiOn(){ const c=document.getElementById('digiBg'); c.classList.remove('off'); digi.set(true); }
+function digiOff(){ const c=document.getElementById('digiBg'); c.classList.add('off'); digi.set(false); }
+
+// ---------- EMBER REACTOR (canvas particle engine) ----------
+function emberReactor(canvas){
+  if(!canvas) return {power(){},state(){},reform(){}};
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2;
+  const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let mode='dormant',boost=0,spread=reduce?0:1,frames=0;
+  const targets={dormant:.0,powered:1,idle:.28,listening:.62,thinking:.45,speaking:.55};
+  const palette=['#ede9fe','#a78bfa','#7c3aed','#5b21b6','#3b0764'];
+  const P=[];
+  for(let i=0;i<340;i++){
+    const inner=Math.random()<.18;
+    P.push({
+      a:Math.random()*6.283,
+      r:inner? 14+Math.random()*44 : 68+Math.random()*64,
+      sp:(.0012+Math.random()*.0045)*(Math.random()<.5?1:-1),
+      sz:.7+Math.random()*2.6,
+      wob:Math.random()*6.283,
+      ws:.008+Math.random()*.03,
+      col:palette[(Math.random()*palette.length)|0],
+      tw:Math.random()*6.283,
+      sx:Math.random()*W, sy:Math.random()*H
+    });
+  }
+  ctx.fillStyle='#020c16';ctx.fillRect(0,0,W,H);
+  function frame(){
+    frames++;
+    const tgt=targets[mode]!==undefined?targets[mode]:0;
+    boost+=(tgt-boost)*.06;
+    spread+=(0-spread)*.045;
+    let osc=0;
+    const t=performance.now();
+    if(mode==='speaking') osc=Math.abs(Math.sin(t/110))*.5;
+    else if(mode==='thinking') osc=(Math.sin(t/280)+1)*.17;
+    else if(mode==='listening') osc=(Math.sin(t/500)+1)*.08;
+    const B=boost+osc;
+    const rose=(mode==='listening');
+    ctx.globalCompositeOperation='source-over';
+    ctx.fillStyle='rgba(2,12,22,0.2)';
+    ctx.fillRect(0,0,W,H);
+    ctx.globalCompositeOperation='lighter';
+    const glowA=(1-spread*.92);
+    if(glowA>.03){
+      const flick=.7+Math.random()*.3+B*.7;
+      const g=ctx.createRadialGradient(cx,cy,0,cx,cy,86+B*44);
+      if(rose){
+        g.addColorStop(0,'rgba(255,230,180,'+(.5*flick*glowA)+')');
+        g.addColorStop(.35,'rgba(245,166,35,'+(.3*flick*glowA)+')');
+        g.addColorStop(1,'rgba(120,60,0,0)');
+      }else{
+        g.addColorStop(0,'rgba(200,246,255,'+(.5*flick*glowA)+')');
+        g.addColorStop(.35,'rgba(167,139,250,'+(.28*flick*glowA)+')');
+        g.addColorStop(1,'rgba(0,40,80,0)');
+      }
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,86+B*44,0,7);ctx.fill();
+    }
+    for(const p of P){
+      p.a+=p.sp*(1+B*2.2);
+      p.wob+=p.ws;
+      const rr=p.r+Math.sin(p.wob)*8+B*14;
+      const rx=cx+Math.cos(p.a)*rr;
+      const ry=cy+Math.sin(p.a)*rr*.94;
+      const x=rx+(p.sx-rx)*spread;
+      const y=ry+(p.sy-ry)*spread;
+      const tw=Math.abs(Math.sin(p.tw+p.wob*1.6));
+      ctx.globalAlpha=(.2+.8*tw)*(.75+B*.45)*(1-spread*.35);
+      ctx.fillStyle=rose&&Math.random()<.25?'#f5a623':p.col;
+      ctx.beginPath();
+      ctx.arc(x,y,p.sz*(1+tw*.7+B*.5),0,7);
+      ctx.fill();
+    }
+    ctx.globalAlpha=1;
+    if(reduce&&frames>120) return;
+    requestAnimationFrame(frame);
+  }
+  frame();
+  return {power(v){mode=v?'powered':'dormant';},state(m){mode=m;},
+    reform(){ if(reduce) return; spread=1; for(const p of P){p.sx=Math.random()*W;p.sy=Math.random()*H;} }};
+}
+// ---------- EMBER FIELD (full-screen reactive core: gathers & disperses) ----------
+function emberField(canvas, getAnchor){
+  if(!canvas) return {state(){}};
+  const ctx=canvas.getContext('2d');
+  const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W,H,cx,cy,tx2,ty2,scl=1,tscl=1;
+  function locate(){
+    const a=getAnchor&&getAnchor();
+    if(a){
+      const r=a.getBoundingClientRect();
+      tx2=r.left+r.width/2; ty2=r.top+r.height/2;
+      tscl=Math.max(.42, Math.min(1, r.width/128));
+    } else { tx2=W/2; ty2=H/2; tscl=1; }
+    if(cx===undefined){ cx=tx2; cy=ty2; scl=tscl; }
+  }
+  function resize(){ W=canvas.width=innerWidth; H=canvas.height=innerHeight; locate(); }
+  resize(); addEventListener('resize',resize);
+  let mode='off',boost=0,spread=0,frames=0,tick=0;
+  const conf={off:{b:0,s:0},idle:{b:.28,s:0},dispersed:{b:.15,s:1},
+    listening:{b:.38,s:1,rose:true},thinking:{b:.5,s:0},speaking:{b:.6,s:0}};
+  const palette=['#ede9fe','#a78bfa','#7c3aed','#5b21b6','#3b0764'];
+  const P=[];
+  for(let i=0;i<300;i++){
+    const inner=Math.random()<.18;
+    P.push({a:Math.random()*6.283,r:inner?8+Math.random()*26:40+Math.random()*36,
+      sp:(.0015+Math.random()*.005)*(Math.random()<.5?1:-1),
+      sz:.6+Math.random()*2.2,wob:Math.random()*6.283,ws:.008+Math.random()*.03,
+      col:palette[(Math.random()*palette.length)|0],tw:Math.random()*6.283,
+      sx:0,sy:0,fv:.2+Math.random()*.6});
+  }
+  function scatterTargets(){ for(const p of P){p.sx=Math.random()*W; p.sy=Math.random()*H;} }
+  scatterTargets();
+  function frame(){
+    requestAnimationFrame(frame);
+    frames++; tick++;
+    if(mode==='off'){ if(spread!==0||boost!==0){ctx.clearRect(0,0,W,H);spread=0;boost=0;} return; }
+    if(reduce&&frames>150) return;
+    if(tick%10===0) locate();
+    cx+=(tx2-cx)*.08; cy+=(ty2-cy)*.08; scl+=(tscl-scl)*.08;
+    const c=conf[mode]||conf.idle;
+    boost+=(c.b-boost)*.06;
+    const gathering=c.s<spread;
+    spread+=(c.s-spread)*(gathering?.075:.018);
+    let osc=0;const t=performance.now();
+    if(mode==='speaking')osc=Math.abs(Math.sin(t/110))*.5;
+    else if(mode==='thinking')osc=(Math.sin(t/280)+1)*.17;
+    const B=boost+osc;
+    const rose=!!c.rose;
+    ctx.globalCompositeOperation='destination-out';
+    ctx.fillStyle='rgba(0,0,0,0.25)';
+    ctx.fillRect(0,0,W,H);
+    ctx.globalCompositeOperation='lighter';
+    const glowA=(1-spread*.9);
+    if(glowA>.03){
+      const flick=.7+Math.random()*.3+B*.7;
+      const gr=(52+B*30)*(1-spread*.7)*scl;
+      const g=ctx.createRadialGradient(cx,cy,0,cx,cy,gr);
+      if(rose){g.addColorStop(0,'rgba(255,230,180,'+(.5*flick*glowA)+')');g.addColorStop(.4,'rgba(245,166,35,'+(.3*flick*glowA)+')');g.addColorStop(1,'rgba(120,60,0,0)');}
+      else{g.addColorStop(0,'rgba(200,246,255,'+(.5*flick*glowA)+')');g.addColorStop(.4,'rgba(167,139,250,'+(.28*flick*glowA)+')');g.addColorStop(1,'rgba(0,40,80,0)');}
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,gr,0,7);ctx.fill();
+    }
+    for(const p of P){
+      p.a+=p.sp*(1+B*2)*(1-spread*.6);
+      p.wob+=p.ws;
+      const rr=(p.r+Math.sin(p.wob)*6+B*10)*scl;
+      const rx=cx+Math.cos(p.a)*rr, ry=cy+Math.sin(p.a)*rr*.94;
+      if(spread>.02){p.sy+=p.fv*spread; if(p.sy>H+8){p.sy=-8;p.sx=Math.random()*W;}}
+      const x=rx+(p.sx-rx)*spread;
+      const y=ry+(p.sy-ry)*spread;
+      const tw=Math.abs(Math.sin(p.tw+p.wob*1.6));
+      ctx.globalAlpha=(.2+.8*tw)*(.7+B*.4)*(1-spread*.5);
+      ctx.fillStyle=rose&&Math.random()<.25?'#f5a623':p.col;
+      ctx.beginPath();ctx.arc(x,y,p.sz*(1+tw*.6+B*.5)*(1-spread*.25),0,7);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  }
+  requestAnimationFrame(frame);
+  return {state(m){ if(m==='dispersed'&&mode!=='dispersed') scatterTargets(); mode=conf[m]?m:'idle'; }};
+}
+
+const emberBoot = emberReactor(document.querySelector('#bootOrb .ember'));
+const emberStandby = emberReactor(document.querySelector('#standbyOrb .ember'));
+window.binksAnchor='orb';
+const emberChat = emberField(document.getElementById('emberFx'), ()=>document.getElementById(window.binksAnchor||'orb'));
+
+// ---------------- BOOT SEQUENCE ----------------
+const bootLog = document.getElementById('bootLog');
+function bootLine(html){
+  const cur = bootLog.querySelector('.cursor');
+  const ln = document.createElement('span');
+  ln.className = 'ln';
+  ln.innerHTML = html;
+  bootLog.insertBefore(ln, cur);
+}
+function runBootSequence(){
+  const lines = [
+    ['BINKS CORE v1.0 · LEGACY BY VILLA SYSTEMS', 300],
+    ['> initializing personality matrix .......... <span class="ok">OK</span>', 750],
+    ['> loading mentor protocols ................. <span class="ok">OK</span>', 600],
+    ['> warmth calibration: AUNTIE ............... <span class="ok">OK</span>', 600],
+    ['> nonsense tolerance ....................... <span class="warn">ZERO</span>', 650],
+    ['> voice engine ............................. <span class="ok">READY</span>', 600],
+    ['> awaiting neural link authorization <span class="warn">▸</span>', 700]
+  ];
+  let delay = 250;
+  lines.forEach(([txt,d])=>{
+    delay += d;
+    setTimeout(()=>bootLine(txt), delay);
+  });
+  setTimeout(()=>{ document.getElementById('authZone').classList.add('show'); }, delay + 500);
+}
+
+// ---------------- STANDBY + WAKE WORD ----------------
+const standby = document.getElementById('standby');
+const standbyOrb = document.getElementById('standbyOrb');
+const standbyHint = document.getElementById('standbyHint');
+const standbySub = document.getElementById('standbySub');
+const wakeLog = document.getElementById('wakeLog');
+let wakeRec = null;
+let armed = false;
+let waking = false;
+
+function wakeLine(html){
+  const ln = document.createElement('span');
+  ln.className = 'ln'; ln.innerHTML = html;
+  wakeLog.appendChild(ln);
+}
+
+function showStandby(){
+  setup.classList.add('hidden');
+  app.classList.add('hidden');
+  standby.classList.remove('hidden');
+  emberStandby.reform();
+  standby.classList.add('forming');
+  setTimeout(()=>standby.classList.remove('forming'), 1500);
+  document.getElementById('digiBg').classList.remove('dim');
+  digiOn();
+}
+
+const IS_IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+let wakeRunning = false;
+let wakeWatchdog = null;
+const WAKE_RX = /\b(hey\s+)?(binks|binx|bings|banks|bink|pinks|blinks|brinks|b\s?inks)\b/;
+
+function primeVoice(){
+  try{
+    const synth = speechSynthesis;
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance('');
+    u.volume = 1;
+    synth.speak(u);
+  }catch(e){}
+}
+function heardShow(t){
+  const h = document.getElementById('heardLine');
+  if(h){ h.textContent = t ? 'HEARD: '+t : ''; }
+}
+
+function armEars(){
+  if(armed || waking) return;
+  primeVoice();
+  if(!SR){
+    wake();
+    return;
+  }
+  armed = true;
+  standbyHint.innerHTML = '<span class="ears"></span>EARS ON — SAY “HEY BINKS”';
+  standbySub.textContent = 'or tap the core to wake her manually';
+  wakeRec = new SR();
+  wakeRec.lang = 'en-US';
+  wakeRec.continuous = !IS_IOS;     // iOS Safari fights continuous mode — use short sessions + restarts
+  wakeRec.interimResults = true;
+  wakeRec.onstart = ()=>{ wakeRunning = true; };
+  wakeRec.onresult = e=>{
+    let lastHeard = '';
+    for(let i=0;i<e.results.length;i++){
+      const t = e.results[i][0].transcript.toLowerCase().trim();
+      if(t) lastHeard = t;
+      if(WAKE_RX.test(t)){ heardShow(t); wake(); return; }
+    }
+    heardShow(lastHeard);
+  };
+  wakeRec.onend = ()=>{
+    wakeRunning = false;
+    if(armed && !waking){ setTimeout(()=>{ try{ wakeRec.start(); }catch(e){} }, 250); }
+  };
+  wakeRec.onerror = ev=>{
+    wakeRunning = false;
+    if(ev.error==='not-allowed' || ev.error==='service-not-allowed'){
+      armed = false;
+      standbyHint.textContent = 'MIC BLOCKED — TAP THE CORE TO WAKE HER';
+      standbySub.textContent = 'allow microphone in browser settings for voice wake';
+      if(wakeWatchdog){ clearInterval(wakeWatchdog); wakeWatchdog=null; }
+    }
+  };
+  try{ wakeRec.start(); }catch(e){}
+  // watchdog: iOS lets the listener quietly die — revive it every 3s while armed
+  if(wakeWatchdog) clearInterval(wakeWatchdog);
+  wakeWatchdog = setInterval(()=>{
+    if(armed && !waking && !wakeRunning){ try{ wakeRec.start(); }catch(e){} }
+  }, 3000);
+}
+
+function wake(){
+  if(waking) return;
+  primeVoice();
+  waking = true; armed = false;
+  if(wakeWatchdog){ clearInterval(wakeWatchdog); wakeWatchdog=null; }
+  heardShow('');
+  if(wakeRec){ try{ wakeRec.stop(); }catch(e){} }
+  standby.classList.add('waking');
+  standbyHint.textContent = '';
+  standbySub.textContent = '';
+
+  // Entrance sequence
+  const seq = [
+    [120,  ()=>wakeLine('WAKE SIGNAL DETECTED')],
+    [520,  ()=>wakeLine('> spinning up neural core ....... <span style="color:var(--cream)">OK</span>')],
+    [980,  ()=>{ standbyOrb.classList.add('powered'); emberStandby.power(1); wakeLine('> core ignition ................. <span style="color:var(--cream)">LIVE</span>'); }],
+    [1450, ()=>wakeLine('> mentor protocols .............. <span style="color:var(--cream)">LOADED</span>')],
+    [1900, ()=>wakeLine('BINKS ONLINE.')],
+    [2600, ()=>{
+      enterApp();
+      const intro = introLine();
+      addMsg('binks', intro);
+      history.push({role:'assistant',content:intro});
+      speak(intro);
+      waking = false;
+      standby.classList.remove('waking');
+      standbyOrb.classList.remove('powered');
+      emberStandby.power(0);
+      wakeLog.innerHTML = '';
+    }]
+  ];
+  seq.forEach(([d,fn])=>setTimeout(fn,d));
+}
+
+function introLine(){
+  const intros = [
+    "Systems online. Good to see you, Antoine. I'm here, I'm listening, and I'm not letting you play small today. What are we building?",
+    "Binks, fully awake. Alright Antoine — the empire doesn't build itself. Where do we start?",
+    "I'm up, I'm sharp, and I'm all yours. Antoine, talk to me — what's the mission today?",
+    "Online and locked in. Antoine, you called, I came. Now let's make today count."
+  ];
+  return intros[Math.floor(Math.random()*intros.length)];
+}
+
+standby.addEventListener('click', e=>{
+  if(!armed){ armEars(); }
+  else if(e.target.closest('.boot-orb')){ wake(); }
+});
+
+// ---------------- BOOT ----------------
+function enterApp(){
+  setup.classList.add('hidden');
+  standby.classList.add('hidden');
+  app.classList.remove('hidden');
+  const dc=document.getElementById('digiBg'); dc.classList.remove('off'); dc.classList.add('dim'); digi.set(true);
+  startSystems();
+  emberChat.state('idle');
+  loadState();
+  renderPanels();
+}
+if(getKey()){ showStandby(); } else { setTimeout(runBootSequence, 1500); }
+
+// ===== JARVIS INTERACTION LAYER =====
+
+// Cursor spotlight
+document.addEventListener('mousemove', e=>{
+  const s = document.getElementById('spotlight');
+  if(s){ s.style.left = e.clientX+'px'; s.style.top = e.clientY+'px'; }
+});
+
+// 3D panel tilt
+function addTilt(el){
+  if(el._tilt) return;
+  el._tilt = true;
+  el.addEventListener('mousemove', e=>{
+    const r=el.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    el.style.transition='none';
+    el.style.transform=`perspective(700px) rotateY(${x*14}deg) rotateX(${-y*14}deg) translateZ(8px)`;
+  });
+  el.addEventListener('mouseleave',()=>{
+    el.style.transition='transform .5s ease,box-shadow .15s ease';
+    el.style.transform='';
+  });
+  el.addEventListener('touchmove',e=>{
+    const t=e.touches[0];
+    const r=el.getBoundingClientRect();
+    const x=(t.clientX-r.left)/r.width-.5;
+    const y=(t.clientY-r.top)/r.height-.5;
+    el.style.transform=`perspective(700px) rotateY(${x*10}deg) rotateX(${-y*10}deg)`;
+  },{passive:true});
+  el.addEventListener('touchend',()=>{
+    el.style.transition='transform .5s ease';
+    el.style.transform='';
+  });
+}
+document.querySelectorAll('.panel').forEach(addTilt);
+
+// Orb glow tracks cursor
+document.addEventListener('mousemove', e=>{
+  const orbEl=document.getElementById('orb');
+  if(!orbEl||app.classList.contains('hidden')) return;
+  const r=orbEl.getBoundingClientRect();
+  const dx=(e.clientX-(r.left+r.width/2))/window.innerWidth*28;
+  const dy=(e.clientY-(r.top+r.height/2))/window.innerHeight*28;
+  orbEl.style.filter=`drop-shadow(${dx}px ${dy}px 22px rgba(167,139,250,.35))`;
+});
+
+// ===== TASK CAROUSEL =====
+let carouselIdx=0;
+
+function renderQueue(){
+  const q=tasks.filter(t=>!t.done);
+  const qc=document.getElementById('qCount');
+  if(qc) qc.textContent=q.length;
+  const qi=document.getElementById('queueItems');
+  if(!qi) return;
+
+  if(!q.length){
+    qi.innerHTML='<span class="empty">NO ACTIVE DIRECTIVES</span>';
+    return;
+  }
+  if(carouselIdx>=q.length) carouselIdx=q.length-1;
+  if(carouselIdx<0) carouselIdx=0;
+
+  const curr=q[carouselIdx];
+  const atStart=carouselIdx===0, atEnd=carouselIdx===q.length-1;
+
+  qi.innerHTML=`
+    <div class="task-stage" id="taskStage">
+      <div class="task-card" id="taskCard">
+        <span class="task-card-num">DIRECTIVE ${carouselIdx+1} OF ${q.length}</span>
+        <span class="task-card-text">${escText(curr.text)}</span>
+        <button class="task-card-done-btn" id="cardDoneBtn">✓ MARK COMPLETE</button>
+      </div>
+    </div>
+    <div class="carousel-nav">
+      <button class="cnav" id="prevTask" ${atStart?'disabled':''}>‹</button>
+      <span class="carousel-pos">${carouselIdx+1} / ${q.length}</span>
+      <button class="cnav" id="nextTask" ${atEnd?'disabled':''}>›</button>
+    </div>`;
+
+  // Complete button
+  document.getElementById('cardDoneBtn').onclick=()=>{
+    const card=document.getElementById('taskCard');
+    card.style.transition='transform .28s ease,opacity .28s ease';
+    card.style.transform='perspective(500px) rotateY(90deg) scale(.95)';
+    card.style.opacity='0';
+    setTimeout(()=>{
+      const active=tasks.filter(t=>!t.done);
+      if(active[carouselIdx]){
+        const txt=active[carouselIdx].text;
+        active[carouselIdx].done=true;
+        saveState(); renderPanels();
+        addMsg('sys','✓ Complete: '+txt);
+      }
+    },300);
+  };
+
+  // Arrow navigation with flip animation
+  function navTo(dir){
+    const q2=tasks.filter(t=>!t.done);
+    const ni=Math.max(0,Math.min(q2.length-1,carouselIdx+dir));
+    if(ni===carouselIdx) return;
+    const card=document.getElementById('taskCard');
+    card.style.transition='transform .22s ease,opacity .22s ease';
+    card.style.transform=`perspective(500px) rotateY(${dir>0?'-90':'90'}deg)`;
+    card.style.opacity='0';
+    setTimeout(()=>{ carouselIdx=ni; renderPanels(); },230);
+  }
+  document.getElementById('prevTask').onclick=()=>navTo(-1);
+  document.getElementById('nextTask').onclick=()=>navTo(1);
+
+  // Swipe left/right on the card
+  const stage=document.getElementById('taskStage');
+  let swX=null;
+  stage.addEventListener('touchstart',e=>{swX=e.touches[0].clientX;},{passive:true});
+  stage.addEventListener('touchend',e=>{
+    if(swX===null) return;
+    const dx=e.changedTouches[0].clientX-swX;
+    if(Math.abs(dx)>44) navTo(dx<0?1:-1);
+    swX=null;
+  },{passive:true});
+
+  // Re-apply tilt to any new panels
+  document.querySelectorAll('.panel').forEach(addTilt);
+}
+
+// Patch renderPanels to drive the carousel
+const _origRender=renderPanels;
+renderPanels=function(){
+  _origRender();
+  renderQueue();
+};
+renderPanels();
+
+// ===== RADAR ENGINE =====
+let _radarRaf=null;
+let faceMode='idle';
+
+// -- 2D Radar --
+function drawRadar(cv){
+  if(!cv) return;
+  const W=cv.offsetWidth||400,H=cv.offsetHeight||420;
+  if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}
+  const ctx=cv.getContext('2d'),cx=W/2,cy=H/2,R=Math.min(W,H)*.43;
+  const now=performance.now(),sweep=(now/4000)*(Math.PI*2);
+  ctx.clearRect(0,0,W,H);
+  [.27,.52,.78,1].forEach((f,i)=>{ctx.strokeStyle=`rgba(167,139,250,${.07+i*.025})`;ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,R*f,0,Math.PI*2);ctx.stroke();});
+  ctx.strokeStyle='rgba(167,139,250,0.09)';ctx.beginPath();ctx.moveTo(cx-R,cy);ctx.lineTo(cx+R,cy);ctx.moveTo(cx,cy-R);ctx.lineTo(cx,cy+R);ctx.stroke();
+  ctx.save();ctx.translate(cx,cy);
+  const sA=Math.PI/5,gr=ctx.createLinearGradient(Math.cos(sweep-sA)*R*.4,Math.sin(sweep-sA)*R*.4,Math.cos(sweep)*R,Math.sin(sweep)*R);
+  gr.addColorStop(0,'rgba(212,160,23,0)');gr.addColorStop(1,'rgba(212,160,23,0.2)');
+  ctx.fillStyle=gr;ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,R,sweep-sA,sweep);ctx.closePath();ctx.fill();
+  ctx.strokeStyle='rgba(212,160,23,0.5)';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(sweep)*R,Math.sin(sweep)*R);ctx.stroke();
+  ctx.restore();
+  [{label:'ETSY',ang:.8,dist:.58},{label:'TKTK',ang:2.1,dist:.72},{label:'LGCY',ang:3.7,dist:.41},{label:'WEB',ang:5.0,dist:.65}].forEach(t=>{
+    const ping=Math.max(0,Math.cos(sweep-t.ang)*.85),x=cx+Math.cos(t.ang)*R*t.dist,y=cy+Math.sin(t.ang)*R*t.dist;
+    ctx.fillStyle=`rgba(212,160,23,${.22+ping*.78})`;ctx.beginPath();ctx.arc(x,y,2.8+ping*2,0,Math.PI*2);ctx.fill();
+    if(ping>.22){ctx.strokeStyle=`rgba(212,160,23,${ping*.45})`;ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,7+ping*13,0,Math.PI*2);ctx.stroke();ctx.fillStyle=`rgba(212,160,23,${ping*.9})`;ctx.font="9px 'JetBrains Mono',monospace";ctx.textAlign='center';ctx.fillText(t.label,x,y-14);}
+  });
+  ctx.fillStyle='rgba(167,139,250,0.35)';ctx.beginPath();ctx.arc(cx,cy,2.8,0,Math.PI*2);ctx.fill();
+}
+
+function _DEAD_drawHoloFace(cv){
+  if(!cv) return;
+  const ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height;
+  const cx=W/2, cy=H*0.46;
+  const hW=W*0.26, hH=H*0.37;
+  const now=performance.now();
+  const breathe=Math.sin(now/2400)*0.007;
+
+  ctx.clearRect(0,0,W,H);
+
+  const isListen=(faceMode==='listening');
+  const mainC = isListen ? _GOLD : _PURP;
+  const accentC = isListen ? _GOLD : _GOLD;
+
+  // Background glow
+  const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,hH*1.7);
+  bg.addColorStop(0, faceMode==='thinking'?'rgba(124,58,237,0.22)': isListen?'rgba(212,160,23,0.14)':'rgba(107,33,168,0.14)');
+  bg.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+  ctx.save();
+  // Head outline
+  ctx.shadowBlur=12; ctx.shadowColor=_rgbStr(mainC,.7);
+  ctx.strokeStyle=_rgbStr(mainC,0.85); ctx.lineWidth=1.6;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy+breathe*H, hW, hH, 0, 0, Math.PI*2);
+  ctx.stroke();
+
+  // Neck
+  ctx.shadowBlur=0;
+  ctx.beginPath();
+  ctx.moveTo(cx-hW*.22, cy+hH*.93); ctx.lineTo(cx-hW*.18, cy+hH*1.2);
+  ctx.moveTo(cx+hW*.22, cy+hH*.93); ctx.lineTo(cx+hH*.18*hW/hH, cy+hH*1.2);
+  ctx.stroke();
+
+  // Horizontal holographic scan lines inside head
+  ctx.lineWidth=0.6;
+  for(let y=cy-hH+6; y<cy+hH; y+=10){
+    const dy=y-cy;
+    const xW=hW*Math.sqrt(Math.max(0,1-(dy/hH)**2));
+    if(xW<3) continue;
+    const flicker=0.06+Math.abs(Math.sin(now/1100+y*0.04))*0.04;
+    ctx.strokeStyle=_rgbStr(mainC,flicker);
+    ctx.beginPath(); ctx.moveTo(cx-xW,y); ctx.lineTo(cx+xW,y); ctx.stroke();
+  }
+  ctx.lineWidth=1.6;
+
+  // Eyes - blink every ~4s
+  const eyeY=cy-hH*0.17, eyeX=hW*0.37;
+  const eW=hW*0.15, eH=hH*0.065;
+  const blinkPhase=Math.sin(now/3800);
+  const eyeH2=blinkPhase>0.96? eH*0.08 : eH;
+  ctx.shadowBlur=isListen?14:6; ctx.shadowColor=_rgbStr(accentC,.8);
+  ctx.strokeStyle=_rgbStr(accentC,0.9);
+  ctx.beginPath(); ctx.ellipse(cx-eyeX,eyeY,eW,eyeH2,0,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(cx+eyeX,eyeY,eW,eyeH2,0,0,Math.PI*2); ctx.stroke();
+  // Pupils
+  const pupR=Math.max(1,eH*0.55*(eyeH2/eH));
+  ctx.fillStyle=_rgbStr(accentC,0.9);
+  ctx.shadowBlur=8;
+  ctx.beginPath(); ctx.arc(cx-eyeX,eyeY,pupR,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx+eyeX,eyeY,pupR,0,Math.PI*2); ctx.fill();
+  ctx.shadowBlur=0;
+
+  // Nose bridge
+  ctx.strokeStyle=_rgbStr(mainC,0.65); ctx.lineWidth=1.1;
+  ctx.beginPath();
+  ctx.moveTo(cx,eyeY+eH*1.8);
+  ctx.quadraticCurveTo(cx+hW*.03,cy+hH*.05,cx+hW*.11,cy+hH*.11);
+  ctx.moveTo(cx+hW*.11,cy+hH*.11); ctx.lineTo(cx-hW*.11,cy+hH*.11);
+  ctx.moveTo(cx-hW*.11,cy+hH*.11);
+  ctx.quadraticCurveTo(cx-hW*.03,cy+hH*.05,cx,eyeY+eH*1.8);
+  ctx.stroke();
+
+  // Cheek accent lines
+  ctx.strokeStyle=_rgbStr(mainC,0.28); ctx.lineWidth=0.9;
+  ctx.beginPath();
+  ctx.moveTo(cx-hW*.82,cy-.02*H); ctx.lineTo(cx-hW*.44,cy+hH*.03);
+  ctx.moveTo(cx+hW*.82,cy-.02*H); ctx.lineTo(cx+hW*.44,cy+hH*.03);
+  ctx.stroke();
+
+  // Mouth
+  ctx.lineWidth=1.6;
+  const mSpeaking=(faceMode==='speaking');
+  ctx.strokeStyle=mSpeaking?_rgbStr(accentC,1):_rgbStr(mainC,0.75);
+  ctx.shadowBlur=mSpeaking?14:0; ctx.shadowColor=_rgbStr(accentC,0.9);
+  const mY=cy+hH*.29, mW=hW*.3;
+  const mo=mouthAmt;
+  if(mo<0.05){
+    ctx.beginPath(); ctx.moveTo(cx-mW,mY); ctx.lineTo(cx+mW,mY); ctx.stroke();
+  } else {
+    const mH2=mo*hH*.19;
+    ctx.beginPath(); ctx.ellipse(cx,mY+mH2*.3,mW,mH2,0,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle=`rgba(0,0,0,${mo*.75})`; ctx.fill();
+    ctx.strokeStyle=_rgbStr([240,234,255],mo*.45); ctx.lineWidth=0.7;
+    ctx.beginPath(); ctx.moveTo(cx-mW*.55,mY+mH2*.08); ctx.lineTo(cx+mW*.55,mY+mH2*.08); ctx.stroke();
+  }
+  ctx.shadowBlur=0; ctx.lineWidth=1.6;
+
+  // Brain neural nodes on forehead
+  const bNodes=[
+    {x:cx-hW*.3,y:cy-hH*.66},{x:cx+hW*.3,y:cy-hH*.66},
+    {x:cx,y:cy-hH*.76},{x:cx-hW*.14,y:cy-hH*.54},{x:cx+hW*.14,y:cy-hH*.54}
+  ];
+  bNodes.forEach((n,i)=>{
+    const p=(Math.sin(now/550+i*1.4)+1)/2;
+    ctx.fillStyle=_rgbStr(_PURP,0.3+p*0.65);
+    ctx.beginPath(); ctx.arc(n.x,n.y,2.2,0,Math.PI*2); ctx.fill();
+  });
+  ctx.lineWidth=0.55;
+  [[0,2],[1,2],[0,3],[1,4],[3,2],[4,2]].forEach(([a,b])=>{
+    const p=(Math.sin(now/650+a*.9)+1)/2;
+    ctx.strokeStyle=_rgbStr(_PURP,p*.38);
+    ctx.beginPath(); ctx.moveTo(bNodes[a].x,bNodes[a].y); ctx.lineTo(bNodes[b].x,bNodes[b].y); ctx.stroke();
+  });
+
+  // Thinking/speaking brainwave lines
+  if(faceMode==='thinking'||faceMode==='speaking'){
+    ctx.lineWidth=0.9;
+    for(let i=0;i<4;i++){
+      const wY=cy-hH*.83+i*11;
+      const wW2=hW*Math.sqrt(Math.max(0,1-((wY-cy)/hH)**2))*.88;
+      if(wW2<4) continue;
+      const wave=Math.sin(now/170+i*1.9)*5*(i%2?1:-1);
+      ctx.strokeStyle=`rgba(167,139,250,${0.5-i*0.09})`;
+      ctx.beginPath(); ctx.moveTo(cx-wW2,wY);
+      ctx.quadraticCurveTo(cx,wY+wave,cx+wW2,wY); ctx.stroke();
+    }
+  }
+
+  // Temple circuit connectors
+  [[cx-hW*.88,cy-.08*H],[cx+hW*.88,cy-.08*H]].forEach((pos,side)=>{
+    const pulse=(Math.sin(now/820+(side*.8))+1)/2;
+    ctx.fillStyle=_rgbStr(_GOLD, 0.3+pulse*.6);
+    ctx.beginPath(); ctx.arc(pos[0],pos[1],2.8,0,Math.PI*2); ctx.fill();
+    const edgeX=cx+(side===0?-1:1)*hW*Math.sqrt(Math.max(0,1-((pos[1]-cy)/hH)**2));
+    ctx.strokeStyle=_rgbStr(_GOLD,pulse*.35); ctx.lineWidth=0.8;
+    ctx.beginPath(); ctx.moveTo(pos[0],pos[1]); ctx.lineTo(edgeX,pos[1]); ctx.stroke();
+  });
+
+  ctx.restore();
+}
+
+// -- Three.js holographic head --
+function initHoloAvatar(){
+  const cv=document.getElementById('avatarFace');
+  if(!cv||!window.THREE) return;
+  const W=320,H=300;
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(42,W/H,0.1,100);
+  cam.position.set(0,0.1,4.5); cam.lookAt(0,0.1,0);
+  const renderer=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});
+  renderer.setSize(W,H,false); renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setClearColor(0x000000,0);
+
+  scene.add(new THREE.AmbientLight(0x6b21a8,0.5));
+  const keyL=new THREE.PointLight(0xa78bfa,3,14); keyL.position.set(0,2,4); scene.add(keyL);
+  const rimL=new THREE.PointLight(0xd4a017,1.4,10); rimL.position.set(-2.5,0,1.5); scene.add(rimL);
+  const fillL=new THREE.PointLight(0x5b21b6,.7,10); fillL.position.set(2.5,-1,1); scene.add(fillL);
+
+  // Fresnel glow shader — bright at silhouette edges, transparent in center
+  const fV=`varying vec3 vN,vV;void main(){vec4 mv=modelViewMatrix*vec4(position,1.);vV=normalize(-mv.xyz);vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*mv;}`;
+  const fF=`uniform vec3 uC;uniform float uO,uP;varying vec3 vN,vV;void main(){float f=pow(1.-max(0.,dot(vN,vV)),uP);gl_FragColor=vec4(uC,f*uO);}`;
+  function fresnel(hex,op,pw){return new THREE.ShaderMaterial({vertexShader:fV,fragmentShader:fF,uniforms:{uC:{value:new THREE.Color(hex)},uO:{value:op},uP:{value:pw}},transparent:true,side:THREE.FrontSide,depthWrite:false});}
+
+  const hG=new THREE.Group(); scene.add(hG);
+
+  // Head: sphere with vertices sculpted into face shape
+  function buildHead(){
+    const g=new THREE.SphereGeometry(1,48,36);
+    const p=g.attributes.position;
+    for(let i=0;i<p.count;i++){
+      let x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+      if(y<-0.22){const t=Math.min(1,(-y-.22)/.78);x*=1-t*.44;z*=1-t*.3;y-=t*.2;}
+      if(y>-.15&&y<.15)x*=1.055;
+      if(z>.62)z=.62+(z-.62)*.52;
+      if(z<-.52)z=-.52+(z+.52)*.78;
+      if(y>.72)x*=.9;
+      p.setXYZ(i,x,y,z);
+    }
+    p.needsUpdate=true; g.computeVertexNormals(); return g;
+  }
+  const hGeo=buildHead();
+  const innerM=new THREE.MeshPhongMaterial({color:0x1e0845,emissive:0x0e032a,transparent:true,opacity:.28});
+  const iH=new THREE.Mesh(hGeo,innerM); iH.position.y=0.14; hG.add(iH);
+  const fH=new THREE.Mesh(hGeo,fresnel(0xa78bfa,1.5,2.1)); fH.scale.setScalar(1.003); fH.position.y=0.14; hG.add(fH);
+  const wM=new THREE.LineBasicMaterial({color:0xa78bfa,transparent:true,opacity:.16});
+  const wL=new THREE.LineSegments(new THREE.EdgesGeometry(hGeo,22),wM); wL.position.y=0.14; hG.add(wL);
+
+  // Jaw (separate geometry — rotates on X for speech)
+  const jawPivot=new THREE.Group(); jawPivot.position.set(0,-0.25,0); hG.add(jawPivot);
+  function buildJaw(){
+    const g=new THREE.SphereGeometry(.8,32,20,0,Math.PI*2,Math.PI*.48,Math.PI*.4);
+    const p=g.attributes.position;
+    for(let i=0;i<p.count;i++){
+      let x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+      if(y<-.08){const t=Math.min(1,(-y-.08)/.52);x*=1-t*.38;z*=1-t*.22;}
+      if(z>.58)z=.58+(z-.58)*.5;
+      p.setXYZ(i,x,y,z);
+    }
+    p.needsUpdate=true; g.computeVertexNormals(); return g;
+  }
+  const jGeo=buildJaw();
+  const jaw=new THREE.Mesh(jGeo,innerM.clone()); jaw.position.set(0,-.5,.06); jawPivot.add(jaw);
+  const jF=new THREE.Mesh(jGeo,fresnel(0x9333ea,1.2,2.0)); jF.position.copy(jaw.position); jawPivot.add(jF);
+  const jW=new THREE.LineSegments(new THREE.EdgesGeometry(jGeo,22),wM.clone()); jW.position.copy(jaw.position); jawPivot.add(jW);
+
+  // Eyes
+  function makeEye(xOff){
+    const g=new THREE.Group();
+    g.add(new THREE.Mesh(new THREE.SphereGeometry(.14,16,12),new THREE.MeshPhongMaterial({color:0x060010,emissive:0x02000a,transparent:true,opacity:.96})));
+    const iMat=new THREE.MeshPhongMaterial({color:0xd4a017,emissive:0xd4a017,emissiveIntensity:1.4,transparent:true,opacity:1});
+    const ir=new THREE.Mesh(new THREE.SphereGeometry(.082,14,10),iMat); ir.position.z=.065; g.add(ir);
+    const el=new THREE.PointLight(0xd4a017,.65,1.6); el.position.z=.18; g.add(el);
+    g.position.set(xOff,.43,.92); g.userData={ir,el}; return g;
+  }
+  hG.add(makeEye(-.295)); hG.add(makeEye(.295));
+
+  // Nose
+  const nk=new THREE.Mesh(new THREE.CylinderGeometry(.028,.052,.2,8),new THREE.MeshPhongMaterial({color:0x7c3aed,emissive:0x3b0764,transparent:true,opacity:.65}));
+  nk.rotation.x=Math.PI*.15; nk.position.set(0,.22,.97); hG.add(nk);
+
+  // Lips
+  const lipM=new THREE.MeshPhongMaterial({color:0xb8a0ff,emissive:0x5b21b6,transparent:true,opacity:.88});
+  const uLip=new THREE.Mesh(new THREE.BoxGeometry(.42,.04,.04),lipM); uLip.position.set(0,-.2,.94); hG.add(uLip);
+  const lLip=new THREE.Mesh(new THREE.BoxGeometry(.38,.035,.04),lipM.clone()); lLip.position.set(0,-.55,.74); jawPivot.add(lLip);
+
+  // Neck
+  const nkG=new THREE.CylinderGeometry(.22,.33,.55,20);
+  const nkM=innerM.clone(); nkM.opacity=.38;
+  const nkMesh=new THREE.Mesh(nkG,nkM); nkMesh.position.set(0,-1.18,.02); hG.add(nkMesh);
+  const nkF=new THREE.Mesh(nkG,fresnel(0x7c3aed,.9,1.7)); nkF.position.copy(nkMesh.position); hG.add(nkF);
+
+  // Scan lines
+  const scans=Array.from({length:10},(_,i)=>{
+    const s=new THREE.Mesh(new THREE.PlaneGeometry(2.4,.014),new THREE.MeshBasicMaterial({color:0xc4b5fd,transparent:true,opacity:.1,side:THREE.DoubleSide}));
+    s.position.set(0,1.8-i*.4,.98); hG.add(s); return s;
+  });
+
+  // Particle field
+  const pPos=new Float32Array(200*3);
+  for(let i=0;i<200;i++){const a=Math.random()*Math.PI*2,r=1.6+Math.random()*1.2,h=(Math.random()-.5)*4;pPos[i*3]=Math.cos(a)*r;pPos[i*3+1]=h;pPos[i*3+2]=Math.sin(a)*r;}
+  const ptGeo=new THREE.BufferGeometry(); ptGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+  const pts=new THREE.Points(ptGeo,new THREE.PointsMaterial({color:0xa78bfa,size:.028,transparent:true,opacity:.6}));
+  scene.add(pts);
+
+  function tick(){
+    requestAnimationFrame(tick);
+    const t=performance.now()*.001;
+    hG.rotation.y=Math.sin(t*.27)*.07;
+    hG.position.y=Math.sin(t*.44)*.034;
+    // Jaw open for speech
+    jawPivot.rotation.x+=(_holoJawAmt*.38-jawPivot.rotation.x)*.14;
+    // Eye blink + pulse
+    hG.children.forEach(c=>{
+      if(!c.isGroup||!c.userData.ir) return;
+      const {ir,el}=c.userData;
+      const bk=Math.sin(t*2.3); ir.scale.y=bk>.97?.05:1;
+      ir.material.emissiveIntensity=1.2+Math.sin(t*1.9)*.4;
+      if(el) el.intensity=.4+Math.sin(t*2)*.22;
+    });
+    scans.forEach((s,i)=>{s.position.y-=.005;if(s.position.y<-1.8)s.position.y=1.8;s.material.opacity=.06+Math.sin(t*1.5+i*.7)*.045;});
+    pts.rotation.y=t*.06;
+    if(faceMode==='listening'){rimL.color.set(0xd4a017);rimL.intensity=1.8+Math.sin(t*4)*.4;}
+    else if(faceMode==='thinking'){keyL.color.set(0x7c3aed);rimL.color.set(0xa78bfa);}
+    else{keyL.color.set(0xa78bfa);rimL.color.set(0xd4a017);keyL.intensity=2.8+Math.sin(t*.8)*.5;}
+    renderer.render(scene,cam);
+  }
+  tick();
+}
+
+function startAvatarEngine(){
+  const rc=document.getElementById('radarCv');
+  if(window.THREE) initHoloAvatar();
+  if(rc&&!_radarRaf){
+    function radarLoop(){_radarRaf=requestAnimationFrame(radarLoop);drawRadar(rc);}
+    radarLoop();
+  }
+}
+
+function startMouthAnim(){ faceMode='speaking'; }
+function stopMouthAnim(){ faceMode='idle'; }
+
+// Start radar when command center loads
+const _origEnterApp=enterApp;
+enterApp=function(){
+  _origEnterApp();
+  setTimeout(()=>{
+    const rc=document.getElementById('radarCv');
+    if(rc&&!_radarRaf){
+      function radarLoop(){_radarRaf=requestAnimationFrame(radarLoop);drawRadar(rc);}
+      radarLoop();
+    }
+  },300);
+};
+
+// ===== DATA ANALYTICS & NEWS TICKER ENGINE =====
+
+// -- Trend data generator --
+function genTrend(len=14, start=45, vol=12, bias=.25){
+  const d=[]; let v=start;
+  for(let i=0;i<len;i++){ v+=((Math.random()-.5)+bias)*vol; v=Math.max(5,Math.min(99,v)); d.push(Math.round(v)); }
+  return d;
+}
+
+// -- Animated line chart --
+function drawLine(cv, data, color='#a78bfa', label='', duration=1100){
+  if(!cv) return;
+  const ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height, pad=10;
+  const mx=Math.max(...data), mn=Math.min(...data), rng=mx-mn||1;
+  const pts=data.map((v,i)=>({
+    x:pad+(i/(data.length-1))*(W-pad*2),
+    y:H-pad-((v-mn)/rng)*(H-pad*2)
+  }));
+  const start=performance.now();
+  function frame(){
+    const prog=Math.min((performance.now()-start)/duration,1);
+    const ease=prog<.5?2*prog*prog:-1+(4-2*prog)*prog;
+    const n=Math.max(1,Math.ceil(ease*(pts.length-1)));
+    ctx.clearRect(0,0,W,H);
+    // Grid
+    ctx.strokeStyle='rgba(167,139,250,.07)'; ctx.lineWidth=1;
+    for(let i=0;i<=3;i++){
+      const y=pad+(i/3)*(H-pad*2);
+      ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(W-pad,y);ctx.stroke();
+    }
+    // Fill
+    const grad=ctx.createLinearGradient(0,0,0,H);
+    grad.addColorStop(0,color.startsWith('#')?hexAlpha(color,.18):'rgba(167,139,250,.18)');
+    grad.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=grad;
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x,H-pad);
+    for(let i=0;i<=n&&i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
+    ctx.lineTo(pts[Math.min(n,pts.length-1)].x,H-pad);
+    ctx.closePath(); ctx.fill();
+    // Line
+    ctx.strokeStyle=color; ctx.lineWidth=2; ctx.lineJoin='round';
+    ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y);
+    for(let i=1;i<=n&&i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
+    ctx.stroke();
+    // Head dot
+    const hp=pts[Math.min(n,pts.length-1)];
+    ctx.fillStyle=color; ctx.beginPath(); ctx.arc(hp.x,hp.y,4,0,7); ctx.fill();
+    ctx.fillStyle='rgba(0,0,0,.6)'; ctx.beginPath(); ctx.arc(hp.x,hp.y,2,0,7); ctx.fill();
+    if(prog<1) requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+// -- Animated bar chart --
+function drawBars(cv, labels, data, color='#f5a623', duration=900){
+  if(!cv) return;
+  const ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height, pad=6, bpad=3;
+  const mx=Math.max(...data)||1;
+  const bw=(W-pad*2)/data.length-bpad;
+  const start=performance.now();
+  function frame(){
+    const prog=Math.min((performance.now()-start)/duration,1);
+    const ease=1-Math.pow(1-prog,3);
+    ctx.clearRect(0,0,W,H);
+    data.forEach((v,i)=>{
+      const x=pad+i*((W-pad*2)/data.length);
+      const bh=((v/mx)*(H-22))*ease;
+      const y=H-18-bh;
+      const grad=ctx.createLinearGradient(0,y,0,H-18);
+      grad.addColorStop(0,color);
+      grad.addColorStop(1,hexAlpha(color,.2));
+      ctx.fillStyle=grad;
+      if(ctx.roundRect) ctx.roundRect(x,y,bw,bh,[3,3,0,0]);
+      else { ctx.beginPath(); ctx.rect(x,y,bw,bh); }
+      ctx.fill();
+      // value label
+      if(prog>.7){
+        ctx.fillStyle='rgba(200,232,255,.75)';
+        ctx.font='bold 9px JetBrains Mono,monospace';
+        ctx.textAlign='center';
+        ctx.fillText(v>99?'99+':v, x+bw/2, y-3);
+      }
+      // axis label
+      ctx.fillStyle='rgba(61,98,120,.9)';
+      ctx.font='8px JetBrains Mono,monospace';
+      ctx.textAlign='center';
+      ctx.fillText(labels[i], x+bw/2, H-4);
+    });
+    if(prog<1) requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+function hexAlpha(hex,a){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+// -- Show chart deck --
+function showChart(context){
+  const deck=document.getElementById('chartDeck');
+  if(!deck) return;
+  deck.style.display='block';
+  setTimeout(()=>deck.scrollIntoView({behavior:'smooth',block:'nearest'}),120);
+
+  const lineCV=document.getElementById('lineChartCv');
+  const barCV=document.getElementById('barChartCv');
+  const lineLabel=document.getElementById('lineLabel');
+  const lineSub=document.getElementById('lineSub');
+  const barLabel=document.getElementById('barLabel');
+  const lineStats=document.getElementById('lineStats');
+  const barStats=document.getElementById('barStats');
+
+  if(context==='market'){
+    lineLabel.textContent='MARKET TREND · 14D';
+    lineSub.textContent='live index';
+    barLabel.textContent='SECTOR BREAKDOWN';
+    const trend=genTrend(14,48,14,.3);
+    const delta=trend[trend.length-1]-trend[0];
+    drawLine(lineCV,trend,'#a78bfa');
+    drawBars(barCV,['ETSy','CONT','WEB','SIDE'],
+      [genTrend(1,60,10,.2)[0],genTrend(1,45,15,.1)[0],genTrend(1,30,10,.3)[0],genTrend(1,25,8,.4)[0]],
+      '#f5a623');
+    lineStats.innerHTML=`<span class="cstat ${delta>0?'up':'down'}">CHANGE <b>${delta>0?'+':''}${delta}pts</b></span><span class="cstat">HIGH <b>${Math.max(...trend)}</b></span><span class="cstat">LOW <b>${Math.min(...trend)}</b></span>`;
+    barStats.innerHTML=`<span class="cstat">BEST <b>ETSY</b></span>`;
+  } else if(context==='etsy'){
+    lineLabel.textContent='ETSY SALES · 14D';
+    lineSub.textContent='units sold';
+    barLabel.textContent='BY DAY OF WEEK';
+    const trend=genTrend(14,22,8,.35);
+    const delta=trend[trend.length-1]-trend[0];
+    drawLine(lineCV,trend,'#f5a623');
+    drawBars(barCV,['MON','TUE','WED','THU','FRI','SAT','SUN'],
+      [12,9,14,11,18,26,22],'#a78bfa');
+    lineStats.innerHTML=`<span class="cstat ${delta>0?'up':'down'}">TREND <b>${delta>0?'▲ UP':'▼ DOWN'}</b></span><span class="cstat">PEAK <b>${Math.max(...trend)} units</b></span>`;
+    barStats.innerHTML=`<span class="cstat">BEST DAY <b>SAT</b></span>`;
+  } else if(context==='content'){
+    lineLabel.textContent='CONTENT REACH · 14D';
+    lineSub.textContent='views · k';
+    barLabel.textContent='BY PLATFORM';
+    const trend=genTrend(14,35,18,.4);
+    drawLine(lineCV,trend,'#a5b4fc');
+    drawBars(barCV,['TKTK','PIN','IG','X'],
+      [genTrend(1,70,15,.1)[0],genTrend(1,45,10,.2)[0],genTrend(1,30,12,.1)[0],genTrend(1,15,8,.1)[0]],
+      '#a5b4fc');
+    lineStats.innerHTML=`<span class="cstat">TOTAL REACH <b>${trend.reduce((a,b)=>a+b,0)}k</b></span>`;
+    barStats.innerHTML=`<span class="cstat">TOP <b>TIKTOK</b></span>`;
+  } else {
+    lineLabel.textContent='PERFORMANCE · 14D';
+    lineSub.textContent='index';
+    barLabel.textContent='ACTIVITY';
+    const trend=genTrend(14,50,12,.2);
+    drawLine(lineCV,trend,'#a78bfa');
+    drawBars(barCV,['WK1','WK2','WK3','NOW'],
+      [genTrend(1,40,10,.2)[0],genTrend(1,50,10,.3)[0],genTrend(1,60,10,.2)[0],genTrend(1,70,8,.4)[0]],
+      '#f5a623');
+    lineStats.innerHTML=`<span class="cstat up">TRAJECTORY <b>▲ POSITIVE</b></span>`;
+    barStats.innerHTML='';
+  }
+}
+
+function closeChart(){
+  const deck=document.getElementById('chartDeck');
+  if(deck) deck.style.display='none';
+}
+
+// -- News ticker --
+let tickerTimeout=null;
+function showTicker(text){
+  const t=document.getElementById('newsTicker');
+  const inner=document.getElementById('tickerInner');
+  if(!t||!inner) return;
+  // Build repeating scroll content
+  inner.textContent=text+' · '+text+' · '+text;
+  // Reset animation
+  inner.style.animation='none';
+  void inner.offsetWidth;
+  inner.style.animation='';
+  t.classList.remove('hidden');
+  clearTimeout(tickerTimeout);
+  tickerTimeout=setTimeout(()=>t.classList.add('hidden'), 28000);
+}
+
+// -- Context detection (called after each Binks response) --
+function detectAndVisualize(userText, binksSay){
+  const combined=(userText+' '+binksSay).toLowerCase();
+  const isNews=/\b(news|headline|trending|latest|breaking|happened|announced|update|story|stories|reported|today's|tonight)\b/.test(combined);
+  const isMarket=/\b(market|economy|stock|price|rate|industry|competitor|business brief|etsy market|seller|e-commerce|ecommerce)\b/.test(combined);
+  const isEtsy=/\b(etsy|shop|listing|sale|sold|revenue|store|product|art|wall art|download)\b/.test(combined);
+  const isContent=/\b(tiktok|pinterest|instagram|content|post|reel|video|views|reach|engage|follower|social)\b/.test(combined);
+  const isData=/\b(chart|graph|data|analytic|metric|stat|number|performance|growth|trend|report|track)\b/.test(combined);
+
+  if(isNews){
+    // Extract bullet-point style from say text, or just scroll the whole reply
+    const clean=binksSay.replace(/[^\w\s.,!?'-]/g,' ').replace(/\s+/g,' ').trim();
+    showTicker(clean);
+  }
+  if(isMarket||isData) showChart('market');
+  else if(isEtsy) showChart('etsy');
+  else if(isContent) showChart('content');
+  else if(isData) showChart('general');
+}
+</script>
+
+<div id="spotlight"></div>
+</body>
+</html>
