@@ -499,6 +499,54 @@
   .hud-grid .panel:nth-child(6){animation-delay:.30s}
   .hud-grid .panel:nth-child(7){animation-delay:.35s}
 
+  /* ===== CONTENT STUDIO ===== */
+  .app-section{animation:panelPop .4s ease both}
+  .cs-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap}
+  .cs-platforms{display:flex;gap:4px;flex-wrap:wrap}
+  .cs-plat{font-family:var(--mono);font-size:.48rem;letter-spacing:.16em;padding:4px 9px;background:rgba(14,8,32,.7);border:1px solid rgba(167,139,250,.22);color:var(--dim);border-radius:4px;cursor:pointer;transition:all .15s}
+  .cs-plat.active{background:rgba(167,139,250,.18);border-color:var(--gold);color:var(--gold)}
+  .cs-add-btn{font-family:var(--mono);font-size:.52rem;letter-spacing:.14em;padding:6px 14px;background:rgba(167,139,250,.15);border:1px solid var(--gold);color:var(--gold);border-radius:6px;cursor:pointer;white-space:nowrap;transition:all .15s}
+  .cs-add-btn:active{transform:scale(.95);background:rgba(167,139,250,.28)}
+  .cs-form{margin-bottom:12px}
+  .cs-form-inner{background:rgba(14,8,32,.85);border:1px solid rgba(167,139,250,.3);border-radius:12px;padding:14px;backdrop-filter:blur(18px)}
+  .cs-form-title{font-family:var(--mono);font-size:.54rem;letter-spacing:.22em;color:var(--gold);margin-bottom:12px}
+  .cs-field{margin-bottom:10px}
+  .cs-field label{font-family:var(--mono);font-size:.46rem;letter-spacing:.18em;color:var(--dim);display:block;margin-bottom:5px}
+  .cs-plat-sel{display:flex;gap:5px;flex-wrap:wrap}
+  .cs-ps,.cs-ss{font-family:var(--mono);font-size:.48rem;letter-spacing:.12em;padding:4px 10px;background:rgba(14,8,32,.7);border:1px solid rgba(167,139,250,.2);color:var(--dim);border-radius:4px;cursor:pointer;transition:all .15s}
+  .cs-ps.active,.cs-ss.active{background:rgba(167,139,250,.18);border-color:var(--gold);color:var(--gold)}
+  .cs-input{width:100%;background:rgba(8,4,18,.7);border:1px solid rgba(167,139,250,.2);color:var(--cream);font-family:var(--body);font-size:.78rem;padding:7px 10px;border-radius:6px;outline:none;box-sizing:border-box}
+  .cs-input:focus{border-color:rgba(167,139,250,.5)}
+  .cs-ta{resize:vertical;min-height:60px}
+  .cs-form-btns{display:flex;gap:8px;margin-top:12px}
+  .cs-save{flex:1;font-family:var(--mono);font-size:.52rem;letter-spacing:.14em;padding:8px;background:rgba(167,139,250,.2);border:1px solid var(--gold);color:var(--gold);border-radius:6px;cursor:pointer;transition:all .15s}
+  .cs-save:active{transform:scale(.97)}
+  .cs-cancel{font-family:var(--mono);font-size:.52rem;letter-spacing:.14em;padding:8px 14px;background:none;border:1px solid rgba(169,143,149,.3);color:var(--dim);border-radius:6px;cursor:pointer}
+  .cs-stats{display:flex;gap:8px;margin-bottom:12px}
+  .cs-stat{flex:1;background:rgba(14,8,32,.6);border:1px solid rgba(167,139,250,.18);border-radius:8px;padding:8px;text-align:center}
+  .cs-stat span{display:block;font-family:var(--mono);font-size:1.1rem;color:var(--gold);font-weight:700}
+  .cs-stat label{font-family:var(--mono);font-size:.42rem;letter-spacing:.16em;color:var(--dim)}
+  .cs-list{display:flex;flex-direction:column;gap:7px}
+  .cs-card{background:rgba(14,8,32,.72);border:1px solid rgba(167,139,250,.2);border-radius:10px;padding:10px 12px;position:relative;overflow:hidden;transition:border-color .15s}
+  .cs-card::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;border-radius:3px 0 0 3px}
+  .cs-card[data-plat="TikTok"]::before{background:#ff0050}
+  .cs-card[data-plat="Pinterest"]::before{background:#e60023}
+  .cs-card[data-plat="Instagram"]::before{background:#c13584}
+  .cs-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+  .cs-card-plat{font-family:var(--mono);font-size:.46rem;letter-spacing:.16em;color:var(--dim)}
+  .cs-card-date{font-family:var(--mono);font-size:.46rem;color:var(--dim)}
+  .cs-card-idea{font-size:.78rem;color:var(--cream);line-height:1.4;margin-bottom:7px}
+  .cs-card-bottom{display:flex;justify-content:space-between;align-items:center}
+  .cs-badge{font-family:var(--mono);font-size:.42rem;letter-spacing:.14em;padding:2px 7px;border-radius:3px}
+  .cs-badge.draft{background:rgba(74,58,106,.5);color:var(--dim);border:1px solid rgba(74,58,106,.8)}
+  .cs-badge.scheduled{background:rgba(127,227,255,.08);color:#7fe3ff;border:1px solid rgba(127,227,255,.3)}
+  .cs-badge.posted{background:rgba(52,211,153,.08);color:#34d399;border:1px solid rgba(52,211,153,.3)}
+  .cs-card-actions{display:flex;gap:5px}
+  .cs-btn{font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;padding:2px 8px;border-radius:3px;cursor:pointer;border:1px solid rgba(167,139,250,.25);background:rgba(167,139,250,.08);color:var(--dim);transition:all .12s}
+  .cs-btn:active{transform:scale(.93)}
+  .cs-btn.post-it{border-color:rgba(52,211,153,.4);color:#34d399;background:rgba(52,211,153,.07)}
+  .cs-btn.del{border-color:rgba(232,120,138,.3);color:var(--rose)}
+
   /* ===== TASK CAROUSEL ===== */
   .task-stage{position:relative;height:108px;perspective:600px;overflow:hidden;margin:2px 0}
   .task-card{
@@ -671,12 +719,12 @@
     </div>
 
     <div class="navstrip">
-      <span class="nav active">Overview</span>
-      <span class="nav">Missions</span>
-      <span class="nav">Market</span>
-      <span class="nav locked">Content Studio</span>
-      <span class="nav locked">Client CRM</span>
-      <span class="nav locked">Revenue</span>
+      <span class="nav active" data-section="overview">Overview</span>
+      <span class="nav" data-section="missions">Missions</span>
+      <span class="nav" data-section="market">Market</span>
+      <span class="nav" data-section="content">Content Studio</span>
+      <span class="nav locked" data-section="crm">Client CRM</span>
+      <span class="nav locked" data-section="revenue">Revenue</span>
     </div>
     <div class="mode-row" id="modeRow">
       <div class="mode active" data-mode="mentor">Mentor</div>
@@ -741,6 +789,7 @@
       <div class="zoom-hint" id="zoomHint" style="display:none">SCROLL · PINCH · DRAG TO NAVIGATE · DOUBLE-TAP TO ZOOM IN</div>
       <div id="holoCaption"></div>
     </div>
+    <div id="sec-overview" class="app-section">
     <div class="hud-grid">
       <div class="panel">
         <h3>Mission Queue <span class="count" id="qCount">0</span></h3>
@@ -779,12 +828,69 @@
         </div>
       </div>
       <div class="panel module">
-        <h3>Content Studio <span class="lock">LOCKED</span></h3>
-        <div class="items"><span class="empty">MODULE OFFLINE · UNLOCKS AS LEGACY SCALES</span></div>
-      </div>
-      <div class="panel module">
         <h3>Client CRM <span class="lock">LOCKED</span></h3>
         <div class="items"><span class="empty">MODULE OFFLINE · UNLOCKS AS LEGACY SCALES</span></div>
+      </div>
+    </div>
+    </div>
+
+    <!-- CONTENT STUDIO SECTION -->
+    <div id="sec-content" class="app-section" style="display:none">
+      <div class="cs-header">
+        <div class="cs-platforms">
+          <button class="cs-plat active" data-plat="all">ALL</button>
+          <button class="cs-plat" data-plat="TikTok">TIKTOK</button>
+          <button class="cs-plat" data-plat="Pinterest">PINTEREST</button>
+          <button class="cs-plat" data-plat="Instagram">INSTAGRAM</button>
+        </div>
+        <button class="cs-add-btn" id="csAddBtn">+ NEW POST</button>
+      </div>
+
+      <!-- ADD POST FORM -->
+      <div class="cs-form" id="csForm" style="display:none">
+        <div class="cs-form-inner">
+          <h3 class="cs-form-title">NEW CONTENT</h3>
+          <div class="cs-field">
+            <label>PLATFORM</label>
+            <div class="cs-plat-sel">
+              <button class="cs-ps active" data-p="TikTok">TikTok</button>
+              <button class="cs-ps" data-p="Pinterest">Pinterest</button>
+              <button class="cs-ps" data-p="Instagram">Instagram</button>
+            </div>
+          </div>
+          <div class="cs-field">
+            <label>DATE</label>
+            <input class="cs-input" id="csDate" type="date">
+          </div>
+          <div class="cs-field">
+            <label>IDEA / CAPTION</label>
+            <textarea class="cs-input cs-ta" id="csIdea" placeholder="What's the post about…" rows="3"></textarea>
+          </div>
+          <div class="cs-field">
+            <label>STATUS</label>
+            <div class="cs-plat-sel">
+              <button class="cs-ss active" data-s="draft">Draft</button>
+              <button class="cs-ss" data-s="scheduled">Scheduled</button>
+              <button class="cs-ss" data-s="posted">Posted</button>
+            </div>
+          </div>
+          <div class="cs-form-btns">
+            <button class="cs-save" id="csSave">SAVE POST</button>
+            <button class="cs-cancel" id="csCancel">CANCEL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATS ROW -->
+      <div class="cs-stats">
+        <div class="cs-stat"><span id="csTotalDraft">0</span><label>DRAFTS</label></div>
+        <div class="cs-stat"><span id="csTotalSched">0</span><label>SCHEDULED</label></div>
+        <div class="cs-stat"><span id="csTotalPosted">0</span><label>POSTED</label></div>
+      </div>
+
+      <!-- POST LIST -->
+      <div class="cs-list" id="csList">
+        <span class="empty" style="color:rgba(169,143,149,.7);font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;display:block;text-align:center;padding:24px 0">NO POSTS YET · TAP + NEW POST</span>
       </div>
     </div>
 
@@ -2717,6 +2823,164 @@ function startAvatarEngine(){
 
 function startMouthAnim(){ faceMode='speaking'; }
 function stopMouthAnim(){ faceMode='idle'; }
+
+// ===== NAV SECTION SWITCHING =====
+(function(){
+  const navEls = document.querySelectorAll('.navstrip .nav');
+  const sections = { overview:'sec-overview', missions:'sec-overview', market:'sec-overview', content:'sec-content' };
+  navEls.forEach(n => {
+    if(n.classList.contains('locked')) return;
+    n.addEventListener('click', () => {
+      navEls.forEach(x => x.classList.remove('active'));
+      n.classList.add('active');
+      const sec = n.dataset.section;
+      // hide all app-sections
+      document.querySelectorAll('.app-section').forEach(s => s.style.display = 'none');
+      const targetId = sections[sec] || 'sec-overview';
+      const el = document.getElementById(targetId);
+      if(el) el.style.display = '';
+      if(sec === 'content') renderCSList();
+    });
+  });
+})();
+
+// ===== CONTENT STUDIO ENGINE =====
+(function(){
+  const STORE = 'binks_content';
+  let posts = [];
+  let filterPlat = 'all';
+  let formPlat = 'TikTok';
+  let formStatus = 'draft';
+  let editId = null;
+
+  function load(){ try{ posts = JSON.parse(localStorage.getItem(STORE)||'[]'); }catch(e){ posts=[]; } }
+  function save(){ try{ localStorage.setItem(STORE, JSON.stringify(posts)); }catch(e){} }
+  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+
+  function getFiltered(){
+    return posts.filter(p => filterPlat==='all' || p.platform===filterPlat)
+                .sort((a,b) => (a.date||'9999') < (b.date||'9999') ? -1 : 1);
+  }
+
+  function updateStats(){
+    document.getElementById('csTotalDraft').textContent  = posts.filter(p=>p.status==='draft').length;
+    document.getElementById('csTotalSched').textContent  = posts.filter(p=>p.status==='scheduled').length;
+    document.getElementById('csTotalPosted').textContent = posts.filter(p=>p.status==='posted').length;
+  }
+
+  window.renderCSList = function(){
+    load();
+    updateStats();
+    const list = document.getElementById('csList');
+    if(!list) return;
+    const items = getFiltered();
+    if(!items.length){
+      list.innerHTML='<span class="empty" style="color:rgba(169,143,149,.7);font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;display:block;text-align:center;padding:24px 0">NO POSTS YET · TAP + NEW POST</span>';
+      return;
+    }
+    list.innerHTML = items.map(p => `
+      <div class="cs-card" data-plat="${p.platform}" data-id="${p.id}">
+        <div class="cs-card-top">
+          <span class="cs-card-plat">${p.platform.toUpperCase()}</span>
+          <span class="cs-card-date">${p.date||'NO DATE'}</span>
+        </div>
+        <div class="cs-card-idea">${p.idea||'(no caption)'}</div>
+        <div class="cs-card-bottom">
+          <span class="cs-badge ${p.status}">${p.status.toUpperCase()}</span>
+          <div class="cs-card-actions">
+            ${p.status!=='posted'?`<button class="cs-btn post-it" data-id="${p.id}">✓ POSTED</button>`:''}
+            <button class="cs-btn" data-edit="${p.id}">EDIT</button>
+            <button class="cs-btn del" data-del="${p.id}">✕</button>
+          </div>
+        </div>
+      </div>`).join('');
+
+    list.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+      const id = b.dataset.del;
+      posts = posts.filter(p=>p.id!==id); save(); renderCSList();
+    });
+    list.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+      const p = posts.find(x=>x.id===b.dataset.edit); if(!p) return;
+      editId = p.id;
+      document.getElementById('csDate').value = p.date||'';
+      document.getElementById('csIdea').value = p.idea||'';
+      formPlat = p.platform; formStatus = p.status;
+      document.querySelectorAll('.cs-ps').forEach(x=>x.classList.toggle('active',x.dataset.p===formPlat));
+      document.querySelectorAll('.cs-ss').forEach(x=>x.classList.toggle('active',x.dataset.s===formStatus));
+      document.getElementById('csForm').style.display='';
+      document.getElementById('csForm').scrollIntoView({behavior:'smooth'});
+    });
+    list.querySelectorAll('.post-it').forEach(b => b.onclick = () => {
+      const p = posts.find(x=>x.id===b.dataset.id); if(!p) return;
+      p.status='posted'; save(); renderCSList();
+    });
+  };
+
+  // Platform filter buttons
+  document.querySelectorAll('.cs-plat').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.cs-plat').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      filterPlat = b.dataset.plat;
+      renderCSList();
+    });
+  });
+
+  // Form platform selector
+  document.querySelectorAll('.cs-ps').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.cs-ps').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      formPlat = b.dataset.p;
+    });
+  });
+
+  // Form status selector
+  document.querySelectorAll('.cs-ss').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.cs-ss').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      formStatus = b.dataset.s;
+    });
+  });
+
+  // Open form
+  document.getElementById('csAddBtn').onclick = () => {
+    editId = null;
+    document.getElementById('csDate').value = new Date().toISOString().slice(0,10);
+    document.getElementById('csIdea').value = '';
+    formPlat='TikTok'; formStatus='draft';
+    document.querySelectorAll('.cs-ps').forEach(x=>x.classList.toggle('active',x.dataset.p==='TikTok'));
+    document.querySelectorAll('.cs-ss').forEach(x=>x.classList.toggle('active',x.dataset.s==='draft'));
+    const f=document.getElementById('csForm');
+    f.style.display=''; f.scrollIntoView({behavior:'smooth'});
+  };
+
+  // Cancel
+  document.getElementById('csCancel').onclick = () => {
+    document.getElementById('csForm').style.display='none'; editId=null;
+  };
+
+  // Save
+  document.getElementById('csSave').onclick = () => {
+    const idea = document.getElementById('csIdea').value.trim();
+    const date = document.getElementById('csDate').value;
+    if(!idea){ document.getElementById('csIdea').focus(); return; }
+    load();
+    if(editId){
+      const p = posts.find(x=>x.id===editId);
+      if(p){ p.platform=formPlat; p.date=date; p.idea=idea; p.status=formStatus; }
+    } else {
+      posts.push({id:uid(), platform:formPlat, date, idea, status:formStatus, created:Date.now()});
+    }
+    save();
+    document.getElementById('csForm').style.display='none';
+    editId=null;
+    renderCSList();
+  };
+
+  load();
+})();
 
 // Start radar when command center loads
 const _origEnterApp=enterApp;
