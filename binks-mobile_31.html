@@ -546,6 +546,29 @@
   .cs-btn:active{transform:scale(.93)}
   .cs-btn.post-it{border-color:rgba(52,211,153,.4);color:#34d399;background:rgba(52,211,153,.07)}
   .cs-btn.del{border-color:rgba(232,120,138,.3);color:var(--rose)}
+  .cs-acct-tabs{display:flex;gap:4px;overflow-x:auto;margin-bottom:10px;scrollbar-width:none;padding-bottom:2px}
+  .cs-acct-tabs::-webkit-scrollbar{display:none}
+  .cs-acct{font-family:var(--mono);font-size:.46rem;letter-spacing:.14em;padding:5px 10px;background:rgba(14,8,32,.7);border:1px solid rgba(167,139,250,.2);color:var(--dim);border-radius:5px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px;transition:all .15s}
+  .cs-acct.active{background:rgba(167,139,250,.15);border-color:var(--gold);color:var(--gold)}
+  .cs-acct-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+  .cs-ideas-box{background:rgba(14,8,32,.8);border:1px solid rgba(167,139,250,.25);border-radius:10px;padding:12px;margin-bottom:12px}
+  .cs-ideas-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .cs-ideas-label{font-family:var(--mono);font-size:.5rem;letter-spacing:.2em;color:var(--gold)}
+  .cs-ideas-btn{font-family:var(--mono);font-size:.48rem;letter-spacing:.12em;padding:5px 12px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.4);color:#c4b5fd;border-radius:5px;cursor:pointer;transition:all .15s}
+  .cs-ideas-btn:active{transform:scale(.95)}
+  .cs-ideas-btn:disabled{opacity:.4;pointer-events:none}
+  .cs-ideas-acct-info{margin-bottom:6px}
+  .cs-acct-handle{font-family:var(--mono);font-size:.48rem;color:var(--dim);letter-spacing:.1em}
+  .cs-ideas-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+  .cs-idea-card{background:rgba(167,139,250,.05);border:1px solid rgba(167,139,250,.15);border-radius:8px;padding:9px 11px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .cs-idea-text{font-size:.75rem;color:var(--cream);line-height:1.4;flex:1}
+  .cs-idea-add{font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;padding:3px 9px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.35);color:#c4b5fd;border-radius:4px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .12s}
+  .cs-idea-add:active{transform:scale(.93)}
+  .cs-ideas-loading{font-family:var(--mono);font-size:.52rem;letter-spacing:.12em;color:var(--dim);text-align:center;padding:12px 0;animation:pulse 1.4s ease infinite}
+  .cs-card-acct{font-family:var(--mono);font-size:.42rem;letter-spacing:.12em;margin-bottom:3px}
+  .cs-card-acct[data-acct="Legacy By Villa"]{color:#a78bfa}
+  .cs-card-acct[data-acct="AntuanTRDS"]{color:#7fe3ff}
+  .cs-card-acct[data-acct="An1uan"]{color:#34d399}
 
   /* ===== TASK CAROUSEL ===== */
   .task-stage{position:relative;height:108px;perspective:600px;overflow:hidden;margin:2px 0}
@@ -836,6 +859,34 @@
 
     <!-- CONTENT STUDIO SECTION -->
     <div id="sec-content" class="app-section" style="display:none">
+
+      <!-- ACCOUNT TABS -->
+      <div class="cs-acct-tabs">
+        <button class="cs-acct active" data-acct="all">ALL</button>
+        <button class="cs-acct" data-acct="Legacy By Villa">
+          <span class="cs-acct-dot" style="background:#a78bfa"></span>LEGACY BY VILLA
+        </button>
+        <button class="cs-acct" data-acct="AntuanTRDS">
+          <span class="cs-acct-dot" style="background:#7fe3ff"></span>ANTUANTRDS
+        </button>
+        <button class="cs-acct" data-acct="An1uan">
+          <span class="cs-acct-dot" style="background:#34d399"></span>AN1UAN
+        </button>
+      </div>
+
+      <!-- TREND IDEAS ENGINE -->
+      <div class="cs-ideas-box" id="csIdeasBox">
+        <div class="cs-ideas-header">
+          <span class="cs-ideas-label">◈ TREND IDEAS</span>
+          <button class="cs-ideas-btn" id="csGetIdeas">⚡ PULL TRENDS</button>
+        </div>
+        <div class="cs-ideas-acct-info" id="csAcctInfo">
+          <span class="cs-acct-handle" id="csAcctHandle">Select an account to get tailored trend ideas</span>
+        </div>
+        <div class="cs-ideas-list" id="csIdeasList" style="display:none"></div>
+      </div>
+
+      <!-- TOP ROW -->
       <div class="cs-header">
         <div class="cs-platforms">
           <button class="cs-plat active" data-plat="all">ALL</button>
@@ -850,6 +901,14 @@
       <div class="cs-form" id="csForm" style="display:none">
         <div class="cs-form-inner">
           <h3 class="cs-form-title">NEW CONTENT</h3>
+          <div class="cs-field">
+            <label>ACCOUNT</label>
+            <div class="cs-plat-sel" id="csAcctSel">
+              <button class="cs-ac active" data-a="Legacy By Villa">Legacy By Villa</button>
+              <button class="cs-ac" data-a="AntuanTRDS">AntuanTRDS</button>
+              <button class="cs-ac" data-a="An1uan">An1uan</button>
+            </div>
+          </div>
           <div class="cs-field">
             <label>PLATFORM</label>
             <div class="cs-plat-sel">
@@ -2849,28 +2908,69 @@ function stopMouthAnim(){ faceMode='idle'; }
   const STORE = 'binks_content';
   let posts = [];
   let filterPlat = 'all';
+  let filterAcct = 'all';
   let formPlat = 'TikTok';
+  let formAcct = 'Legacy By Villa';
   let formStatus = 'draft';
   let editId = null;
+
+  const ACCOUNTS = {
+    'Legacy By Villa': {
+      handle: '@legacybyvilla',
+      niche: 'motivational wall art, home decor inspiration, mindset quotes, entrepreneurship lifestyle, aesthetic room decor',
+      vibe: 'inspirational, aesthetic, brand-focused, aspirational',
+      color: '#a78bfa'
+    },
+    'AntuanTRDS': {
+      handle: '@antuantrds',
+      niche: 'AI tools for everyday people, learning AI as a non-developer, AI for entrepreneurs and creators, tech trends simplified',
+      vibe: 'educational, accessible, demystifying tech, forward-thinking',
+      color: '#7fe3ff'
+    },
+    'An1uan': {
+      handle: '@an1uan',
+      niche: 'entrepreneur daily life, behind the scenes building a brand, personal growth journey, hustle culture, real talk',
+      vibe: 'authentic, relatable, unfiltered, personal storytelling',
+      color: '#34d399'
+    }
+  };
 
   function load(){ try{ posts = JSON.parse(localStorage.getItem(STORE)||'[]'); }catch(e){ posts=[]; } }
   function save(){ try{ localStorage.setItem(STORE, JSON.stringify(posts)); }catch(e){} }
   function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 
   function getFiltered(){
-    return posts.filter(p => filterPlat==='all' || p.platform===filterPlat)
-                .sort((a,b) => (a.date||'9999') < (b.date||'9999') ? -1 : 1);
+    return posts
+      .filter(p => (filterPlat==='all' || p.platform===filterPlat) && (filterAcct==='all' || p.account===filterAcct))
+      .sort((a,b) => (a.date||'9999') < (b.date||'9999') ? -1 : 1);
   }
 
   function updateStats(){
-    document.getElementById('csTotalDraft').textContent  = posts.filter(p=>p.status==='draft').length;
-    document.getElementById('csTotalSched').textContent  = posts.filter(p=>p.status==='scheduled').length;
-    document.getElementById('csTotalPosted').textContent = posts.filter(p=>p.status==='posted').length;
+    const src = filterAcct==='all' ? posts : posts.filter(p=>p.account===filterAcct);
+    document.getElementById('csTotalDraft').textContent  = src.filter(p=>p.status==='draft').length;
+    document.getElementById('csTotalSched').textContent  = src.filter(p=>p.status==='scheduled').length;
+    document.getElementById('csTotalPosted').textContent = src.filter(p=>p.status==='posted').length;
+  }
+
+  function updateAcctInfo(){
+    const info = document.getElementById('csAcctHandle');
+    const btn = document.getElementById('csGetIdeas');
+    if(!info) return;
+    if(filterAcct==='all'){
+      info.textContent = 'Select an account tab to get tailored trend ideas';
+      if(btn) btn.disabled = true;
+    } else {
+      const a = ACCOUNTS[filterAcct];
+      info.textContent = a.handle + ' · ' + a.vibe;
+      info.style.color = a.color;
+      if(btn) btn.disabled = false;
+    }
   }
 
   window.renderCSList = function(){
     load();
     updateStats();
+    updateAcctInfo();
     const list = document.getElementById('csList');
     if(!list) return;
     const items = getFiltered();
@@ -2884,6 +2984,7 @@ function stopMouthAnim(){ faceMode='idle'; }
           <span class="cs-card-plat">${p.platform.toUpperCase()}</span>
           <span class="cs-card-date">${p.date||'NO DATE'}</span>
         </div>
+        <div class="cs-card-acct" data-acct="${p.account||''}">${p.account||''}</div>
         <div class="cs-card-idea">${p.idea||'(no caption)'}</div>
         <div class="cs-card-bottom">
           <span class="cs-badge ${p.status}">${p.status.toUpperCase()}</span>
@@ -2896,17 +2997,17 @@ function stopMouthAnim(){ faceMode='idle'; }
       </div>`).join('');
 
     list.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
-      const id = b.dataset.del;
-      posts = posts.filter(p=>p.id!==id); save(); renderCSList();
+      posts = posts.filter(p=>p.id!==b.dataset.del); save(); renderCSList();
     });
     list.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
       const p = posts.find(x=>x.id===b.dataset.edit); if(!p) return;
       editId = p.id;
       document.getElementById('csDate').value = p.date||'';
       document.getElementById('csIdea').value = p.idea||'';
-      formPlat = p.platform; formStatus = p.status;
+      formPlat = p.platform; formStatus = p.status; formAcct = p.account||'Legacy By Villa';
       document.querySelectorAll('.cs-ps').forEach(x=>x.classList.toggle('active',x.dataset.p===formPlat));
       document.querySelectorAll('.cs-ss').forEach(x=>x.classList.toggle('active',x.dataset.s===formStatus));
+      document.querySelectorAll('.cs-ac').forEach(x=>x.classList.toggle('active',x.dataset.a===formAcct));
       document.getElementById('csForm').style.display='';
       document.getElementById('csForm').scrollIntoView({behavior:'smooth'});
     });
@@ -2916,13 +3017,33 @@ function stopMouthAnim(){ faceMode='idle'; }
     });
   };
 
-  // Platform filter buttons
+  // Account tab filter
+  document.querySelectorAll('.cs-acct').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.cs-acct').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      filterAcct = b.dataset.acct;
+      document.getElementById('csIdeasList').style.display='none';
+      renderCSList();
+    });
+  });
+
+  // Platform filter
   document.querySelectorAll('.cs-plat').forEach(b => {
     b.addEventListener('click', () => {
       document.querySelectorAll('.cs-plat').forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
       filterPlat = b.dataset.plat;
       renderCSList();
+    });
+  });
+
+  // Form account selector
+  document.querySelectorAll('.cs-ac').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.cs-ac').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      formAcct = b.dataset.a;
     });
   });
 
@@ -2950,8 +3071,10 @@ function stopMouthAnim(){ faceMode='idle'; }
     document.getElementById('csDate').value = new Date().toISOString().slice(0,10);
     document.getElementById('csIdea').value = '';
     formPlat='TikTok'; formStatus='draft';
+    formAcct = filterAcct==='all' ? 'Legacy By Villa' : filterAcct;
     document.querySelectorAll('.cs-ps').forEach(x=>x.classList.toggle('active',x.dataset.p==='TikTok'));
     document.querySelectorAll('.cs-ss').forEach(x=>x.classList.toggle('active',x.dataset.s==='draft'));
+    document.querySelectorAll('.cs-ac').forEach(x=>x.classList.toggle('active',x.dataset.a===formAcct));
     const f=document.getElementById('csForm');
     f.style.display=''; f.scrollIntoView({behavior:'smooth'});
   };
@@ -2969,9 +3092,9 @@ function stopMouthAnim(){ faceMode='idle'; }
     load();
     if(editId){
       const p = posts.find(x=>x.id===editId);
-      if(p){ p.platform=formPlat; p.date=date; p.idea=idea; p.status=formStatus; }
+      if(p){ p.account=formAcct; p.platform=formPlat; p.date=date; p.idea=idea; p.status=formStatus; }
     } else {
-      posts.push({id:uid(), platform:formPlat, date, idea, status:formStatus, created:Date.now()});
+      posts.push({id:uid(), account:formAcct, platform:formPlat, date, idea, status:formStatus, created:Date.now()});
     }
     save();
     document.getElementById('csForm').style.display='none';
@@ -2979,7 +3102,81 @@ function stopMouthAnim(){ faceMode='idle'; }
     renderCSList();
   };
 
+  // Trend Ideas Engine
+  document.getElementById('csGetIdeas').onclick = async () => {
+    const acct = ACCOUNTS[filterAcct];
+    if(!acct) return;
+    const key = getKey();
+    if(!key){ alert('Add your API key first (tap ⚙)'); return; }
+    const btn = document.getElementById('csGetIdeas');
+    const ideasList = document.getElementById('csIdeasList');
+    btn.disabled = true; btn.textContent = '⏳ PULLING…';
+    ideasList.style.display='';
+    ideasList.innerHTML='<div class="cs-ideas-loading">SCANNING TIKTOK TRENDS…</div>';
+
+    const prompt = `You are a TikTok content strategist. Search for the current top trending TikTok content formats and topics right now in ${new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'})}.
+
+Then generate exactly 5 specific TikTok post ideas for the account "${filterAcct}" (${acct.handle}).
+Account niche: ${acct.niche}
+Content vibe: ${acct.vibe}
+
+Each idea must be a complete, actionable post concept — include the hook (first 3 seconds), the content angle, and why it fits current trends.
+
+Respond ONLY with a JSON object in this exact format:
+{"ideas":["idea 1 full description","idea 2 full description","idea 3 full description","idea 4 full description","idea 5 full description"]}`;
+
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type':'application/json',
+          'x-api-key': key,
+          'anthropic-version':'2023-06-01',
+          'anthropic-dangerous-direct-browser-access':'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-5',
+          max_tokens: 1200,
+          tools: [{"type":"web_search_20250305","name":"web_search","max_uses":3}],
+          messages: [{role:'user', content: prompt}]
+        })
+      });
+      const data = await resp.json();
+      if(data.error){ ideasList.innerHTML=`<div class="cs-ideas-loading">ERROR: ${data.error.message}</div>`; return; }
+
+      // Collect all text blocks (may come after tool use)
+      const textBlocks = (data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n');
+      const match = textBlocks.match(/\{[\s\S]*"ideas"[\s\S]*\}/);
+      let ideas = [];
+      if(match){ try{ ideas = JSON.parse(match[0]).ideas||[]; }catch(e){} }
+
+      if(!ideas.length){
+        ideasList.innerHTML='<div class="cs-ideas-loading">COULD NOT PARSE IDEAS · TRY AGAIN</div>'; return;
+      }
+
+      ideasList.innerHTML = ideas.map((idea,i) => `
+        <div class="cs-idea-card">
+          <span class="cs-idea-text">${idea}</span>
+          <button class="cs-idea-add" data-idea="${idea.replace(/"/g,'&quot;')}">+ DRAFT</button>
+        </div>`).join('');
+
+      ideasList.querySelectorAll('.cs-idea-add').forEach(b => {
+        b.onclick = () => {
+          load();
+          posts.push({id:uid(), account:filterAcct, platform:'TikTok', date:new Date().toISOString().slice(0,10), idea:b.dataset.idea, status:'draft', created:Date.now()});
+          save(); renderCSList();
+          b.textContent='✓ ADDED'; b.disabled=true;
+        };
+      });
+    } catch(e) {
+      ideasList.innerHTML=`<div class="cs-ideas-loading">NETWORK ERROR · CHECK CONNECTION</div>`;
+    } finally {
+      btn.disabled = false; btn.textContent = '⚡ PULL TRENDS';
+    }
+  };
+
   load();
+  updateAcctInfo();
 })();
 
 // Start radar when command center loads
