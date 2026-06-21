@@ -136,8 +136,13 @@ for direct browser → Anthropic API calls.
 - Obsidian vault linked: `OneDrive\Documents\Obsidian Vault\`
 - Claude memory folder: `Claude/` inside the vault (synced via OneDrive)
 - `Claude/Binks.md` — running memory for this project (decisions, tasks, context)
-- Skills installed globally: `huashu-design`, `session-start-hook`
-- Skills also committed to repo: `.claude/skills/huashu-design/`
+- Skills installed on desktop:
+  - `ui-ux-pro-max` — UI/UX design system (installed as SKILL.md)
+  - `impeccable` — installed as git repo
+  - `huashu-design` — HTML prototypes, animations, MP4 export
+  - `graphify` — active from marketplace
+  - `taste-skill` (all variants) — active from marketplace
+- Skills committed to this repo: `.claude/skills/huashu-design/`
 
 ## Working agreements
 - Keep `binks-mobile_31.html` runnable as a single file until Phase 2.
