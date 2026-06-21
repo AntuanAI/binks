@@ -6,10 +6,13 @@ Legacy By Villa. She is a voice-enabled mentor with the persona of a warm,
 no-nonsense auntie. This project began as single-file HTML prototypes and is
 headed toward a native mobile app (Capacitor) as part of "The Wellness Loop."
 
-Owner context: Antoine is an entrepreneur (Etsy shop "Legacy By Villa" —
-motivational wall art; TikTok/Pinterest content; freelance web design). He is
-not a traditional developer — explain changes in plain English, one step at a
-time, and confirm before destructive actions.
+Owner context: Antoine (Villa) is a multi-business entrepreneur:
+- **Legacy By Villa** — Etsy shop selling motivational wall art
+- **Marketing business** — runs client marketing campaigns and strategy using AI
+- **Web design business** — builds websites and digital experiences for clients using AI
+- **Content creation** — TikTok + Pinterest for personal brand and businesses
+- He is not a traditional developer — explain changes in plain English, one step at a
+  time, and confirm before destructive actions.
 
 ## Project structure
 
