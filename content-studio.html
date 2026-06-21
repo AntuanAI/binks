@@ -20,48 +20,23 @@ body { background: var(--bg); color: var(--cream); font-family: 'Inter', sans-se
   border-right: 1px solid var(--border); display: flex;
   flex-direction: column; padding: 0; position: relative; z-index: 10;
 }
-.sidebar-logo {
-  padding: 22px 20px 18px; border-bottom: 1px solid var(--border);
-}
-.sidebar-logo h1 {
-  font-family: 'Bricolage Grotesque', sans-serif; font-size: 12px;
-  font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent);
-}
-.sidebar-logo p {
-  font-family: 'JetBrains Mono', monospace; font-size: 8px;
-  color: var(--dim); margin-top: 3px; letter-spacing: 0.12em;
-}
+.sidebar-logo { padding: 22px 20px 18px; border-bottom: 1px solid var(--border); }
+.sidebar-logo h1 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+.sidebar-logo p { font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--dim); margin-top: 3px; letter-spacing: 0.12em; }
 .nav-section { padding: 14px 0 4px; }
-.nav-label {
-  font-family: 'JetBrains Mono', monospace; font-size: 8px;
-  letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim);
-  padding: 0 20px; margin-bottom: 2px;
-}
-.nav-item {
-  display: flex; align-items: center; gap: 10px; padding: 9px 20px;
-  cursor: pointer; font-size: 12px; font-weight: 500; color: var(--dim);
-  transition: all 0.15s; border-left: 2px solid transparent;
-}
+.nav-label { font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); padding: 0 20px; margin-bottom: 2px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; cursor: pointer; font-size: 12px; font-weight: 500; color: var(--dim); transition: all 0.15s; border-left: 2px solid transparent; }
 .nav-item:hover { color: var(--cream); background: rgba(167,139,250,0.05); }
 .nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(167,139,250,0.08); }
 .nav-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--dim); flex-shrink: 0; }
 .nav-item.active .nav-dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
 .nav-item.channel .nav-dot { background: var(--green); box-shadow: 0 0 5px var(--green); }
-.sidebar-status {
-  margin-top: auto; padding: 14px 20px; border-top: 1px solid var(--border);
-}
-.status-row {
-  font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--dim);
-  display: flex; justify-content: space-between; margin-bottom: 3px;
-}
+.sidebar-status { margin-top: auto; padding: 14px 20px; border-top: 1px solid var(--border); }
+.status-row { font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--dim); display: flex; justify-content: space-between; margin-bottom: 3px; }
 .status-row span { color: var(--green); }
 
 .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-.topbar {
-  height: 54px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; padding: 0 28px; gap: 16px;
-  background: rgba(8,4,18,0.95); backdrop-filter: blur(8px); flex-shrink: 0;
-}
+.topbar { height: 54px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 28px; gap: 16px; background: rgba(8,4,18,0.95); backdrop-filter: blur(8px); flex-shrink: 0; }
 .topbar-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 15px; font-weight: 600; color: var(--cream); }
 .topbar-sub { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--dim); margin-top: 1px; }
 .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 20px; }
@@ -74,12 +49,8 @@ body { background: var(--bg); color: var(--cream); font-family: 'Inter', sans-se
 .content::-webkit-scrollbar { width: 3px; }
 .content::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
 
-.channel-tabs { display: flex; gap: 6px; margin-bottom: 22px; }
-.ch-tab {
-  padding: 5px 14px; border-radius: 3px; font-family: 'JetBrains Mono', monospace;
-  font-size: 9px; letter-spacing: 0.08em; cursor: pointer;
-  border: 1px solid var(--border); color: var(--dim); transition: all 0.15s; background: transparent;
-}
+.ch-tabs { display: flex; gap: 6px; margin-bottom: 22px; }
+.ch-tab { padding: 5px 14px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.08em; cursor: pointer; border: 1px solid var(--border); color: var(--dim); transition: all 0.15s; background: transparent; }
 .ch-tab:hover { border-color: var(--accent); color: var(--cream); }
 .ch-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(167,139,250,0.1); }
 
@@ -90,23 +61,15 @@ body { background: var(--bg); color: var(--cream); font-family: 'Inter', sans-se
 
 .agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 10px; margin-bottom: 24px; }
 
-.agent-card {
-  background: var(--card); border: 1px solid var(--border); border-radius: 6px;
-  padding: 14px; position: relative; overflow: hidden; transition: border-color 0.2s;
-}
+.agent-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 14px; position: relative; overflow: hidden; transition: border-color 0.2s; }
 .agent-card:hover { border-color: rgba(167,139,250,0.3); }
-.agent-card::after {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  opacity: 0; transition: opacity 0.3s;
-}
+.agent-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0; transition: opacity 0.3s; }
 .agent-card:hover::after { opacity: 0.4; }
 
 .agent-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; gap: 8px; }
 .agent-name { font-family: 'Bricolage Grotesque', sans-serif; font-size: 13px; font-weight: 600; color: var(--cream); }
 .agent-desc { font-size: 10px; color: var(--dim); margin-top: 2px; line-height: 1.5; }
 .agent-status { display: flex; align-items: center; gap: 5px; font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.06em; white-space: nowrap; flex-shrink: 0; }
-
 .sdot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
 .sdot.active { background: var(--green); animation: pulse 1.5s infinite; }
 .sdot.processing { background: var(--amber); animation: blink 0.8s infinite; }
@@ -132,6 +95,75 @@ body { background: var(--bg); color: var(--cream); font-family: 'Inter', sans-se
 .ds-fill { width: 100%; background: linear-gradient(180deg, transparent, var(--accent), transparent); height: 35%; animation: stream 2.5s linear infinite; }
 @keyframes stream { 0% { transform:translateY(-100%); } 100% { transform:translateY(400%); } }
 
+/* KANBAN BOARD */
+.kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 28px; }
+.kanban-col { background: rgba(14,8,32,0.6); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.kanban-col-head { padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.kanban-col-title { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+.kanban-count { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--accent); }
+.kanban-cards { padding: 8px; min-height: 120px; display: flex; flex-direction: column; gap: 6px; }
+.k-card { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 10px; cursor: pointer; transition: all 0.15s; }
+.k-card:hover { border-color: rgba(167,139,250,0.35); transform: translateY(-1px); }
+.k-card-title { font-size: 11px; font-weight: 500; color: var(--cream); line-height: 1.4; margin-bottom: 6px; }
+.k-card-meta { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+.k-badge { font-family: 'JetBrains Mono', monospace; font-size: 8px; padding: 2px 6px; border-radius: 2px; letter-spacing: 0.06em; }
+.k-badge.tiktok { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.2); }
+.k-badge.reel { background: rgba(167,139,250,0.15); color: var(--accent); border: 1px solid rgba(167,139,250,0.2); }
+.k-badge.short { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+.k-badge.pinterest { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+.k-badge.day { background: transparent; color: var(--dim); border: 1px solid var(--border); }
+.move-btn { font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--dim); margin-top: 6px; cursor: pointer; transition: color 0.15s; padding: 3px 0; display: block; }
+.move-btn:hover { color: var(--accent); }
+
+/* TASK BOARD */
+.task-layout { display: grid; grid-template-columns: 1fr 320px; gap: 16px; margin-bottom: 24px; }
+.task-main {}
+.task-col { background: rgba(14,8,32,0.6); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.task-col-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.task-col-title { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.add-task-btn { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--accent); cursor: pointer; background: none; border: none; letter-spacing: 0.06em; }
+.add-task-btn:hover { color: var(--cream); }
+.task-list { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+.task-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 4px; cursor: pointer; transition: background 0.15s; border: 1px solid transparent; }
+.task-item:hover { background: rgba(167,139,250,0.05); border-color: var(--border); }
+.task-item.done { opacity: 0.4; }
+.task-cb { width: 14px; height: 14px; border-radius: 2px; border: 1px solid var(--dim); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.task-item.done .task-cb { background: var(--accent); border-color: var(--accent); }
+.task-cb-check { display: none; width: 8px; height: 8px; }
+.task-item.done .task-cb-check { display: block; }
+.task-text { font-size: 12px; color: var(--cream); line-height: 1.45; flex: 1; }
+.task-item.done .task-text { text-decoration: line-through; color: var(--dim); }
+.task-tags { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+.task-tag { font-family: 'JetBrains Mono', monospace; font-size: 7px; padding: 1px 5px; border-radius: 2px; letter-spacing: 0.06em; }
+.task-tag.content { background: rgba(167,139,250,0.1); color: var(--accent); }
+.task-tag.adwebco { background: rgba(59,130,246,0.1); color: #3b82f6; }
+.task-tag.lbv { background: rgba(245,158,11,0.1); color: var(--amber); }
+.task-tag.urgent { background: rgba(239,68,68,0.1); color: var(--red); }
+.task-tag.rec { background: rgba(16,185,129,0.1); color: var(--green); }
+.task-priority { width: 3px; border-radius: 2px; align-self: stretch; flex-shrink: 0; }
+.task-priority.high { background: var(--red); }
+.task-priority.med { background: var(--amber); }
+.task-priority.low { background: var(--dim); }
+
+.add-task-form { padding: 10px; border-top: 1px solid var(--border); display: none; }
+.add-task-form.open { display: block; }
+.task-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; color: var(--cream); font-size: 12px; font-family: 'Inter', sans-serif; outline: none; margin-bottom: 6px; }
+.task-input:focus { border-color: var(--accent); }
+.task-form-row { display: flex; gap: 6px; }
+.task-select { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 3px; padding: 5px 8px; color: var(--dim); font-size: 10px; font-family: 'JetBrains Mono', monospace; outline: none; }
+.task-submit { background: var(--deep); border: none; color: var(--cream); padding: 5px 14px; border-radius: 3px; font-size: 10px; cursor: pointer; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.06em; }
+.task-submit:hover { background: var(--accent); }
+
+/* RECOMMENDATIONS */
+.rec-panel { display: flex; flex-direction: column; gap: 8px; }
+.rec-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 12px; }
+.rec-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.rec-agent { font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--accent); letter-spacing: 0.08em; }
+.rec-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--green); animation: pulse 1.5s infinite; }
+.rec-text { font-size: 11px; color: rgba(237,233,254,0.75); line-height: 1.5; margin-bottom: 8px; }
+.rec-action { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--accent); cursor: pointer; background: none; border: none; letter-spacing: 0.06em; padding: 0; }
+.rec-action:hover { color: var(--cream); }
+
 .view { display: none; }
 .view.active { display: block; }
 </style>
@@ -146,6 +178,7 @@ body { background: var(--bg); color: var(--cream); font-family: 'Inter', sans-se
   <div class="nav-section">
     <div class="nav-label">Overview</div>
     <div class="nav-item active" onclick="nav('dashboard',this)"><div class="nav-dot"></div>Dashboard</div>
+    <div class="nav-item" onclick="nav('tasks',this)"><div class="nav-dot"></div>Tasks & Recs</div>
   </div>
   <div class="nav-section">
     <div class="nav-label">Channels</div>
@@ -160,7 +193,7 @@ body { background: var(--bg); color: var(--cream); font-family: 'Inter', sans-se
     <div class="nav-item" onclick="nav('research',this)"><div class="nav-dot"></div>Research & Intel</div>
   </div>
   <div class="sidebar-status">
-    <div class="status-row">AGENTS ACTIVE <span id="active-count">12 / 16</span></div>
+    <div class="status-row">AGENTS ACTIVE <span>12 / 16</span></div>
     <div class="status-row">SYSTEM <span>ONLINE</span></div>
     <div class="status-row">LAST SYNC <span id="sync-time">—</span></div>
   </div>
@@ -180,8 +213,9 @@ body { background: var(--bg); color: var(--cream); font-family: 'Inter', sans-se
 
   <div class="content">
 
+    <!-- DASHBOARD -->
     <div class="view active" id="view-dashboard">
-      <div class="channel-tabs">
+      <div class="ch-tabs">
         <div class="ch-tab active" onclick="filterCh('all',this)">All Channels</div>
         <div class="ch-tab" onclick="filterCh('antuantrds',this)">@antuantrds</div>
         <div class="ch-tab" onclick="filterCh('an1uan',this)">@an1uan</div>
@@ -197,18 +231,62 @@ body { background: var(--bg); color: var(--cream); font-family: 'Inter', sans-se
       <div class="agent-grid" id="g-research"></div>
     </div>
 
+    <!-- TASKS & RECOMMENDATIONS -->
+    <div class="view" id="view-tasks">
+      <div class="task-layout">
+        <div class="task-main">
+          <div class="dept-header"><div class="dept-title">Task Board</div><div class="dept-line"></div><div class="dept-count" id="task-count">0 REMAINING</div></div>
+          <div class="task-col">
+            <div class="task-col-head">
+              <div class="task-col-title">Active Tasks</div>
+              <button class="add-task-btn" onclick="toggleAddTask()">+ ADD TASK</button>
+            </div>
+            <div class="task-list" id="task-list"></div>
+            <div class="add-task-form" id="add-task-form">
+              <input class="task-input" id="task-input" placeholder="What needs to get done?" onkeydown="if(event.key==='Enter')submitTask()">
+              <div class="task-form-row">
+                <select class="task-select" id="task-cat">
+                  <option value="content">Content</option>
+                  <option value="adwebco">AdWebCo</option>
+                  <option value="lbv">Legacy By Villa</option>
+                </select>
+                <select class="task-select" id="task-pri">
+                  <option value="high">High Priority</option>
+                  <option value="med">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+                <button class="task-submit" onclick="submitTask()">ADD</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="dept-header"><div class="dept-title">Agent Recommendations</div><div class="dept-line"></div></div>
+          <div class="rec-panel" id="rec-panel"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHANNEL VIEWS -->
     <div class="view" id="view-antuantrds">
-      <div class="dept-header"><div class="dept-title">@antuantrds — AI + Advertising</div><div class="dept-line"></div></div>
+      <div class="dept-header"><div class="dept-title">@antuantrds — Content Board</div><div class="dept-line"></div></div>
+      <div class="kanban" id="kb-antuantrds"></div>
+      <div class="dept-header"><div class="dept-title">Agents</div><div class="dept-line"></div></div>
       <div class="agent-grid" id="ch-antuantrds"></div>
     </div>
     <div class="view" id="view-an1uan">
-      <div class="dept-header"><div class="dept-title">@an1uan — Personal Brand</div><div class="dept-line"></div></div>
+      <div class="dept-header"><div class="dept-title">@an1uan — Content Board</div><div class="dept-line"></div></div>
+      <div class="kanban" id="kb-an1uan"></div>
+      <div class="dept-header"><div class="dept-title">Agents</div><div class="dept-line"></div></div>
       <div class="agent-grid" id="ch-an1uan"></div>
     </div>
     <div class="view" id="view-lbvmedia">
-      <div class="dept-header"><div class="dept-title">Legacy By Villa Media — Old Money Lifestyle</div><div class="dept-line"></div></div>
+      <div class="dept-header"><div class="dept-title">Legacy By Villa Media — Content Board</div><div class="dept-line"></div></div>
+      <div class="kanban" id="kb-lbvmedia"></div>
+      <div class="dept-header"><div class="dept-title">Agents</div><div class="dept-line"></div></div>
       <div class="agent-grid" id="ch-lbvmedia"></div>
     </div>
+
     <div class="view" id="view-business">
       <div class="dept-header"><div class="dept-title">Business Operations</div><div class="dept-line"></div></div>
       <div class="agent-grid" id="ch-business"></div>
@@ -228,22 +306,193 @@ body { background: var(--bg); color: var(--cream); font-family: 'Inter', sans-se
 <script>
 const CH = {
   antuantrds: {
-    ideas: ["How AI is replacing marketing agencies in 2026","5 tools that run my entire ad campaign on autopilot","The automation stack that saves 20 hours a week","Why most ad agencies are already obsolete","This one prompt generates a full month of ad copy","I ran a $10k ad campaign using only Claude — here's how"],
+    ideas: ["How AI is replacing marketing agencies in 2026","5 tools that run my entire ad campaign on autopilot","The automation stack that saves 20 hours a week","Why most ad agencies are already obsolete","This one prompt generates a full month of ad copy","I ran a $10k ad campaign using only Claude"],
     scripts: ["Most marketers are still doing this manually and it's costing them thousands...","Here's the exact AI workflow I use to run full campaigns without a team...","Nobody talks about this — AI can now write, test, and optimize ads in real time..."],
     hooks: ["The AI tool that replaced my entire marketing team","Your competitors are already using this — you're not","200 leads this week. Zero manual ad work."]
   },
   an1uan: {
     ideas: ["How I built 3 businesses before 30 — the real story","My actual morning routine as a multi-business owner","The finance move that changed everything for me","Day in the life: running everything through AI","What nobody tells you about building a legacy"],
-    scripts: ["Real talk — this is what entrepreneurship actually looks like, not what the internet shows you...","I've been tracking my net worth since I was 22. Here's what changed everything for me...","Three businesses, one operator. Here's how AI makes that possible..."],
+    scripts: ["Real talk — this is what entrepreneurship actually looks like...","I've been tracking my net worth since I was 22. Here's what changed everything...","Three businesses, one operator. Here's how AI makes that possible..."],
     hooks: ["I run 3 businesses solo — here's the one tool that makes it possible","The finance move nobody in my circle was talking about","This is what building a legacy actually looks like day to day"]
   },
   lbvmedia: {
     ideas: ["What old money style actually means in 2026","Building a luxury brand from nothing — the LBV story","The fragrance philosophy behind Legacy By Villa","Why timeless always beats trendy","Old money aesthetics: what it is and what it isn't"],
-    scripts: ["Old money isn't about price tags. It's about intention, restraint, and legacy. Here's what that actually looks like...","Legacy By Villa started as wall art on Etsy. Here's where it's going — clothing, fragrance, lifestyle...","The brands that last 100 years all have one thing in common. We're building that from the ground up..."],
+    scripts: ["Old money isn't about price tags. It's about intention, restraint, and legacy...","Legacy By Villa started as wall art on Etsy. Here's where it's going...","The brands that last 100 years all have one thing in common. We're building that..."],
     hooks: ["Old money style isn't what most people think it is","Legacy By Villa: this brand is just getting started","The fragrance collection that changes how the room perceives you"]
   }
 };
 
+// KANBAN DATA
+const KANBAN = {
+  antuantrds: {
+    idea: [
+      { title:"How AI replaced my marketing team", formats:["tiktok","short"], day:"Mon" },
+      { title:"The automation stack I use daily", formats:["reel"], day:"Wed" },
+      { title:"5 AI tools for ad campaigns", formats:["tiktok"], day:"Fri" }
+    ],
+    scripting: [
+      { title:"Why ad agencies are becoming obsolete", formats:["tiktok","reel"], day:"Tue" },
+      { title:"Running $10k campaigns solo with Claude", formats:["short"], day:"Thu" }
+    ],
+    ready: [
+      { title:"This one prompt writes a month of ad copy", formats:["tiktok"], day:"Mon" }
+    ],
+    posted: [
+      { title:"200 leads in a week — no manual work", formats:["tiktok","short"], day:"Last week" }
+    ]
+  },
+  an1uan: {
+    idea: [
+      { title:"3 businesses before 30 — the real story", formats:["tiktok"], day:"Tue" },
+      { title:"My actual morning routine", formats:["reel","short"], day:"Thu" },
+      { title:"The finance app that changed everything", formats:["tiktok"], day:"Sat" }
+    ],
+    scripting: [
+      { title:"Day in the life: multi-business operator", formats:["reel"], day:"Wed" }
+    ],
+    ready: [
+      { title:"What nobody tells you about entrepreneurship", formats:["tiktok","short"], day:"Mon" },
+      { title:"How I track wealth as an entrepreneur", formats:["short"], day:"Fri" }
+    ],
+    posted: [
+      { title:"Building a legacy from zero", formats:["tiktok"], day:"Last week" }
+    ]
+  },
+  lbvmedia: {
+    idea: [
+      { title:"What old money style actually means", formats:["tiktok","pinterest"], day:"Wed" },
+      { title:"The fragrance philosophy behind LBV", formats:["reel"], day:"Fri" }
+    ],
+    scripting: [
+      { title:"Building a luxury brand from nothing", formats:["tiktok","reel"], day:"Tue" },
+      { title:"Old money aesthetics — a complete guide", formats:["pinterest"], day:"Thu" }
+    ],
+    ready: [
+      { title:"Why timeless always beats trendy", formats:["tiktok"], day:"Mon" }
+    ],
+    posted: [
+      { title:"Legacy By Villa: where it started", formats:["reel"], day:"Last week" }
+    ]
+  }
+};
+
+const STAGE_LABELS = ["idea","scripting","ready","posted"];
+const STAGE_NAMES = { idea:"Idea", scripting:"Scripting", ready:"Ready to Post", posted:"Posted" };
+
+function buildKanban(ch) {
+  const data = KANBAN[ch];
+  return STAGE_LABELS.map(stage => {
+    const cards = data[stage] || [];
+    const cardsHTML = cards.map((c, i) => {
+      const badges = c.formats.map(f => `<span class="k-badge ${f}">${f.toUpperCase()}</span>`).join('');
+      const canAdvance = stage !== 'posted';
+      return `<div class="k-card" id="kc-${ch}-${stage}-${i}">
+        <div class="k-card-title">${c.title}</div>
+        <div class="k-card-meta">${badges}<span class="k-badge day">${c.day}</span></div>
+        ${canAdvance ? `<span class="move-btn" onclick="advanceCard('${ch}','${stage}',${i})">Move to ${STAGE_NAMES[STAGE_LABELS[STAGE_LABELS.indexOf(stage)+1]]} →</span>` : ''}
+      </div>`;
+    }).join('');
+    return `<div class="kanban-col">
+      <div class="kanban-col-head">
+        <div class="kanban-col-title">${STAGE_NAMES[stage]}</div>
+        <div class="kanban-count">${cards.length}</div>
+      </div>
+      <div class="kanban-cards" id="kol-${ch}-${stage}">${cardsHTML}</div>
+    </div>`;
+  }).join('');
+}
+
+function advanceCard(ch, stage, idx) {
+  const nextStage = STAGE_LABELS[STAGE_LABELS.indexOf(stage) + 1];
+  if (!nextStage) return;
+  const card = KANBAN[ch][stage].splice(idx, 1)[0];
+  KANBAN[ch][nextStage].push(card);
+  document.getElementById(`kb-${ch}`).innerHTML = buildKanban(ch);
+  saveKanban();
+}
+
+function saveKanban() {
+  localStorage.setItem('cs_kanban', JSON.stringify(KANBAN));
+}
+
+// TASKS
+let TASKS = JSON.parse(localStorage.getItem('cs_tasks') || '[]');
+if (!TASKS.length) {
+  TASKS = [
+    { id:1, text:"Film hook video for @antuantrds — AI automation topic", cat:"content", pri:"high", done:false },
+    { id:2, text:"Follow up with web design lead from AdWebCo inbox", cat:"adwebco", pri:"high", done:false },
+    { id:3, text:"Write 3 captions for Legacy By Villa Media this week", cat:"lbv", pri:"med", done:false },
+    { id:4, text:"Post content calendar for @an1uan for next 7 days", cat:"content", pri:"med", done:false },
+    { id:5, text:"Review Etsy shop pricing against market comps", cat:"lbv", pri:"low", done:false },
+    { id:6, text:"Set up AdWebCo client onboarding email sequence", cat:"adwebco", pri:"high", done:false },
+    { id:7, text:"Script the 'old money style' video for LBV Media", cat:"lbv", pri:"med", done:false },
+    { id:8, text:"Research trending AI topics for @antuantrds next week", cat:"content", pri:"low", done:false }
+  ];
+}
+
+const RECS = [
+  { agent:"Trend Spotter", text:"'AI replacing jobs' is trending hard this week. @antuantrds should post a take before the wave peaks — high urgency.", action:"Add to task board" },
+  { agent:"Audience Intel", text:"@an1uan audience engages 3x more on finance content vs lifestyle. Prioritize money topics in your next 3 posts.", action:"Add to calendar" },
+  { agent:"Hook Forge", text:"'Nobody talks about this' hooks are performing 40% above average for your niche right now. Use this format.", action:"Apply to scripts" },
+  { agent:"Opportunity Spotter", text:"Legacy By Villa fragrance content has zero competition in your niche. First-mover advantage window is open now.", action:"Create content" }
+];
+
+function renderTasks() {
+  const remaining = TASKS.filter(t => !t.done).length;
+  document.getElementById('task-count').textContent = `${remaining} REMAINING`;
+  document.getElementById('task-list').innerHTML = TASKS.map(t => `
+    <div class="task-item ${t.done ? 'done' : ''}" onclick="toggleTask(${t.id})">
+      <div class="task-priority ${t.pri}"></div>
+      <div class="task-cb">
+        <svg class="task-cb-check" viewBox="0 0 8 8" fill="none"><polyline points="1,4 3,6 7,2" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div class="task-text">${t.text}</div>
+        <div class="task-tags">
+          <span class="task-tag ${t.cat}">${t.cat.toUpperCase()}</span>
+          ${t.pri === 'high' ? '<span class="task-tag urgent">URGENT</span>' : ''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleTask(id) {
+  const t = TASKS.find(t => t.id === id);
+  if (t) { t.done = !t.done; saveTasks(); renderTasks(); }
+}
+
+function saveTasks() { localStorage.setItem('cs_tasks', JSON.stringify(TASKS)); }
+
+function toggleAddTask() {
+  document.getElementById('add-task-form').classList.toggle('open');
+  document.getElementById('task-input').focus();
+}
+
+function submitTask() {
+  const text = document.getElementById('task-input').value.trim();
+  if (!text) return;
+  TASKS.unshift({ id: Date.now(), text, cat: document.getElementById('task-cat').value, pri: document.getElementById('task-pri').value, done: false });
+  document.getElementById('task-input').value = '';
+  document.getElementById('add-task-form').classList.remove('open');
+  saveTasks(); renderTasks();
+}
+
+function renderRecs() {
+  document.getElementById('rec-panel').innerHTML = RECS.map(r => `
+    <div class="rec-card">
+      <div class="rec-header"><div class="rec-dot"></div><div class="rec-agent">${r.agent.toUpperCase()}</div></div>
+      <div class="rec-text">${r.text}</div>
+      <button class="rec-action" onclick="addRecTask('${r.text}')">${r.action} →</button>
+    </div>`).join('');
+}
+
+function addRecTask(text) {
+  TASKS.unshift({ id: Date.now(), text, cat: 'content', pri: 'high', done: false });
+  saveTasks(); renderTasks();
+  nav('tasks', document.querySelector('.nav-item:nth-child(2)'));
+}
+
+// AGENTS
 const AGENTS = {
   content: [
     { name:"Idea Engine", desc:"Generates content concepts across all 3 channels based on trends and audience data", s:"active", spd:"slow", v1:"47", l1:"IDEAS TODAY", v2:"94%", l2:"RELEVANCE" },
@@ -272,54 +521,47 @@ const AGENTS = {
   ]
 };
 
-const STATUS_LABELS = { active:"ACTIVE", processing:"PROCESSING", idle:"IDLE" };
+const SL = { active:"ACTIVE", processing:"PROCESSING", idle:"IDLE" };
 
-function card(agent, ch) {
-  const outputs = (CH[ch] || CH.antuantrds).ideas;
-  const preview = outputs[Math.floor(Math.random() * outputs.length)];
-  const delay = (Math.random() * 3).toFixed(1);
-  const dsDelay = (Math.random() * 2).toFixed(1);
+function card(a, ch) {
+  const pool = (CH[ch]||CH.antuantrds).ideas;
+  const preview = pool[Math.floor(Math.random()*pool.length)];
+  const d1 = (Math.random()*3).toFixed(1), d2 = (Math.random()*2).toFixed(1);
   return `<div class="agent-card">
-    <div class="data-stream"><div class="ds-fill" style="animation-delay:${dsDelay}s"></div></div>
+    <div class="data-stream"><div class="ds-fill" style="animation-delay:${d2}s"></div></div>
     <div class="agent-head">
-      <div>
-        <div class="agent-name">${agent.name}</div>
-        <div class="agent-desc">${agent.desc}</div>
-      </div>
-      <div class="agent-status">
-        <div class="sdot ${agent.s}"></div>${STATUS_LABELS[agent.s]}
-      </div>
+      <div><div class="agent-name">${a.name}</div><div class="agent-desc">${a.desc}</div></div>
+      <div class="agent-status"><div class="sdot ${a.s}"></div>${SL[a.s]}</div>
     </div>
-    <div class="prog-bar"><div class="prog-fill spd-${agent.spd}" style="animation-delay:${delay}s"></div></div>
+    <div class="prog-bar"><div class="prog-fill spd-${a.spd}" style="animation-delay:${d1}s"></div></div>
     <div class="out-label">Live Output</div>
-    <div class="out-text" data-pool='${JSON.stringify(ch||"antuantrds")}' data-type="ideas">${preview}<span class="cursor"></span></div>
+    <div class="out-text" data-pool="${ch||'antuantrds'}" data-type="ideas">${preview}<span class="cursor"></span></div>
     <div class="metrics">
-      <div><div class="metric-val">${agent.v1}</div><div class="metric-lbl">${agent.l1}</div></div>
-      <div><div class="metric-val">${agent.v2}</div><div class="metric-lbl">${agent.l2}</div></div>
+      <div><div class="metric-val">${a.v1}</div><div class="metric-lbl">${a.l1}</div></div>
+      <div><div class="metric-val">${a.v2}</div><div class="metric-lbl">${a.l2}</div></div>
     </div>
   </div>`;
 }
 
 function channelCards(chKey) {
   const ch = CH[chKey];
-  const defs = [
+  return [
     { name:"Idea Engine", desc:"Generates content ideas tailored to this channel's audience and voice", s:"active", spd:"slow", v1:"12", l1:"IDEAS TODAY", v2:"94%", l2:"ON-BRAND", type:"ideas" },
     { name:"Script Writer", desc:"Drafts full scripts optimized for this channel's retention curve", s:"processing", spd:"fast", v1:"4", l1:"DRAFTS", v2:"87%", l2:"COMPLETE", type:"scripts" },
     { name:"Hook Forge", desc:"Builds opening hooks tuned to this channel's viewer behavior", s:"active", spd:"normal", v1:"8", l1:"HOOKS", v2:"9.1", l2:"AVG SCORE", type:"hooks" },
     { name:"Content Calendar", desc:"Plans and sequences content drops for this channel specifically", s:"idle", spd:"slow", v1:"7", l1:"SCHEDULED", v2:"2", l2:"DRAFTS", type:"ideas" }
-  ];
-  return defs.map(a => {
-    const outputs = ch[a.type] || ch.ideas;
-    const preview = outputs[Math.floor(Math.random() * outputs.length)];
-    const delay = (Math.random() * 3).toFixed(1);
+  ].map(a => {
+    const pool = ch[a.type]||ch.ideas;
+    const preview = pool[Math.floor(Math.random()*pool.length)];
+    const d1 = (Math.random()*3).toFixed(1), d2 = (Math.random()*2).toFixed(1);
     return `<div class="agent-card">
-      <div class="data-stream"><div class="ds-fill" style="animation-delay:${(Math.random()*2).toFixed(1)}s"></div></div>
+      <div class="data-stream"><div class="ds-fill" style="animation-delay:${d2}s"></div></div>
       <div class="agent-head">
         <div><div class="agent-name">${a.name}</div><div class="agent-desc">${a.desc}</div></div>
-        <div class="agent-status"><div class="sdot ${a.s}"></div>${STATUS_LABELS[a.s]}</div>
+        <div class="agent-status"><div class="sdot ${a.s}"></div>${SL[a.s]}</div>
       </div>
-      <div class="prog-bar"><div class="prog-fill spd-${a.spd}" style="animation-delay:${delay}s"></div></div>
-      <div class="out-label">Live Output — ${chKey === 'antuantrds' ? '@antuantrds' : chKey === 'an1uan' ? '@an1uan' : 'LBV Media'}</div>
+      <div class="prog-bar"><div class="prog-fill spd-${a.spd}" style="animation-delay:${d1}s"></div></div>
+      <div class="out-label">Live Output — ${chKey==='antuantrds'?'@antuantrds':chKey==='an1uan'?'@an1uan':'LBV Media'}</div>
       <div class="out-text" data-pool="${chKey}" data-type="${a.type}">${preview}<span class="cursor"></span></div>
       <div class="metrics">
         <div><div class="metric-val">${a.v1}</div><div class="metric-lbl">${a.l1}</div></div>
@@ -329,49 +571,43 @@ function channelCards(chKey) {
   }).join('');
 }
 
-// Render dashboard grids
-document.getElementById('g-content').innerHTML = AGENTS.content.map(a => card(a,'antuantrds')).join('');
-document.getElementById('g-business').innerHTML = AGENTS.business.map(a => card(a,'an1uan')).join('');
-document.getElementById('g-finance').innerHTML = AGENTS.finance.map(a => card(a,'lbvmedia')).join('');
-document.getElementById('g-research').innerHTML = AGENTS.research.map(a => card(a,'antuantrds')).join('');
-
-// Render channel views
+// Render everything
+document.getElementById('g-content').innerHTML = AGENTS.content.map(a=>card(a,'antuantrds')).join('');
+document.getElementById('g-business').innerHTML = AGENTS.business.map(a=>card(a,'an1uan')).join('');
+document.getElementById('g-finance').innerHTML = AGENTS.finance.map(a=>card(a,'lbvmedia')).join('');
+document.getElementById('g-research').innerHTML = AGENTS.research.map(a=>card(a,'antuantrds')).join('');
 document.getElementById('ch-antuantrds').innerHTML = channelCards('antuantrds');
 document.getElementById('ch-an1uan').innerHTML = channelCards('an1uan');
 document.getElementById('ch-lbvmedia').innerHTML = channelCards('lbvmedia');
+document.getElementById('ch-business').innerHTML = AGENTS.business.map(a=>card(a,'an1uan')).join('');
+document.getElementById('ch-finance').innerHTML = AGENTS.finance.map(a=>card(a,'lbvmedia')).join('');
+document.getElementById('ch-research').innerHTML = AGENTS.research.map(a=>card(a,'antuantrds')).join('');
+document.getElementById('kb-antuantrds').innerHTML = buildKanban('antuantrds');
+document.getElementById('kb-an1uan').innerHTML = buildKanban('an1uan');
+document.getElementById('kb-lbvmedia').innerHTML = buildKanban('lbvmedia');
+renderTasks();
+renderRecs();
 
-// Render ops views
-document.getElementById('ch-business').innerHTML = AGENTS.business.map(a => card(a,'an1uan')).join('');
-document.getElementById('ch-finance').innerHTML = AGENTS.finance.map(a => card(a,'lbvmedia')).join('');
-document.getElementById('ch-research').innerHTML = AGENTS.research.map(a => card(a,'antuantrds')).join('');
-
-// Cycle outputs every 5s
-function cycleOutputs() {
+// Cycle outputs
+setInterval(() => {
   document.querySelectorAll('.out-text').forEach(el => {
-    const ch = el.getAttribute('data-pool') || 'antuantrds';
-    const type = el.getAttribute('data-type') || 'ideas';
-    const pool = (CH[ch] || CH.antuantrds)[type] || CH.antuantrds.ideas;
-    const next = pool[Math.floor(Math.random() * pool.length)];
-    el.innerHTML = next + '<span class="cursor"></span>';
+    const pool = (CH[el.getAttribute('data-pool')]||CH.antuantrds)[el.getAttribute('data-type')||'ideas']||CH.antuantrds.ideas;
+    el.innerHTML = pool[Math.floor(Math.random()*pool.length)] + '<span class="cursor"></span>';
   });
-}
-setInterval(cycleOutputs, 5000);
+}, 5000);
 
 // Nav
-const TITLES = { dashboard:'Dashboard', antuantrds:'@antuantrds', an1uan:'@an1uan', lbvmedia:'LBV Media', business:'Business Ops', finance:'Finance & Revenue', research:'Research & Intel' };
+const TITLES = { dashboard:'Dashboard', tasks:'Tasks & Recommendations', antuantrds:'@antuantrds', an1uan:'@an1uan', lbvmedia:'LBV Media', business:'Business Ops', finance:'Finance & Revenue', research:'Research & Intel' };
 function nav(view, el) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('view-' + view).classList.add('active');
-  el.classList.add('active');
-  document.getElementById('view-title').textContent = TITLES[view] || view;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  if(el) el.classList.add('active');
+  document.getElementById('view-title').textContent = TITLES[view]||view;
 }
-function filterCh(ch, el) {
-  document.querySelectorAll('.ch-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-}
+function filterCh(ch,el) { document.querySelectorAll('.ch-tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); }
 
-// Clock + sync
+// Clock
 function tick() {
   const now = new Date();
   document.getElementById('clock').textContent = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
