@@ -132,6 +132,13 @@ for direct browser → Anthropic API calls.
    server-side at this stage.
 6. Premium consistent voice (e.g. ElevenLabs) to replace device TTS.
 
+## Session memory
+- Obsidian vault linked: `OneDrive\Documents\Obsidian Vault\`
+- Claude memory folder: `Claude/` inside the vault (synced via OneDrive)
+- `Claude/Binks.md` — running memory for this project (decisions, tasks, context)
+- Skills installed globally: `huashu-design`, `session-start-hook`
+- Skills also committed to repo: `.claude/skills/huashu-design/`
+
 ## Working agreements
 - Keep `binks-mobile_31.html` runnable as a single file until Phase 2.
 - After any edit: check JS with `node --check`, confirm CSS braces balance,
