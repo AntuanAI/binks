@@ -136,6 +136,11 @@ for direct browser → Anthropic API calls.
 6. Premium consistent voice (e.g. ElevenLabs) to replace device TTS.
 
 ## Session memory
+- Email accounts:
+  - `anthonyh3rnandez@gmail.com` — personal, main account (connected to Claude)
+  - `anthony.adwebco@gmail.com` — AdWebCo
+  - `legacybyvilla@gmail.com` — Legacy By Villa
+  - `antuantrds@gmail.com` — @antuantrds / TikTok
 - Obsidian vault linked: `OneDrive\Documents\Obsidian Vault\`
 - Claude memory folder: `Claude/` inside the vault (synced via OneDrive)
 - `Claude/Binks.md` — running memory for this project (decisions, tasks, context)
