@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Studio — Antoine Villa</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #080412; --bg2: #0e0820; --accent: #a78bfa; --deep: #7c3aed;
+  --cream: #ede9fe; --dim: #4a3a6a; --border: rgba(167,139,250,0.15);
+  --card: rgba(14,8,32,0.9); --green: #10b981; --amber: #f59e0b; --red: #ef4444;
+}
+html, body { height: 100%; overflow: hidden; }
+body { background: var(--bg); color: var(--cream); font-family: 'Inter', sans-serif; display: flex; }
+
+.sidebar {
+  width: 220px; min-width: 220px; background: var(--bg2);
+  border-right: 1px solid var(--border); display: flex;
+  flex-direction: column; padding: 0; position: relative; z-index: 10;
+}
+.sidebar-logo {
+  padding: 22px 20px 18px; border-bottom: 1px solid var(--border);
+}
+.sidebar-logo h1 {
+  font-family: 'Bricolage Grotesque', sans-serif; font-size: 12px;
+  font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent);
+}
+.sidebar-logo p {
+  font-family: 'JetBrains Mono', monospace; font-size: 8px;
+  color: var(--dim); margin-top: 3px; letter-spacing: 0.12em;
+}
+.nav-section { padding: 14px 0 4px; }
+.nav-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 8px;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim);
+  padding: 0 20px; margin-bottom: 2px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px; padding: 9px 20px;
+  cursor: pointer; font-size: 12px; font-weight: 500; color: var(--dim);
+  transition: all 0.15s; border-left: 2px solid transparent;
+}
+.nav-item:hover { color: var(--cream); background: rgba(167,139,250,0.05); }
+.nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(167,139,250,0.08); }
+.nav-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--dim); flex-shrink: 0; }
+.nav-item.active .nav-dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+.nav-item.channel .nav-dot { background: var(--green); box-shadow: 0 0 5px var(--green); }
+.sidebar-status {
+  margin-top: auto; padding: 14px 20px; border-top: 1px solid var(--border);
+}
+.status-row {
+  font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--dim);
+  display: flex; justify-content: space-between; margin-bottom: 3px;
+}
+.status-row span { color: var(--green); }
+
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.topbar {
+  height: 54px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 28px; gap: 16px;
+  background: rgba(8,4,18,0.95); backdrop-filter: blur(8px); flex-shrink: 0;
+}
+.topbar-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 15px; font-weight: 600; color: var(--cream); }
+.topbar-sub { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--dim); margin-top: 1px; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 20px; }
+.sys-indicator { display: flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--dim); }
+.pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(16,185,129,0.4); } 50% { opacity:.7; box-shadow:0 0 0 4px rgba(16,185,129,0); } }
+.clock { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); }
+
+.content { flex: 1; overflow-y: auto; padding: 22px 28px; }
+.content::-webkit-scrollbar { width: 3px; }
+.content::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
+
+.channel-tabs { display: flex; gap: 6px; margin-bottom: 22px; }
+.ch-tab {
+  padding: 5px 14px; border-radius: 3px; font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.08em; cursor: pointer;
+  border: 1px solid var(--border); color: var(--dim); transition: all 0.15s; background: transparent;
+}
+.ch-tab:hover { border-color: var(--accent); color: var(--cream); }
+.ch-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(167,139,250,0.1); }
+
+.dept-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; margin-top: 6px; }
+.dept-title { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); white-space: nowrap; }
+.dept-line { flex: 1; height: 1px; background: var(--border); }
+.dept-count { font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--dim); white-space: nowrap; }
+
+.agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 10px; margin-bottom: 24px; }
+
+.agent-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+  padding: 14px; position: relative; overflow: hidden; transition: border-color 0.2s;
+}
+.agent-card:hover { border-color: rgba(167,139,250,0.3); }
+.agent-card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.agent-card:hover::after { opacity: 0.4; }
+
+.agent-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; gap: 8px; }
+.agent-name { font-family: 'Bricolage Grotesque', sans-serif; font-size: 13px; font-weight: 600; color: var(--cream); }
+.agent-desc { font-size: 10px; color: var(--dim); margin-top: 2px; line-height: 1.5; }
+.agent-status { display: flex; align-items: center; gap: 5px; font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.06em; white-space: nowrap; flex-shrink: 0; }
+
+.sdot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.sdot.active { background: var(--green); animation: pulse 1.5s infinite; }
+.sdot.processing { background: var(--amber); animation: blink 0.8s infinite; }
+.sdot.idle { background: var(--dim); }
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:.2; } }
+
+.prog-bar { height: 2px; background: rgba(167,139,250,0.08); border-radius: 1px; margin: 10px 0 8px; overflow: hidden; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--deep), var(--accent)); border-radius: 1px; }
+.prog-fill.spd-slow { animation: prog 7s ease-in-out infinite; }
+.prog-fill.spd-normal { animation: prog 3.5s ease-in-out infinite; }
+.prog-fill.spd-fast { animation: prog 1.8s ease-in-out infinite; }
+@keyframes prog { 0% { width:8%; } 60% { width:88%; } 100% { width:8%; } }
+
+.out-label { font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.1em; color: var(--dim); text-transform: uppercase; margin-bottom: 5px; }
+.out-text { font-size: 11px; color: rgba(237,233,254,0.65); line-height: 1.55; min-height: 34px; font-style: italic; }
+.cursor { display: inline-block; width: 1px; height: 11px; background: var(--accent); margin-left: 1px; vertical-align: text-bottom; animation: blink 0.7s infinite; }
+
+.metrics { display: flex; gap: 12px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+.metric-val { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 500; color: var(--accent); }
+.metric-lbl { font-family: 'JetBrains Mono', monospace; font-size: 7px; color: var(--dim); margin-top: 1px; letter-spacing: 0.08em; }
+
+.data-stream { position: absolute; right: 0; top: 0; bottom: 0; width: 2px; overflow: hidden; opacity: 0.4; }
+.ds-fill { width: 100%; background: linear-gradient(180deg, transparent, var(--accent), transparent); height: 35%; animation: stream 2.5s linear infinite; }
+@keyframes stream { 0% { transform:translateY(-100%); } 100% { transform:translateY(400%); } }
+
+.view { display: none; }
+.view.active { display: block; }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h1>Content Studio</h1>
+    <p>VILLA — COMMAND CENTER</p>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Overview</div>
+    <div class="nav-item active" onclick="nav('dashboard',this)"><div class="nav-dot"></div>Dashboard</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Channels</div>
+    <div class="nav-item channel" onclick="nav('antuantrds',this)"><div class="nav-dot"></div>@antuantrds</div>
+    <div class="nav-item channel" onclick="nav('an1uan',this)"><div class="nav-dot"></div>@an1uan</div>
+    <div class="nav-item channel" onclick="nav('lbvmedia',this)"><div class="nav-dot"></div>LBV Media</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Operations</div>
+    <div class="nav-item" onclick="nav('business',this)"><div class="nav-dot"></div>Business Ops</div>
+    <div class="nav-item" onclick="nav('finance',this)"><div class="nav-dot"></div>Finance</div>
+    <div class="nav-item" onclick="nav('research',this)"><div class="nav-dot"></div>Research & Intel</div>
+  </div>
+  <div class="sidebar-status">
+    <div class="status-row">AGENTS ACTIVE <span id="active-count">12 / 16</span></div>
+    <div class="status-row">SYSTEM <span>ONLINE</span></div>
+    <div class="status-row">LAST SYNC <span id="sync-time">—</span></div>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="view-title">Dashboard</div>
+      <div class="topbar-sub">Antoine Villa — All Systems</div>
+    </div>
+    <div class="topbar-right">
+      <div class="sys-indicator"><div class="pulse-dot"></div>ALL SYSTEMS OPERATIONAL</div>
+      <div class="clock" id="clock"></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="view active" id="view-dashboard">
+      <div class="channel-tabs">
+        <div class="ch-tab active" onclick="filterCh('all',this)">All Channels</div>
+        <div class="ch-tab" onclick="filterCh('antuantrds',this)">@antuantrds</div>
+        <div class="ch-tab" onclick="filterCh('an1uan',this)">@an1uan</div>
+        <div class="ch-tab" onclick="filterCh('lbvmedia',this)">LBV Media</div>
+      </div>
+      <div class="dept-header"><div class="dept-title">Content Studio</div><div class="dept-line"></div><div class="dept-count">5 AGENTS</div></div>
+      <div class="agent-grid" id="g-content"></div>
+      <div class="dept-header"><div class="dept-title">Business Ops</div><div class="dept-line"></div><div class="dept-count">4 AGENTS</div></div>
+      <div class="agent-grid" id="g-business"></div>
+      <div class="dept-header"><div class="dept-title">Finance & Revenue</div><div class="dept-line"></div><div class="dept-count">4 AGENTS</div></div>
+      <div class="agent-grid" id="g-finance"></div>
+      <div class="dept-header"><div class="dept-title">Research & Intel</div><div class="dept-line"></div><div class="dept-count">4 AGENTS</div></div>
+      <div class="agent-grid" id="g-research"></div>
+    </div>
+
+    <div class="view" id="view-antuantrds">
+      <div class="dept-header"><div class="dept-title">@antuantrds — AI + Advertising</div><div class="dept-line"></div></div>
+      <div class="agent-grid" id="ch-antuantrds"></div>
+    </div>
+    <div class="view" id="view-an1uan">
+      <div class="dept-header"><div class="dept-title">@an1uan — Personal Brand</div><div class="dept-line"></div></div>
+      <div class="agent-grid" id="ch-an1uan"></div>
+    </div>
+    <div class="view" id="view-lbvmedia">
+      <div class="dept-header"><div class="dept-title">Legacy By Villa Media — Old Money Lifestyle</div><div class="dept-line"></div></div>
+      <div class="agent-grid" id="ch-lbvmedia"></div>
+    </div>
+    <div class="view" id="view-business">
+      <div class="dept-header"><div class="dept-title">Business Operations</div><div class="dept-line"></div></div>
+      <div class="agent-grid" id="ch-business"></div>
+    </div>
+    <div class="view" id="view-finance">
+      <div class="dept-header"><div class="dept-title">Finance & Revenue</div><div class="dept-line"></div></div>
+      <div class="agent-grid" id="ch-finance"></div>
+    </div>
+    <div class="view" id="view-research">
+      <div class="dept-header"><div class="dept-title">Research & Intel</div><div class="dept-line"></div></div>
+      <div class="agent-grid" id="ch-research"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const CH = {
+  antuantrds: {
+    ideas: ["How AI is replacing marketing agencies in 2026","5 tools that run my entire ad campaign on autopilot","The automation stack that saves 20 hours a week","Why most ad agencies are already obsolete","This one prompt generates a full month of ad copy","I ran a $10k ad campaign using only Claude — here's how"],
+    scripts: ["Most marketers are still doing this manually and it's costing them thousands...","Here's the exact AI workflow I use to run full campaigns without a team...","Nobody talks about this — AI can now write, test, and optimize ads in real time..."],
+    hooks: ["The AI tool that replaced my entire marketing team","Your competitors are already using this — you're not","200 leads this week. Zero manual ad work."]
+  },
+  an1uan: {
+    ideas: ["How I built 3 businesses before 30 — the real story","My actual morning routine as a multi-business owner","The finance move that changed everything for me","Day in the life: running everything through AI","What nobody tells you about building a legacy"],
+    scripts: ["Real talk — this is what entrepreneurship actually looks like, not what the internet shows you...","I've been tracking my net worth since I was 22. Here's what changed everything for me...","Three businesses, one operator. Here's how AI makes that possible..."],
+    hooks: ["I run 3 businesses solo — here's the one tool that makes it possible","The finance move nobody in my circle was talking about","This is what building a legacy actually looks like day to day"]
+  },
+  lbvmedia: {
+    ideas: ["What old money style actually means in 2026","Building a luxury brand from nothing — the LBV story","The fragrance philosophy behind Legacy By Villa","Why timeless always beats trendy","Old money aesthetics: what it is and what it isn't"],
+    scripts: ["Old money isn't about price tags. It's about intention, restraint, and legacy. Here's what that actually looks like...","Legacy By Villa started as wall art on Etsy. Here's where it's going — clothing, fragrance, lifestyle...","The brands that last 100 years all have one thing in common. We're building that from the ground up..."],
+    hooks: ["Old money style isn't what most people think it is","Legacy By Villa: this brand is just getting started","The fragrance collection that changes how the room perceives you"]
+  }
+};
+
+const AGENTS = {
+  content: [
+    { name:"Idea Engine", desc:"Generates content concepts across all 3 channels based on trends and audience data", s:"active", spd:"slow", v1:"47", l1:"IDEAS TODAY", v2:"94%", l2:"RELEVANCE" },
+    { name:"Script Writer", desc:"Drafts full video scripts optimized for retention and hook strength per channel", s:"processing", spd:"fast", v1:"12", l1:"SCRIPTS/DAY", v2:"87%", l2:"COMPLETION" },
+    { name:"Hook Forge", desc:"Engineers opening hooks designed to stop the scroll in the first 3 seconds", s:"active", spd:"normal", v1:"38", l1:"HOOKS TESTED", v2:"9.2", l2:"AVG SCORE" },
+    { name:"Audience Intel", desc:"Tracks behavior, retention patterns, and comment sentiment per channel", s:"active", spd:"slow", v1:"2.4k", l1:"PROFILES", v2:"78%", l2:"RETENTION" },
+    { name:"Content Calendar", desc:"Schedules and sequences posts across TikTok, Reels, Pinterest, and Shorts", s:"idle", spd:"normal", v1:"21", l1:"SCHEDULED", v2:"3", l2:"PENDING" }
+  ],
+  business: [
+    { name:"Inbox Manager", desc:"Triages and categorizes incoming emails across all business accounts by priority", s:"active", spd:"fast", v1:"5", l1:"UNREAD", v2:"3", l2:"PRIORITY" },
+    { name:"Task Tracker", desc:"Manages active tasks across AdWebCo, Legacy By Villa, and content operations", s:"active", spd:"normal", v1:"18", l1:"OPEN TASKS", v2:"6", l2:"DUE TODAY" },
+    { name:"Client CRM", desc:"Tracks web design leads, client status, and follow-up sequences for AdWebCo", s:"processing", spd:"slow", v1:"9", l1:"ACTIVE LEADS", v2:"3", l2:"HOT" },
+    { name:"Research Analyst", desc:"Compiles market research, competitor data, and industry intelligence on demand", s:"idle", spd:"normal", v1:"14", l1:"REPORTS", v2:"2", l2:"IN PROGRESS" }
+  ],
+  finance: [
+    { name:"Revenue Tracker", desc:"Monitors income streams across Etsy, AdWebCo clients, and content monetization", s:"active", spd:"slow", v1:"$—", l1:"MTD REVENUE", v2:"3", l2:"STREAMS" },
+    { name:"Expense Monitor", desc:"Tracks outgoing costs, tool subscriptions, and all operating expenses", s:"active", spd:"normal", v1:"$—", l1:"MTD SPEND", v2:"12", l2:"SUBSCRIPTIONS" },
+    { name:"Opportunity Spotter", desc:"Identifies new revenue streams aligned with current business momentum", s:"processing", spd:"fast", v1:"7", l1:"FLAGGED", v2:"2", l2:"HIGH VALUE" },
+    { name:"Pricing Analyst", desc:"Evaluates product and service pricing against market comps and positioning", s:"idle", spd:"slow", v1:"5", l1:"REVIEWED", v2:"1", l2:"UPDATE DUE" }
+  ],
+  research: [
+    { name:"Trend Spotter", desc:"Monitors trending topics, sounds, and formats relevant to all 3 channels", s:"active", spd:"fast", v1:"23", l1:"TRENDS", v2:"8", l2:"ACTIONABLE" },
+    { name:"Competitor Tracker", desc:"Watches competitor content output, engagement patterns, and positioning moves", s:"active", spd:"slow", v1:"14", l1:"TRACKED", v2:"3", l2:"ALERTS" },
+    { name:"Niche Analyst", desc:"Maps niche saturation, white space opportunities, and audience migration", s:"processing", spd:"normal", v1:"6", l1:"NICHES", v2:"2", l2:"OPENINGS" },
+    { name:"Audience Decoder", desc:"Decodes audience language, pain points, and desire mapping per channel", s:"active", spd:"slow", v1:"3", l1:"AUDIENCES", v2:"91%", l2:"ACCURACY" }
+  ]
+};
+
+const STATUS_LABELS = { active:"ACTIVE", processing:"PROCESSING", idle:"IDLE" };
+
+function card(agent, ch) {
+  const outputs = (CH[ch] || CH.antuantrds).ideas;
+  const preview = outputs[Math.floor(Math.random() * outputs.length)];
+  const delay = (Math.random() * 3).toFixed(1);
+  const dsDelay = (Math.random() * 2).toFixed(1);
+  return `<div class="agent-card">
+    <div class="data-stream"><div class="ds-fill" style="animation-delay:${dsDelay}s"></div></div>
+    <div class="agent-head">
+      <div>
+        <div class="agent-name">${agent.name}</div>
+        <div class="agent-desc">${agent.desc}</div>
+      </div>
+      <div class="agent-status">
+        <div class="sdot ${agent.s}"></div>${STATUS_LABELS[agent.s]}
+      </div>
+    </div>
+    <div class="prog-bar"><div class="prog-fill spd-${agent.spd}" style="animation-delay:${delay}s"></div></div>
+    <div class="out-label">Live Output</div>
+    <div class="out-text" data-pool='${JSON.stringify(ch||"antuantrds")}' data-type="ideas">${preview}<span class="cursor"></span></div>
+    <div class="metrics">
+      <div><div class="metric-val">${agent.v1}</div><div class="metric-lbl">${agent.l1}</div></div>
+      <div><div class="metric-val">${agent.v2}</div><div class="metric-lbl">${agent.l2}</div></div>
+    </div>
+  </div>`;
+}
+
+function channelCards(chKey) {
+  const ch = CH[chKey];
+  const defs = [
+    { name:"Idea Engine", desc:"Generates content ideas tailored to this channel's audience and voice", s:"active", spd:"slow", v1:"12", l1:"IDEAS TODAY", v2:"94%", l2:"ON-BRAND", type:"ideas" },
+    { name:"Script Writer", desc:"Drafts full scripts optimized for this channel's retention curve", s:"processing", spd:"fast", v1:"4", l1:"DRAFTS", v2:"87%", l2:"COMPLETE", type:"scripts" },
+    { name:"Hook Forge", desc:"Builds opening hooks tuned to this channel's viewer behavior", s:"active", spd:"normal", v1:"8", l1:"HOOKS", v2:"9.1", l2:"AVG SCORE", type:"hooks" },
+    { name:"Content Calendar", desc:"Plans and sequences content drops for this channel specifically", s:"idle", spd:"slow", v1:"7", l1:"SCHEDULED", v2:"2", l2:"DRAFTS", type:"ideas" }
+  ];
+  return defs.map(a => {
+    const outputs = ch[a.type] || ch.ideas;
+    const preview = outputs[Math.floor(Math.random() * outputs.length)];
+    const delay = (Math.random() * 3).toFixed(1);
+    return `<div class="agent-card">
+      <div class="data-stream"><div class="ds-fill" style="animation-delay:${(Math.random()*2).toFixed(1)}s"></div></div>
+      <div class="agent-head">
+        <div><div class="agent-name">${a.name}</div><div class="agent-desc">${a.desc}</div></div>
+        <div class="agent-status"><div class="sdot ${a.s}"></div>${STATUS_LABELS[a.s]}</div>
+      </div>
+      <div class="prog-bar"><div class="prog-fill spd-${a.spd}" style="animation-delay:${delay}s"></div></div>
+      <div class="out-label">Live Output — ${chKey === 'antuantrds' ? '@antuantrds' : chKey === 'an1uan' ? '@an1uan' : 'LBV Media'}</div>
+      <div class="out-text" data-pool="${chKey}" data-type="${a.type}">${preview}<span class="cursor"></span></div>
+      <div class="metrics">
+        <div><div class="metric-val">${a.v1}</div><div class="metric-lbl">${a.l1}</div></div>
+        <div><div class="metric-val">${a.v2}</div><div class="metric-lbl">${a.l2}</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Render dashboard grids
+document.getElementById('g-content').innerHTML = AGENTS.content.map(a => card(a,'antuantrds')).join('');
+document.getElementById('g-business').innerHTML = AGENTS.business.map(a => card(a,'an1uan')).join('');
+document.getElementById('g-finance').innerHTML = AGENTS.finance.map(a => card(a,'lbvmedia')).join('');
+document.getElementById('g-research').innerHTML = AGENTS.research.map(a => card(a,'antuantrds')).join('');
+
+// Render channel views
+document.getElementById('ch-antuantrds').innerHTML = channelCards('antuantrds');
+document.getElementById('ch-an1uan').innerHTML = channelCards('an1uan');
+document.getElementById('ch-lbvmedia').innerHTML = channelCards('lbvmedia');
+
+// Render ops views
+document.getElementById('ch-business').innerHTML = AGENTS.business.map(a => card(a,'an1uan')).join('');
+document.getElementById('ch-finance').innerHTML = AGENTS.finance.map(a => card(a,'lbvmedia')).join('');
+document.getElementById('ch-research').innerHTML = AGENTS.research.map(a => card(a,'antuantrds')).join('');
+
+// Cycle outputs every 5s
+function cycleOutputs() {
+  document.querySelectorAll('.out-text').forEach(el => {
+    const ch = el.getAttribute('data-pool') || 'antuantrds';
+    const type = el.getAttribute('data-type') || 'ideas';
+    const pool = (CH[ch] || CH.antuantrds)[type] || CH.antuantrds.ideas;
+    const next = pool[Math.floor(Math.random() * pool.length)];
+    el.innerHTML = next + '<span class="cursor"></span>';
+  });
+}
+setInterval(cycleOutputs, 5000);
+
+// Nav
+const TITLES = { dashboard:'Dashboard', antuantrds:'@antuantrds', an1uan:'@an1uan', lbvmedia:'LBV Media', business:'Business Ops', finance:'Finance & Revenue', research:'Research & Intel' };
+function nav(view, el) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  el.classList.add('active');
+  document.getElementById('view-title').textContent = TITLES[view] || view;
+}
+function filterCh(ch, el) {
+  document.querySelectorAll('.ch-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Clock + sync
+function tick() {
+  const now = new Date();
+  document.getElementById('clock').textContent = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('sync-time').textContent = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+}
+tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>
