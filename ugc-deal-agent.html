@@ -707,6 +707,7 @@ function renderDrafts(){
           <button class="da-btn" id="editbtn_${i}" style="background:rgba(251,146,60,.1);color:var(--orange);border:1px solid rgba(251,146,60,.25)" onclick="toggleEdit(${i})">✏ Edit</button>
           <button class="da-btn da-followup" onclick="genFollowUp(${i})">↩ Follow-Up</button>
           <button class="da-btn da-status" onclick="openStatusModal(${i})">● Status</button>
+          <button class="da-btn" style="background:rgba(248,113,113,.08);color:var(--red);border:1px solid rgba(248,113,113,.22)" onclick="deleteDraft(${i})">🗑 Delete</button>
         </div>
       </div>
     </div>`;
@@ -714,6 +715,13 @@ function renderDrafts(){
 }
 function toggleDraft(id){document.getElementById(id)?.classList.toggle('open')}
 function saveContact(i,v){drafts[i].contact=v;localStorage.setItem('ugc_drafts',JSON.stringify(drafts))}
+
+function deleteDraft(i){
+  if(!confirm('Delete this draft?'))return;
+  drafts.splice(i,1);
+  localStorage.setItem('ugc_drafts',JSON.stringify(drafts));
+  renderDrafts();updateStats();
+}
 
 function toggleEdit(i){
   const viewEl=document.getElementById('view_'+i);
