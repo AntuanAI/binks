@@ -565,13 +565,13 @@ async function searchBrands(){
   if(!q){alert('Enter a search term.');return}
   const niches=chips.length?chips.join(', '):'TikTok UGC content';
   const resultsEl=document.getElementById('brandResults');
-  resultsEl.innerHTML='<div class="empty" style="padding:16px 0"><div class="empty-icon">⏳</div>Searching...</div>';
+  resultsEl.innerHTML='<div class="empty" style="padding:16px 0"><div class="empty-icon">⏳</div>Finding brands on TikTok...</div>';
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'content-type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1000,messages:[{role:'user',content:
-        `You are a UGC brand research agent. The creator makes TikTok UGC content in these niches: ${niches}.\n\nSearch query: "${q}"\n\nFind 6 real brands that match this search. Focus on brands that actively run TikTok UGC campaigns.\n\nFor each brand return:\n- name: real brand name\n- description: what they sell and who their customer is (1 sentence)\n- why: why they are a great UGC fit for TikTok (1 sentence)\n- tier: "easy" (small DTC, responsive) | "medium" (established) | "competitive" (big brand)\n- budget: typical UGC budget range e.g. "$150-$300/video"\n- contactHint: how to find their real partnership contact (e.g. "Check their TikTok bio link, usually has a creator portal" or "Email format: partnerships@brandname.com")\n\nReturn ONLY a JSON array, no markdown:\n[{"name":"...","description":"...","why":"...","tier":"easy|medium|competitive","budget":"...","contactHint":"..."}]`
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1200,messages:[{role:'user',content:
+        `You are a UGC brand research agent. The creator makes TikTok UGC content in these niches: ${niches}.\n\nSearch query: "${q}"\n\nFind 6 REAL brands that:\n1. Actually exist and have a verified TikTok presence\n2. Actively run TikTok UGC or paid ad campaigns\n3. Match the search query and creator niches\n\nFor each brand return:\n- name: exact real brand name\n- tiktokHandle: their REAL TikTok username (the actual handle they use, e.g. "fentybeauty", "gymshark") — only include if you are confident it is correct\n- description: what they sell and who their customer is (1 sentence)\n- why: why they are a great TikTok UGC fit (1 sentence)\n- tier: "easy" (small DTC brand, fast to respond) | "medium" (mid-size, established) | "competitive" (major brand)\n- budget: typical UGC rate range e.g. "$150–$300/video"\n- contactHint: most reliable way to find their real UGC/partnerships contact (be specific — mention their website careers/contact page, TikTok bio link, or known email format)\n- website: their real website URL\n\nReturn ONLY a JSON array, no markdown:\n[{"name":"...","tiktokHandle":"...","description":"...","why":"...","tier":"easy|medium|competitive","budget":"...","contactHint":"...","website":"..."}]`
       }]})
     });
     const data=await res.json();
@@ -584,22 +584,26 @@ async function searchBrands(){
         <div class="br-info">
           <div class="br-name">${esc(b.name)}</div>
           <div class="br-desc">${esc(b.description)}</div>
-          <div class="br-desc" style="color:var(--purple);margin-bottom:6px">${esc(b.why)}</div>
-          <div class="br-tags">
+          <div class="br-desc" style="color:var(--purple);margin-bottom:8px">${esc(b.why)}</div>
+          <div class="br-tags" style="margin-bottom:8px">
             <span class="br-tag ${tierColors[b.tier]||''}">${b.tier==='easy'?'Easy win':b.tier==='medium'?'Mid-range':'Competitive'}</span>
             <span class="br-tag">${esc(b.budget)}</span>
           </div>
-          <div style="font-family:var(--mono);font-size:.6rem;color:var(--dim);margin-top:6px">💡 ${esc(b.contactHint)}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px">
+            ${b.tiktokHandle?`<a href="https://www.tiktok.com/@${esc(b.tiktokHandle)}" target="_blank" style="display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:4px 10px;font-size:.72rem;color:var(--cream);text-decoration:none;font-family:var(--mono)">🎵 @${esc(b.tiktokHandle)}</a>`:''}
+            ${b.website?`<a href="${esc(b.website)}" target="_blank" style="display:inline-flex;align-items:center;gap:4px;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);border-radius:6px;padding:4px 10px;font-size:.72rem;color:var(--purple);text-decoration:none;font-family:var(--mono)">🌐 Website</a>`:''}
+          </div>
+          <div style="font-family:var(--mono);font-size:.6rem;color:var(--dim);line-height:1.5">💡 ${esc(b.contactHint)}</div>
         </div>
-        <button class="btn-add-brand" id="ab${i}" onclick="addBrand(${i},'${esc(b.name).replace(/'/g,"\\'")}','${esc(b.budget||'').replace(/'/g,"\\'")}')">+ Add</button>
+        <button class="btn-add-brand" id="ab${i}" onclick="addBrand(${i},'${esc(b.name).replace(/'/g,"\\'")}','${esc(b.budget||'').replace(/'/g,"\\'")}','${esc(b.tiktokHandle||'').replace(/'/g,"\\'")}')">+ Add</button>
       </div>`).join('');
     window._searchResults=brands;
   }catch(e){resultsEl.innerHTML=`<div class="empty" style="padding:16px 0">Search failed: ${esc(e.message)}</div>`}
 }
 
-function addBrand(i,name,budget){
+function addBrand(i,name,budget,tiktok){
   if(targets.some(t=>t.name.toLowerCase()===name.toLowerCase()))return;
-  targets.push({name,budget,contact:''});
+  targets.push({name,budget,tiktok,contact:''});
   localStorage.setItem('ugc_targets',JSON.stringify(targets));
   const btn=document.getElementById('ab'+i);
   if(btn){btn.textContent='✓ Added';btn.classList.add('added');btn.disabled=true}
@@ -612,7 +616,11 @@ function renderTargets(){
   if(!targets.length){el.innerHTML='<div class="empty" style="padding:12px 0;font-size:.78rem">No brands added yet</div>';return}
   el.innerHTML=targets.map((t,i)=>`
     <div class="target-item">
-      <div><span style="color:var(--cream);font-weight:500">${esc(t.name)}</span>${t.budget?`<span style="font-family:var(--mono);font-size:.58rem;color:var(--dim);margin-left:8px">${esc(t.budget)}</span>`:''}</div>
+      <div style="flex:1;min-width:0">
+        <span style="color:var(--cream);font-weight:500">${esc(t.name)}</span>
+        ${t.budget?`<span style="font-family:var(--mono);font-size:.58rem;color:var(--dim);margin-left:8px">${esc(t.budget)}</span>`:''}
+        ${t.tiktok?`<br><a href="https://www.tiktok.com/@${esc(t.tiktok)}" target="_blank" style="font-family:var(--mono);font-size:.6rem;color:var(--purple);text-decoration:none">🎵 @${esc(t.tiktok)}</a>`:''}
+      </div>
       <button class="ti-remove" onclick="removeTarget(${i})">✕</button>
     </div>`).join('');
 }
