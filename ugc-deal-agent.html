@@ -153,6 +153,11 @@ body{font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
 .email-body-text{font-size:.84rem;line-height:1.75;color:var(--volt);white-space:pre-wrap;
   background:rgba(0,0,0,.22);border-radius:8px;padding:12px;border:1px solid rgba(167,139,250,.1);
   margin:8px 0;max-height:280px;overflow-y:auto}
+.email-body-edit{font-size:.84rem;line-height:1.75;color:var(--volt);white-space:pre-wrap;
+  background:rgba(0,0,0,.22);border-radius:8px;padding:12px;border:1px solid var(--purple);
+  margin:8px 0;min-height:180px;width:100%;resize:vertical;font-family:'Inter',sans-serif;outline:none}
+.subj-edit{background:rgba(167,139,250,.07);border:1px solid var(--purple);border-radius:7px;
+  padding:7px 10px;color:var(--volt);font-family:'Inter',sans-serif;font-size:.82rem;outline:none;width:100%;margin-bottom:6px}
 .draft-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
 .da-btn{padding:7px 13px;border-radius:7px;font-size:.72rem;cursor:pointer;
   font-family:'Inter',sans-serif;font-weight:500;transition:all .2s;border:none;display:flex;align-items:center;gap:4px}
@@ -688,11 +693,18 @@ function renderDrafts(){
           <input type="email" id="to_${i}" value="${esc(d.contact)}" placeholder="partnerships@brand.com"
             onchange="saveContact(${i},this.value)">
         </div>
-        <div class="subj-line">Subject: <span>${esc(d.subject)}</span></div>
-        <div class="email-body-text">${esc(d.body)}</div>
+        <div id="view_${i}">
+          <div class="subj-line">Subject: <span>${esc(d.subject)}</span></div>
+          <div class="email-body-text">${esc(d.body)}</div>
+        </div>
+        <div id="edit_${i}" style="display:none">
+          <input class="subj-edit" id="subjedit_${i}" value="${esc(d.subject)}">
+          <textarea class="email-body-edit" id="bodyedit_${i}">${esc(d.body)}</textarea>
+        </div>
         <div class="draft-actions">
           <button class="da-btn da-send" onclick="sendDraft(${i})">${d.status==='sent'?'Resend':'✦ Send Email'}</button>
           <button class="da-btn da-copy" onclick="copyDraft(${i})">⎘ Copy</button>
+          <button class="da-btn" id="editbtn_${i}" style="background:rgba(251,146,60,.1);color:var(--orange);border:1px solid rgba(251,146,60,.25)" onclick="toggleEdit(${i})">✏ Edit</button>
           <button class="da-btn da-followup" onclick="genFollowUp(${i})">↩ Follow-Up</button>
           <button class="da-btn da-status" onclick="openStatusModal(${i})">● Status</button>
         </div>
@@ -702,6 +714,29 @@ function renderDrafts(){
 }
 function toggleDraft(id){document.getElementById(id)?.classList.toggle('open')}
 function saveContact(i,v){drafts[i].contact=v;localStorage.setItem('ugc_drafts',JSON.stringify(drafts))}
+
+function toggleEdit(i){
+  const viewEl=document.getElementById('view_'+i);
+  const editEl=document.getElementById('edit_'+i);
+  const btn=document.getElementById('editbtn_'+i);
+  const isEditing=editEl.style.display!=='none';
+  if(isEditing){
+    // save changes
+    const newSubj=document.getElementById('subjedit_'+i).value.trim();
+    const newBody=document.getElementById('bodyedit_'+i).value.trim();
+    drafts[i].subject=newSubj;
+    drafts[i].body=newBody;
+    localStorage.setItem('ugc_drafts',JSON.stringify(drafts));
+    viewEl.innerHTML=`<div class="subj-line">Subject: <span>${esc(newSubj)}</span></div><div class="email-body-text">${esc(newBody)}</div>`;
+    editEl.style.display='none';
+    viewEl.style.display='block';
+    btn.textContent='✏ Edit';
+  } else {
+    viewEl.style.display='none';
+    editEl.style.display='block';
+    btn.textContent='✓ Save';
+  }
+}
 
 // ── SEND DRAFT ─────────────────────────────────────────────────
 async function sendDraft(i){
