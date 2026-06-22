@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>UGC AGENT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#080412;--bg2:#0e0820;
+  --purple:#a78bfa;--purple-deep:#7c3aed;
+  --gold:#d4a017;--cream:#ede9fe;--dim:#4a3a6a;--volt:#e9d5ff;
+  --green:#34d399;--red:#f87171;--blue:#60a5fa;
+  --mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:radial-gradient(ellipse at 30% 10%,#1a0830 0%,#080412 65%)}
+body{font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
+
+/* ── LAYOUT ── */
+.app{max-width:680px;margin:0 auto;padding:20px 16px 60px;position:relative;z-index:1}
+
+/* ── HEADER ── */
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.logo-block{display:flex;align-items:center;gap:10px}
+.logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:.22em;color:var(--purple)}
+.logo-sub{font-family:var(--mono);font-size:.58rem;color:var(--dim);letter-spacing:.18em;text-transform:uppercase;margin-top:2px}
+.status-pill{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 10px;border-radius:20px;border:1px solid var(--dim);color:var(--dim);display:flex;align-items:center;gap:6px}
+.status-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ── API KEY BAR ── */
+.key-bar{background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.2);border-radius:12px;
+  padding:14px 16px;margin-bottom:22px;display:flex;align-items:center;gap:10px}
+.key-bar label{font-family:var(--mono);font-size:.62rem;color:var(--dim);white-space:nowrap;text-transform:uppercase;letter-spacing:.1em}
+.key-bar input{flex:1;background:transparent;border:none;outline:none;color:var(--cream);font-family:var(--mono);font-size:.78rem;min-width:0}
+.key-bar input::placeholder{color:var(--dim)}
+.key-save{background:var(--purple-deep);color:var(--cream);border:none;border-radius:8px;padding:6px 14px;
+  font-family:var(--mono);font-size:.65rem;cursor:pointer;white-space:nowrap;transition:opacity .2s}
+.key-save:hover{opacity:.85}
+
+/* ── SECTION TITLES ── */
+.section-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:.8rem;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--purple);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:rgba(167,139,250,.18)}
+
+/* ── PROFILE CARD ── */
+.card{background:rgba(14,8,32,.7);border:1px solid rgba(167,139,250,.15);border-radius:16px;
+  padding:20px;margin-bottom:22px;backdrop-filter:blur(8px)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+.field label{font-family:var(--mono);font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.1em}
+.field input,.field select,.field textarea{
+  background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.18);border-radius:8px;
+  padding:9px 12px;color:var(--cream);font-family:'Inter',sans-serif;font-size:.85rem;outline:none;
+  transition:border-color .2s;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--purple)}
+.field select{cursor:pointer;-webkit-appearance:none}
+.field textarea{resize:vertical;min-height:72px;line-height:1.5}
+.field input::placeholder,.field textarea::placeholder{color:var(--dim);opacity:.7}
+
+/* ── NICHE CHIPS ── */
+.chip-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip{padding:6px 14px;border-radius:20px;border:1px solid rgba(167,139,250,.25);
+  font-size:.75rem;cursor:pointer;transition:all .2s;color:var(--dim);background:transparent;font-family:'Inter',sans-serif}
+.chip.active{background:rgba(124,58,237,.3);border-color:var(--purple);color:var(--cream)}
+
+/* ── TARGET INPUT ── */
+.btn-find{width:100%;padding:14px;background:linear-gradient(135deg,rgba(124,58,237,.4),rgba(167,139,250,.2));
+  border:1px solid rgba(167,139,250,.4);border-radius:10px;color:var(--cream);
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:.95rem;
+  letter-spacing:.06em;cursor:pointer;transition:all .2s;margin-bottom:14px}
+.btn-find:hover{background:linear-gradient(135deg,rgba(124,58,237,.6),rgba(167,139,250,.3));border-color:var(--purple)}
+.btn-find:disabled{opacity:.45;cursor:not-allowed}
+.divider-or{text-align:center;font-family:var(--mono);font-size:.6rem;color:var(--dim);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+
+/* brand suggestion chips */
+.suggest-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.suggest-item{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  background:rgba(124,58,237,.1);border:1px solid rgba(167,139,250,.25);border-radius:10px;
+  padding:10px 12px;cursor:default}
+.suggest-item .si-info{flex:1;min-width:0}
+.suggest-item .si-name{font-weight:600;font-size:.88rem;color:var(--cream);margin-bottom:2px}
+.suggest-item .si-why{font-size:.75rem;color:var(--dim);line-height:1.4}
+.suggest-item .si-btn{background:var(--purple-deep);color:var(--cream);border:none;border-radius:7px;
+  padding:6px 12px;font-size:.72rem;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;
+  transition:opacity .2s;flex-shrink:0}
+.suggest-item .si-btn:hover{opacity:.8}
+.suggest-item .si-btn.added{background:rgba(52,211,153,.2);color:var(--green);border:1px solid rgba(52,211,153,.3);cursor:default}
+
+.target-row{display:flex;gap:8px;margin-bottom:10px}
+.target-row input{flex:1;background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.18);
+  border-radius:8px;padding:9px 12px;color:var(--cream);font-size:.85rem;outline:none;
+  font-family:'Inter',sans-serif;transition:border-color .2s}
+.target-row input:focus{border-color:var(--purple)}
+.target-row input::placeholder{color:var(--dim);opacity:.7}
+.btn-add{background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);color:var(--purple);
+  border-radius:8px;padding:9px 14px;font-size:.8rem;cursor:pointer;white-space:nowrap;transition:all .2s}
+.btn-add:hover{background:rgba(167,139,250,.25)}
+
+.target-list{display:flex;flex-direction:column;gap:6px}
+.target-item{display:flex;align-items:center;justify-content:space-between;
+  background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.12);
+  border-radius:8px;padding:8px 12px;font-size:.82rem}
+.target-item .name{color:var(--cream)}
+.target-item .meta{font-family:var(--mono);font-size:.6rem;color:var(--dim)}
+.target-item .remove{background:none;border:none;color:var(--dim);cursor:pointer;font-size:.9rem;padding:0 4px;transition:color .2s}
+.target-item .remove:hover{color:var(--red)}
+
+/* ── GENERATE BUTTON ── */
+.btn-generate{width:100%;padding:16px;background:linear-gradient(135deg,var(--purple-deep),#6d28d9);
+  border:none;border-radius:12px;color:var(--cream);font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:600;font-size:1rem;letter-spacing:.06em;cursor:pointer;position:relative;
+  transition:opacity .2s;margin-bottom:26px;overflow:hidden}
+.btn-generate:hover{opacity:.9}
+.btn-generate:disabled{opacity:.45;cursor:not-allowed}
+.btn-generate .shimmer{position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);
+  transform:translateX(-100%);animation:shimmer 2.4s infinite}
+@keyframes shimmer{to{transform:translateX(100%)}}
+
+/* ── STATUS LOG ── */
+.log-box{font-family:var(--mono);font-size:.68rem;color:var(--dim);line-height:2;
+  margin-bottom:20px;padding:10px 14px;background:rgba(0,0,0,.3);border-radius:8px;
+  border:1px solid rgba(167,139,250,.1);min-height:40px;display:none}
+.log-box.active{display:block}
+.log-line{color:var(--purple)}
+.log-line.ok{color:var(--green)}
+.log-line.err{color:var(--red)}
+
+/* ── EMAIL CARDS ── */
+.email-card{background:rgba(14,8,32,.8);border:1px solid rgba(167,139,250,.2);border-radius:16px;
+  margin-bottom:16px;overflow:hidden;transition:border-color .3s}
+.email-card:hover{border-color:rgba(167,139,250,.4)}
+.email-card-hdr{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(167,139,250,.1);cursor:pointer;user-select:none}
+.email-card-hdr:hover{background:rgba(167,139,250,.04)}
+.email-brand{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:.95rem;color:var(--cream)}
+.email-status{font-family:var(--mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;
+  padding:3px 9px;border-radius:12px}
+.email-status.draft{color:var(--gold);border:1px solid rgba(212,160,23,.3);background:rgba(212,160,23,.08)}
+.email-status.sent{color:var(--green);border:1px solid rgba(52,211,153,.3);background:rgba(52,211,153,.08)}
+.email-status.replied{color:var(--blue);border:1px solid rgba(96,165,250,.3);background:rgba(96,165,250,.08)}
+.email-status.closed{color:var(--purple);border:1px solid rgba(167,139,250,.3);background:rgba(167,139,250,.1)}
+
+.email-body{display:none;padding:18px}
+.email-body.open{display:block}
+
+.email-subject{font-family:var(--mono);font-size:.7rem;color:var(--dim);text-transform:uppercase;
+  letter-spacing:.1em;margin-bottom:6px}
+.email-subject span{color:var(--volt);font-size:.8rem;text-transform:none;letter-spacing:0;
+  font-family:'Inter',sans-serif;font-weight:500}
+.email-text{font-size:.87rem;line-height:1.75;color:var(--volt);white-space:pre-wrap;
+  background:rgba(0,0,0,.25);border-radius:8px;padding:14px;border:1px solid rgba(167,139,250,.1);
+  margin:12px 0;max-height:360px;overflow-y:auto}
+.email-actions{display:flex;gap:8px;flex-wrap:wrap}
+.ea-btn{padding:8px 16px;border-radius:8px;font-size:.75rem;cursor:pointer;
+  font-family:'Inter',sans-serif;font-weight:500;transition:all .2s;border:none;display:flex;align-items:center;gap:6px}
+.ea-gmail{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)}
+.ea-gmail:hover{background:rgba(248,113,113,.28)}
+.ea-copy{background:rgba(167,139,250,.12);color:var(--purple);border:1px solid rgba(167,139,250,.25)}
+.ea-copy:hover{background:rgba(167,139,250,.22)}
+.ea-followup{background:rgba(96,165,250,.1);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
+.ea-followup:hover{background:rgba(96,165,250,.2)}
+.ea-status{background:rgba(52,211,153,.1);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.ea-status:hover{background:rgba(52,211,153,.2)}
+
+/* ── TRACKER STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.stat-box{background:rgba(14,8,32,.7);border:1px solid rgba(167,139,250,.15);border-radius:12px;
+  padding:14px 10px;text-align:center}
+.stat-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.6rem;
+  color:var(--purple);line-height:1}
+.stat-label{font-family:var(--mono);font-size:.55rem;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--dim);margin-top:4px}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:none;
+  align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:#0e0820;border:1px solid rgba(167,139,250,.3);border-radius:16px;
+  padding:24px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto}
+.modal h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1.05rem;
+  color:var(--purple);margin-bottom:16px}
+.modal-btns{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+.modal-btns button{padding:8px 18px;border-radius:8px;font-size:.8rem;cursor:pointer;
+  font-family:'Inter',sans-serif;border:none}
+.modal-cancel{background:rgba(167,139,250,.1);color:var(--dim)}
+.modal-ok{background:var(--purple-deep);color:var(--cream)}
+
+/* status dropdown in modal */
+.status-select{width:100%;background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.2);
+  border-radius:8px;padding:10px 12px;color:var(--cream);font-family:'Inter',sans-serif;font-size:.88rem;outline:none}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:40px 20px;color:var(--dim);font-size:.85rem;line-height:1.7}
+.empty-icon{font-size:2.5rem;margin-bottom:12px;opacity:.4}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px}
+
+/* ── CANVAS BG ── */
+#bgCanvas{position:fixed;inset:0;z-index:0;opacity:.35;pointer-events:none}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:4px;margin-bottom:22px;background:rgba(14,8,32,.6);
+  border:1px solid rgba(167,139,250,.15);border-radius:12px;padding:4px}
+.tab{flex:1;padding:9px;text-align:center;font-family:var(--mono);font-size:.65rem;
+  text-transform:uppercase;letter-spacing:.1em;cursor:pointer;border-radius:9px;
+  transition:all .2s;color:var(--dim);border:none;background:none}
+.tab.active{background:rgba(124,58,237,.35);color:var(--cream);border:1px solid rgba(167,139,250,.3)}
+
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+@media(max-width:480px){
+  .grid-2{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .grid-3{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="logo-block">
+      <div>
+        <div class="logo">UGC AGENT</div>
+        <div class="logo-sub">Deal Outreach Engine</div>
+      </div>
+    </div>
+    <div class="status-pill"><span class="dot"></span>Ready</div>
+  </div>
+
+  <!-- API KEY -->
+  <div class="key-bar">
+    <label>API KEY</label>
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off">
+    <button class="key-save" onclick="saveKey()">Save</button>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('compose')">✦ Compose</button>
+    <button class="tab" onclick="switchTab('outbox')">✦ Outbox</button>
+    <button class="tab" onclick="switchTab('tracker')">✦ Tracker</button>
+  </div>
+
+  <!-- ═══ TAB: COMPOSE ═══ -->
+  <div class="tab-content active" id="tab-compose">
+
+    <div class="section-title">Your Creator Profile</div>
+    <div class="card">
+      <div class="grid-2" style="margin-bottom:12px">
+        <div class="field">
+          <label>Your Name</label>
+          <input type="text" id="creatorName" placeholder="e.g. Jasmine Rivera">
+        </div>
+        <div class="field">
+          <label>TikTok Handle</label>
+          <input type="text" id="tiktokHandle" placeholder="@yourusername">
+        </div>
+        <div class="field">
+          <label>Follower Count</label>
+          <select id="followerCount">
+            <option value="under 1K">Under 1K (nano)</option>
+            <option value="1K–5K">1K – 5K (nano)</option>
+            <option value="5K–10K" selected>5K – 10K (micro)</option>
+            <option value="10K–50K">10K – 50K (micro)</option>
+            <option value="50K–100K">50K – 100K (mid)</option>
+            <option value="100K+">100K+ (macro)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Rate Range</label>
+          <select id="rateRange">
+            <option value="$75–$150 per video">$75 – $150 / video</option>
+            <option value="$150–$300 per video" selected>$150 – $300 / video</option>
+            <option value="$300–$500 per video">$300 – $500 / video</option>
+            <option value="$500–$1,000 per video">$500 – $1K / video</option>
+            <option value="$1,000+ per video">$1,000+ / video</option>
+            <option value="open to negotiation">Open to negotiate</option>
+          </select>
+        </div>
+      </div>
+      <div class="field full" style="margin-bottom:12px">
+        <label>Portfolio / Media Kit Link</label>
+        <input type="url" id="portfolioLink" placeholder="https://drive.google.com/your-ugc-portfolio">
+      </div>
+      <div class="field full" style="margin-bottom:12px">
+        <label>Email Address (shown in pitches)</label>
+        <input type="email" id="creatorEmail" placeholder="you@email.com">
+      </div>
+      <div class="field full">
+        <label>Content Niches (pick all that apply)</label>
+        <div class="chip-grid">
+          <button class="chip" onclick="toggleChip(this,'Beauty & Skincare')">Beauty & Skincare</button>
+          <button class="chip" onclick="toggleChip(this,'Fashion & Style')">Fashion & Style</button>
+          <button class="chip" onclick="toggleChip(this,'Wellness & Fitness')">Wellness & Fitness</button>
+          <button class="chip" onclick="toggleChip(this,'Food & Beverage')">Food & Beverage</button>
+          <button class="chip" onclick="toggleChip(this,'Home & Lifestyle')">Home & Lifestyle</button>
+          <button class="chip" onclick="toggleChip(this,'Tech & Gadgets')">Tech & Gadgets</button>
+          <button class="chip" onclick="toggleChip(this,'Pet Products')">Pet Products</button>
+          <button class="chip" onclick="toggleChip(this,'Baby & Kids')">Baby & Kids</button>
+          <button class="chip" onclick="toggleChip(this,'Travel')">Travel</button>
+          <button class="chip" onclick="toggleChip(this,'Finance & Business')">Finance & Business</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Target Companies</div>
+    <div class="card">
+      <button class="btn-find" id="findBtn" onclick="findBrands()">
+        ✦ Find Brands For Me
+      </button>
+      <div class="divider-or">— or add manually —</div>
+      <div class="target-row">
+        <input type="text" id="targetInput" placeholder="Brand name (e.g. Glossier, Fabletics)"
+          onkeydown="if(event.key==='Enter')addTarget()">
+        <button class="btn-add" onclick="addTarget()">+ Add</button>
+      </div>
+      <div class="target-list" id="targetList">
+        <div class="empty" style="padding:16px 0;font-size:.8rem">Click <strong>Find Brands For Me</strong> to get an AI-curated list ↑</div>
+      </div>
+    </div>
+
+    <div class="section-title">Email Tone & Angle</div>
+    <div class="card">
+      <div class="grid-2" style="margin-bottom:12px">
+        <div class="field">
+          <label>Email Tone</label>
+          <select id="emailTone">
+            <option value="professional and confident">Professional & Confident</option>
+            <option value="warm and conversational" selected>Warm & Conversational</option>
+            <option value="bold and direct">Bold & Direct</option>
+            <option value="creative and energetic">Creative & Energetic</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Deal Type Focus</label>
+          <select id="dealType">
+            <option value="UGC video creation (no posting required)" selected>UGC (no posting required)</option>
+            <option value="UGC + TikTok posting">UGC + TikTok Posting</option>
+            <option value="TikTok Spark Ads content">Spark Ads Content</option>
+            <option value="product photography + video bundle">Photo + Video Bundle</option>
+          </select>
+        </div>
+      </div>
+      <div class="field full">
+        <label>Any extra notes to include? (optional)</label>
+        <textarea id="extraNotes" placeholder="e.g. I have a 6.2% avg engagement rate, I specialize in unboxing hooks, I can turn around in 48 hours..."></textarea>
+      </div>
+    </div>
+
+    <div class="log-box" id="logBox"></div>
+
+    <button class="btn-generate" id="generateBtn" onclick="generateEmails()">
+      <span class="shimmer"></span>
+      ✦ Generate Pitch Emails
+    </button>
+
+  </div><!-- /tab-compose -->
+
+  <!-- ═══ TAB: OUTBOX ═══ -->
+  <div class="tab-content" id="tab-outbox">
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Drafted</div></div>
+      <div class="stat-box"><div class="stat-num" id="statSent">0</div><div class="stat-label">Sent</div></div>
+      <div class="stat-box"><div class="stat-num" id="statReplied">0</div><div class="stat-label">Replied</div></div>
+      <div class="stat-box"><div class="stat-num" id="statClosed">0</div><div class="stat-label">Closed</div></div>
+    </div>
+
+    <div id="emailList">
+      <div class="empty">
+        <div class="empty-icon">📭</div>
+        No emails yet. Go to <strong>Compose</strong> to generate your first batch of pitches.
+      </div>
+    </div>
+  </div><!-- /tab-outbox -->
+
+  <!-- ═══ TAB: TRACKER ═══ -->
+  <div class="tab-content" id="tab-tracker">
+    <div class="section-title">Deal Pipeline</div>
+    <div id="pipelineList">
+      <div class="empty">
+        <div class="empty-icon">📊</div>
+        Mark emails as <strong>Replied</strong> or <strong>Closed</strong> to track your pipeline here.
+      </div>
+    </div>
+  </div><!-- /tab-tracker -->
+
+</div><!-- /app -->
+
+<!-- STATUS MODAL -->
+<div class="modal-overlay" id="statusModal">
+  <div class="modal">
+    <h3>Update Deal Status</h3>
+    <p style="font-size:.83rem;color:var(--dim);margin-bottom:14px" id="statusModalBrand"></p>
+    <select class="status-select" id="statusSelect">
+      <option value="draft">Draft</option>
+      <option value="sent">Sent ✓</option>
+      <option value="replied">Replied 💬</option>
+      <option value="closed">Closed 🎉</option>
+    </select>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-ok" onclick="applyStatus()">Update</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── PARTICLE BG ───────────────────────────────────────────────
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let W,H,particles=[];
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight}
+resize();window.addEventListener('resize',resize);
+function mkPart(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5,a:Math.random()}}
+for(let i=0;i<55;i++)particles.push(mkPart());
+function drawBg(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    p.a=.3+.3*Math.sin(Date.now()*.001+p.x);
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(167,139,250,${p.a})`;ctx.fill();
+    particles.forEach(q=>{
+      const d=Math.hypot(p.x-q.x,p.y-q.y);
+      if(d<100&&d>0){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
+        ctx.strokeStyle=`rgba(167,139,250,${.08*(1-d/100)})`;ctx.lineWidth=.5;ctx.stroke()}
+    });
+  });
+  requestAnimationFrame(drawBg);
+}drawBg();
+
+// ─── STATE ─────────────────────────────────────────────────────
+let apiKey = localStorage.getItem('ugc_api_key') || '';
+let targets = JSON.parse(localStorage.getItem('ugc_targets')||'[]');
+let emails  = JSON.parse(localStorage.getItem('ugc_emails') ||'[]');
+let selectedChips = [];
+let statusTargetIdx = null;
+
+// ─── INIT ──────────────────────────────────────────────────────
+document.getElementById('apiKeyInput').value = apiKey ? '••••••••••••••••' : '';
+renderTargets();
+renderEmails();
+renderTracker();
+updateStats();
+
+function saveKey(){
+  const val = document.getElementById('apiKeyInput').value.trim();
+  if(!val||val.startsWith('•'))return;
+  apiKey = val;
+  localStorage.setItem('ugc_api_key',val);
+  document.getElementById('apiKeyInput').value='••••••••••••••••';
+  log('API key saved ✓','ok');
+}
+
+// ─── TABS ──────────────────────────────────────────────────────
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active',['compose','outbox','tracker'][i]===name);
+  });
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='outbox')renderEmails();
+  if(name==='tracker')renderTracker();
+}
+
+// ─── CHIPS ─────────────────────────────────────────────────────
+function toggleChip(el,val){
+  el.classList.toggle('active');
+  if(el.classList.contains('active')){
+    if(!selectedChips.includes(val))selectedChips.push(val);
+  } else {
+    selectedChips=selectedChips.filter(v=>v!==val);
+  }
+}
+
+// ─── FIND BRANDS ───────────────────────────────────────────────
+async function findBrands(){
+  if(!apiKey){alert('Please enter your Anthropic API key first.');return}
+
+  const niches  = selectedChips.length ? selectedChips.join(', ') : '';
+  const rate    = document.getElementById('rateRange').value;
+  const followers= document.getElementById('followerCount').value;
+  const deal    = document.getElementById('dealType').value;
+
+  if(!niches){alert('Pick at least one content niche above so I can find the right brands for you.');return}
+
+  const btn = document.getElementById('findBtn');
+  btn.disabled=true;
+  btn.textContent='✦ Finding brands...';
+
+  const prompt=`You are a UGC deal sourcing agent. Find real brands that actively hire UGC creators for TikTok content.
+
+CREATOR PROFILE:
+- Niches: ${niches}
+- Followers: ${followers}
+- Rate range: ${rate}
+- Deal type: ${deal}
+
+Find 8 real brands that:
+1. Match the creator's niches
+2. Are known to run UGC/TikTok ad campaigns
+3. Range from small DTC brands (easier to land) to mid-size brands (higher pay)
+4. Are actively spending on social advertising
+
+Return ONLY a JSON array, no markdown:
+[
+  {"name":"Brand Name","why":"One sentence — why this brand is a great match and why they buy UGC","tier":"easy|medium|competitive"},
+  ...
+]`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'content-type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:800,messages:[{role:'user',content:prompt}]})
+    });
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||res.statusText)}
+    const data=await res.json();
+    const raw=data.content[0].text.trim();
+    let brands;
+    try{brands=JSON.parse(raw)}catch{const m=raw.match(/\[[\s\S]*\]/);brands=m?JSON.parse(m[0]):null}
+    if(!brands||!brands.length)throw new Error('No brands returned');
+
+    // render suggestion list above the manual input
+    const listEl=document.getElementById('targetList');
+    const tierColor={easy:'var(--green)',medium:'var(--gold)',competitive:'var(--red)'};
+    const tierLabel={easy:'Easy win',medium:'Mid-range',competitive:'Competitive'};
+
+    const gridHtml=`<div class="suggest-grid" id="suggestGrid">${brands.map((b,i)=>`
+      <div class="suggest-item" id="si-${i}">
+        <div class="si-info">
+          <div class="si-name">${esc(b.name)} <span style="font-family:var(--mono);font-size:.55rem;color:${tierColor[b.tier]||'var(--dim)'};font-weight:400;margin-left:6px">${tierLabel[b.tier]||''}</span></div>
+          <div class="si-why">${esc(b.why)}</div>
+        </div>
+        <button class="si-btn" id="sibtn-${i}" onclick="addSuggested(${i},'${esc(b.name).replace(/'/g,"\\'")}')">+ Add</button>
+      </div>`).join('')}
+    </div>
+    <div style="margin-bottom:10px"></div>`;
+
+    listEl.innerHTML=gridHtml+(targets.length?targets.map((t,i)=>`
+      <div class="target-item">
+        <div><div class="name">${esc(t.name)}</div></div>
+        <button class="remove" onclick="removeTarget(${i})">✕</button>
+      </div>`).join(''):'');
+
+  }catch(err){
+    alert('Could not find brands: '+err.message);
+  }
+
+  btn.disabled=false;
+  btn.textContent='✦ Find Brands For Me';
+}
+
+function addSuggested(i,name){
+  if(targets.some(t=>t.name.toLowerCase()===name.toLowerCase()))return;
+  targets.push({name,email:''});
+  localStorage.setItem('ugc_targets',JSON.stringify(targets));
+  const btn=document.getElementById('sibtn-'+i);
+  if(btn){btn.textContent='✓ Added';btn.classList.add('added');btn.disabled=true}
+}
+
+// ─── TARGETS ──────────────────────────────────────────────────
+function addTarget(){
+  const inp = document.getElementById('targetInput');
+  const val = inp.value.trim();
+  if(!val)return;
+  targets.push({name:val,email:''});
+  localStorage.setItem('ugc_targets',JSON.stringify(targets));
+  inp.value='';
+  renderTargets();
+}
+function removeTarget(i){
+  targets.splice(i,1);
+  localStorage.setItem('ugc_targets',JSON.stringify(targets));
+  renderTargets();
+}
+function renderTargets(){
+  const el=document.getElementById('targetList');
+  if(!targets.length){el.innerHTML='<div class="empty" style="padding:16px 0;font-size:.8rem">Add brands you want to pitch above ↑</div>';return}
+  el.innerHTML=targets.map((t,i)=>`
+    <div class="target-item">
+      <div><div class="name">${esc(t.name)}</div></div>
+      <button class="remove" onclick="removeTarget(${i})">✕</button>
+    </div>`).join('');
+}
+
+// ─── LOG ───────────────────────────────────────────────────────
+function log(msg,type=''){
+  const box=document.getElementById('logBox');
+  box.classList.add('active');
+  box.innerHTML+=`<div class="log-line ${type}">> ${msg}</div>`;
+  box.scrollTop=box.scrollHeight;
+}
+function clearLog(){
+  const box=document.getElementById('logBox');
+  box.classList.remove('active');
+  box.innerHTML='';
+}
+
+// ─── GENERATE ─────────────────────────────────────────────────
+async function generateEmails(){
+  if(!apiKey){alert('Please enter your Anthropic API key first.');return}
+  if(!targets.length){alert('Add at least one target brand first.');return}
+
+  const name    = document.getElementById('creatorName').value.trim()||'Your Name';
+  const handle  = document.getElementById('tiktokHandle').value.trim()||'@yourhandle';
+  const followers= document.getElementById('followerCount').value;
+  const rate    = document.getElementById('rateRange').value;
+  const portfolio= document.getElementById('portfolioLink').value.trim();
+  const email   = document.getElementById('creatorEmail').value.trim();
+  const tone    = document.getElementById('emailTone').value;
+  const deal    = document.getElementById('dealType').value;
+  const notes   = document.getElementById('extraNotes').value.trim();
+  const niches  = selectedChips.length ? selectedChips.join(', ') : 'lifestyle';
+
+  const btn=document.getElementById('generateBtn');
+  btn.disabled=true;
+  clearLog();
+  log('Initializing UGC Deal Agent...');
+  log(`Preparing ${targets.length} pitch email(s)...`);
+
+  for(let i=0;i<targets.length;i++){
+    const brand = targets[i].name;
+    log(`Writing pitch for ${brand}...`);
+
+    const prompt = `You are a professional UGC (User Generated Content) deal outreach specialist helping a TikTok creator land paid brand partnerships.
+
+Write a SINGLE cold outreach email from the creator to the brand. This is for UGC only — the creator is NOT an influencer posting on their own account; they are creating professional video content for the BRAND to use in ads and social media.
+
+CREATOR DETAILS:
+- Name: ${name}
+- TikTok: ${handle}
+- Followers: ${followers}
+- Content niches: ${niches}
+- Rate: ${rate}
+- Portfolio: ${portfolio||'[portfolio available on request]'}
+- Email: ${email||'[creator email]'}
+- Deal type: ${deal}
+- Tone: ${tone}
+${notes?`- Extra info: ${notes}`:''}
+
+TARGET BRAND: ${brand}
+
+REQUIREMENTS FOR THE EMAIL:
+1. Subject line that is specific to this brand and compelling (not generic)
+2. Opening that shows real knowledge of the brand (make a reasonable assumption about what they sell/value)
+3. Clearly explain UGC vs influencer (brand owns content, no follower count required)
+4. One or two specific value propositions that would matter to THIS brand
+5. Soft CTA — invite a conversation, not an immediate sale
+6. Professional signature
+7. Total length: 150–200 words MAX. Concise is powerful.
+8. Tone must feel human — not a template blast.
+
+Return ONLY a JSON object in this exact format, no markdown, no explanation:
+{"subject":"...","body":"..."}
+
+The body should use \\n for line breaks.`;
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{
+          'content-type':'application/json',
+          'x-api-key':apiKey,
+          'anthropic-version':'2023-06-01',
+          'anthropic-dangerous-direct-browser-access':'true'
+        },
+        body:JSON.stringify({
+          model:'claude-sonnet-4-5',
+          max_tokens:600,
+          messages:[{role:'user',content:prompt}]
+        })
+      });
+
+      if(!res.ok){const e=await res.json();throw new Error(e.error?.message||res.statusText)}
+      const data=await res.json();
+      const raw=data.content[0].text.trim();
+      let parsed;
+      try{parsed=JSON.parse(raw)}catch{
+        const m=raw.match(/\{[\s\S]*\}/);
+        if(m)parsed=JSON.parse(m[0]);else throw new Error('Could not parse response');
+      }
+
+      emails.push({
+        id:Date.now()+'_'+i,
+        brand,
+        subject:parsed.subject,
+        body:parsed.body,
+        creatorName:name,
+        creatorEmail:email,
+        status:'draft',
+        createdAt:new Date().toLocaleDateString()
+      });
+      log(`✓ ${brand} pitch ready`,'ok');
+
+    } catch(err){
+      log(`✗ ${brand}: ${err.message}`,'err');
+    }
+
+    await sleep(600);
+  }
+
+  localStorage.setItem('ugc_emails',JSON.stringify(emails));
+  updateStats();
+  log('All emails generated. Go to Outbox to review & send.','ok');
+  btn.disabled=false;
+
+  // Auto-switch to outbox
+  setTimeout(()=>switchTab('outbox'),1200);
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+// ─── RENDER EMAILS ─────────────────────────────────────────────
+function renderEmails(){
+  updateStats();
+  const el=document.getElementById('emailList');
+  if(!emails.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">📭</div>No emails yet. Go to <strong>Compose</strong> to generate your first batch.</div>';
+    return;
+  }
+  el.innerHTML=emails.map((e,i)=>`
+    <div class="email-card" id="ecard-${i}">
+      <div class="email-card-hdr" onclick="toggleEmail(${i})">
+        <div>
+          <div class="email-brand">${esc(e.brand)}</div>
+          <div style="font-family:var(--mono);font-size:.58rem;color:var(--dim);margin-top:3px">${esc(e.createdAt)}</div>
+        </div>
+        <span class="email-status ${e.status}">${statusLabel(e.status)}</span>
+      </div>
+      <div class="email-body" id="ebody-${i}">
+        <div class="email-subject">Subject: <span>${esc(e.subject)}</span></div>
+        <div class="email-text">${esc(e.body)}</div>
+        <div class="email-actions">
+          <button class="ea-btn ea-gmail" onclick="openGmail(${i})">✉ Open in Gmail</button>
+          <button class="ea-btn ea-copy" onclick="copyEmail(${i})">⎘ Copy</button>
+          <button class="ea-btn ea-followup" onclick="generateFollowUp(${i})">↩ Follow-Up</button>
+          <button class="ea-btn ea-status" onclick="openStatusModal(${i})">● Status</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleEmail(i){
+  const body=document.getElementById('ebody-'+i);
+  body.classList.toggle('open');
+}
+
+function statusLabel(s){
+  return{draft:'Draft',sent:'Sent ✓',replied:'Replied 💬',closed:'Closed 🎉'}[s]||s;
+}
+
+function openGmail(i){
+  const e=emails[i];
+  const to=e.creatorEmail?'':undefined;
+  // Open Gmail compose with subject + body pre-filled
+  const sub=encodeURIComponent(e.subject);
+  const bod=encodeURIComponent(e.body);
+  window.open(`https://mail.google.com/mail/?view=cm&fs=1&su=${sub}&body=${bod}`,'_blank');
+  // Auto-mark as sent
+  if(e.status==='draft'){
+    emails[i].status='sent';
+    localStorage.setItem('ugc_emails',JSON.stringify(emails));
+    renderEmails();
+  }
+}
+
+function copyEmail(i){
+  const e=emails[i];
+  const text=`Subject: ${e.subject}\n\n${e.body}`;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.querySelectorAll('.ea-copy')[i];
+    if(btn){const orig=btn.textContent;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent=orig,1800)}
+  });
+}
+
+async function generateFollowUp(i){
+  if(!apiKey){alert('API key required');return}
+  const e=emails[i];
+  const prompt=`Write a brief, professional follow-up email for a UGC creator named ${esc(e.creatorName)||'the creator'} following up on a cold pitch sent to ${esc(e.brand)}.
+
+The original subject was: "${e.subject}"
+
+Follow-up rules:
+- Reference that they reached out previously (don't be pushy)
+- Keep it under 80 words
+- Add one new value hook or time-sensitive element
+- Warm, confident tone
+- Ask if they have 10 minutes to connect
+
+Return ONLY JSON: {"subject":"...","body":"..."}`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'content-type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:400,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    const raw=data.content[0].text.trim();
+    let parsed;
+    try{parsed=JSON.parse(raw)}catch{const m=raw.match(/\{[\s\S]*\}/);parsed=m?JSON.parse(m[0]):null}
+    if(!parsed)throw new Error('Parse failed');
+
+    emails.push({
+      id:Date.now()+'_fu',brand:e.brand+' (Follow-Up)',
+      subject:parsed.subject,body:parsed.body,
+      creatorName:e.creatorName,creatorEmail:e.creatorEmail,
+      status:'draft',createdAt:new Date().toLocaleDateString()
+    });
+    localStorage.setItem('ugc_emails',JSON.stringify(emails));
+    renderEmails();
+    setTimeout(()=>{
+      const idx=emails.length-1;
+      document.getElementById('ebody-'+idx)?.classList.add('open');
+      document.getElementById('ecard-'+idx)?.scrollIntoView({behavior:'smooth'});
+    },100);
+  }catch(err){alert('Follow-up failed: '+err.message)}
+}
+
+// ─── STATUS MODAL ──────────────────────────────────────────────
+function openStatusModal(i){
+  statusTargetIdx=i;
+  document.getElementById('statusModalBrand').textContent=emails[i].brand;
+  document.getElementById('statusSelect').value=emails[i].status;
+  document.getElementById('statusModal').classList.add('open');
+}
+function closeModal(){
+  document.getElementById('statusModal').classList.remove('open');
+  statusTargetIdx=null;
+}
+function applyStatus(){
+  if(statusTargetIdx===null)return;
+  emails[statusTargetIdx].status=document.getElementById('statusSelect').value;
+  localStorage.setItem('ugc_emails',JSON.stringify(emails));
+  closeModal();
+  renderEmails();
+  renderTracker();
+}
+
+// ─── TRACKER ──────────────────────────────────────────────────
+function renderTracker(){
+  updateStats();
+  const el=document.getElementById('pipelineList');
+  const active=emails.filter(e=>['replied','closed'].includes(e.status));
+  if(!active.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">📊</div>Mark emails as <strong>Replied</strong> or <strong>Closed</strong> to track your pipeline here.</div>';
+    return;
+  }
+  el.innerHTML=active.map((e,_)=>{
+    const realIdx=emails.indexOf(e);
+    return`<div class="email-card">
+      <div class="email-card-hdr" onclick="toggleEmail(${realIdx})">
+        <div>
+          <div class="email-brand">${esc(e.brand)}</div>
+          <div style="font-family:var(--mono);font-size:.58rem;color:var(--dim);margin-top:3px">${esc(e.createdAt)}</div>
+        </div>
+        <span class="email-status ${e.status}">${statusLabel(e.status)}</span>
+      </div>
+      <div class="email-body" id="ebody-${realIdx}">
+        <div class="email-text">${esc(e.body)}</div>
+        <div class="email-actions">
+          <button class="ea-btn ea-status" onclick="openStatusModal(${realIdx})">● Update Status</button>
+          <button class="ea-btn ea-followup" onclick="generateFollowUp(${realIdx});switchTab('outbox')">↩ Follow-Up</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── STATS ────────────────────────────────────────────────────
+function updateStats(){
+  document.getElementById('statTotal').textContent=emails.length;
+  document.getElementById('statSent').textContent=emails.filter(e=>['sent','replied','closed'].includes(e.status)).length;
+  document.getElementById('statReplied').textContent=emails.filter(e=>e.status==='replied').length;
+  document.getElementById('statClosed').textContent=emails.filter(e=>e.status==='closed').length;
+}
+
+// ─── UTIL ─────────────────────────────────────────────────────
+function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+</script>
+</body>
+</html>
