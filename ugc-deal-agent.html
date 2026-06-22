@@ -8,6 +8,7 @@
 <title>UGC AGENT</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{
   --bg1:#080412;--bg2:#0e0820;
@@ -19,41 +20,28 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%;background:radial-gradient(ellipse at 30% 10%,#1a0830 0%,#080412 65%)}
 body{font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
-
-/* ── LAYOUT ── */
 .app{max-width:680px;margin:0 auto;padding:20px 16px 60px;position:relative;z-index:1}
+#bgCanvas{position:fixed;inset:0;z-index:0;opacity:.3;pointer-events:none}
 
-/* ── HEADER ── */
-.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
-.logo-block{display:flex;align-items:center;gap:10px}
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
 .logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:.22em;color:var(--purple)}
 .logo-sub{font-family:var(--mono);font-size:.58rem;color:var(--dim);letter-spacing:.18em;text-transform:uppercase;margin-top:2px}
 .status-pill{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
   padding:4px 10px;border-radius:20px;border:1px solid var(--dim);color:var(--dim);display:flex;align-items:center;gap:6px}
-.status-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
-/* ── API KEY BAR ── */
-.key-bar{background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.2);border-radius:12px;
-  padding:14px 16px;margin-bottom:22px;display:flex;align-items:center;gap:10px}
-.key-bar label{font-family:var(--mono);font-size:.62rem;color:var(--dim);white-space:nowrap;text-transform:uppercase;letter-spacing:.1em}
-.key-bar input{flex:1;background:transparent;border:none;outline:none;color:var(--cream);font-family:var(--mono);font-size:.78rem;min-width:0}
-.key-bar input::placeholder{color:var(--dim)}
-.key-save{background:var(--purple-deep);color:var(--cream);border:none;border-radius:8px;padding:6px 14px;
-  font-family:var(--mono);font-size:.65rem;cursor:pointer;white-space:nowrap;transition:opacity .2s}
-.key-save:hover{opacity:.85}
-
-/* ── SECTION TITLES ── */
+/* CARDS */
+.card{background:rgba(14,8,32,.7);border:1px solid rgba(167,139,250,.15);border-radius:16px;
+  padding:20px;margin-bottom:18px;backdrop-filter:blur(8px)}
 .section-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:.8rem;
   letter-spacing:.18em;text-transform:uppercase;color:var(--purple);margin-bottom:12px;
   display:flex;align-items:center;gap:8px}
 .section-title::after{content:'';flex:1;height:1px;background:rgba(167,139,250,.18)}
 
-/* ── PROFILE CARD ── */
-.card{background:rgba(14,8,32,.7);border:1px solid rgba(167,139,250,.15);border-radius:16px;
-  padding:20px;margin-bottom:22px;backdrop-filter:blur(8px)}
+/* FIELDS */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .field{display:flex;flex-direction:column;gap:5px}
 .field.full{grid-column:1/-1}
 .field label{font-family:var(--mono);font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.1em}
@@ -63,39 +51,127 @@ body{font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
   transition:border-color .2s;width:100%}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--purple)}
 .field select{cursor:pointer;-webkit-appearance:none}
-.field textarea{resize:vertical;min-height:72px;line-height:1.5}
+.field textarea{resize:vertical;min-height:64px;line-height:1.5}
 .field input::placeholder,.field textarea::placeholder{color:var(--dim);opacity:.7}
 
-/* ── NICHE CHIPS ── */
+/* CHIPS */
 .chip-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
 .chip{padding:6px 14px;border-radius:20px;border:1px solid rgba(167,139,250,.25);
   font-size:.75rem;cursor:pointer;transition:all .2s;color:var(--dim);background:transparent;font-family:'Inter',sans-serif}
 .chip.active{background:rgba(124,58,237,.3);border-color:var(--purple);color:var(--cream)}
 
-/* ── TARGET INPUT ── */
-.btn-find{width:100%;padding:14px;background:linear-gradient(135deg,rgba(124,58,237,.4),rgba(167,139,250,.2));
-  border:1px solid rgba(167,139,250,.4);border-radius:10px;color:var(--cream);
-  font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:.95rem;
-  letter-spacing:.06em;cursor:pointer;transition:all .2s;margin-bottom:14px}
-.btn-find:hover{background:linear-gradient(135deg,rgba(124,58,237,.6),rgba(167,139,250,.3));border-color:var(--purple)}
-.btn-find:disabled{opacity:.45;cursor:not-allowed}
+/* SETUP BARS */
+.setup-bar{background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.2);border-radius:12px;
+  padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.setup-bar label{font-family:var(--mono);font-size:.62rem;color:var(--dim);white-space:nowrap;text-transform:uppercase;letter-spacing:.1em}
+.setup-bar input{flex:1;background:transparent;border:none;outline:none;color:var(--cream);font-family:var(--mono);font-size:.78rem;min-width:120px}
+.setup-bar input::placeholder{color:var(--dim)}
+.btn-save{background:var(--purple-deep);color:var(--cream);border:none;border-radius:8px;padding:6px 14px;
+  font-family:var(--mono);font-size:.65rem;cursor:pointer;white-space:nowrap;transition:opacity .2s}
+.btn-save:hover{opacity:.85}
+
+/* GMAIL CONNECT */
+.gmail-bar{background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:12px;
+  padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.gmail-info{display:flex;align-items:center;gap:10px}
+.gmail-icon{font-size:1.3rem}
+.gmail-label{font-family:var(--mono);font-size:.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:.1em}
+.gmail-account{font-size:.82rem;color:var(--cream);margin-top:2px}
+.btn-gmail{background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.35);color:var(--red);
+  border-radius:8px;padding:8px 16px;font-family:'Inter',sans-serif;font-size:.8rem;font-weight:500;
+  cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-gmail:hover{background:rgba(248,113,113,.28)}
+.btn-gmail.connected{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.3);color:var(--green)}
+
+/* CAMPAIGN BUTTON */
+.btn-campaign{width:100%;padding:20px;
+  background:linear-gradient(135deg,#7c3aed,#a78bfa,#7c3aed);
+  background-size:200% 200%;animation:gradMove 3s ease infinite;
+  border:none;border-radius:14px;color:#fff;
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.15rem;
+  letter-spacing:.08em;cursor:pointer;position:relative;transition:opacity .2s;
+  margin-bottom:24px;overflow:hidden;box-shadow:0 0 40px rgba(124,58,237,.4)}
+@keyframes gradMove{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.btn-campaign:disabled{opacity:.4;cursor:not-allowed;animation:none}
+.btn-campaign:hover:not(:disabled){box-shadow:0 0 60px rgba(124,58,237,.6)}
+
+/* PROGRESS LOG */
+.progress-box{background:rgba(0,0,0,.4);border:1px solid rgba(167,139,250,.15);border-radius:12px;
+  padding:16px;margin-bottom:20px;font-family:var(--mono);font-size:.7rem;line-height:2;
+  max-height:260px;overflow-y:auto;display:none}
+.progress-box.active{display:block}
+.pl{color:var(--dim)}
+.pl.ok{color:var(--green)}
+.pl.err{color:var(--red)}
+.pl.info{color:var(--purple)}
+.pl.send{color:var(--blue)}
+
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:rgba(14,8,32,.6);
+  border:1px solid rgba(167,139,250,.15);border-radius:12px;padding:4px}
+.tab{flex:1;padding:9px;text-align:center;font-family:var(--mono);font-size:.65rem;
+  text-transform:uppercase;letter-spacing:.1em;cursor:pointer;border-radius:9px;
+  transition:all .2s;color:var(--dim);border:none;background:none}
+.tab.active{background:rgba(124,58,237,.35);color:var(--cream);border:1px solid rgba(167,139,250,.3)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.stat-box{background:rgba(14,8,32,.7);border:1px solid rgba(167,139,250,.15);border-radius:12px;
+  padding:14px 10px;text-align:center}
+.stat-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.6rem;color:var(--purple);line-height:1}
+.stat-label{font-family:var(--mono);font-size:.55rem;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-top:4px}
+
+/* EMAIL CARDS */
+.email-card{background:rgba(14,8,32,.8);border:1px solid rgba(167,139,250,.2);border-radius:14px;
+  margin-bottom:12px;overflow:hidden}
+.email-card-hdr{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(167,139,250,.1);cursor:pointer}
+.email-brand{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:.95rem;color:var(--cream)}
+.email-status{font-family:var(--mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;
+  padding:3px 9px;border-radius:12px}
+.status-sent{color:var(--green);border:1px solid rgba(52,211,153,.3);background:rgba(52,211,153,.08)}
+.status-draft{color:var(--gold);border:1px solid rgba(212,160,23,.3);background:rgba(212,160,23,.08)}
+.status-replied{color:var(--blue);border:1px solid rgba(96,165,250,.3);background:rgba(96,165,250,.08)}
+.status-closed{color:var(--purple);border:1px solid rgba(167,139,250,.3);background:rgba(167,139,250,.1)}
+.email-body-wrap{display:none;padding:16px}
+.email-body-wrap.open{display:block}
+.email-text{font-size:.85rem;line-height:1.75;color:var(--volt);white-space:pre-wrap;
+  background:rgba(0,0,0,.25);border-radius:8px;padding:12px;border:1px solid rgba(167,139,250,.1);
+  margin:10px 0;max-height:300px;overflow-y:auto}
+.email-actions{display:flex;gap:8px;flex-wrap:wrap}
+.ea-btn{padding:7px 14px;border-radius:8px;font-size:.73rem;cursor:pointer;
+  font-family:'Inter',sans-serif;font-weight:500;transition:all .2s;border:none;display:flex;align-items:center;gap:5px}
+.ea-resend{background:rgba(52,211,153,.1);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.ea-resend:hover{background:rgba(52,211,153,.2)}
+.ea-status{background:rgba(167,139,250,.1);color:var(--purple);border:1px solid rgba(167,139,250,.25)}
+.ea-status:hover{background:rgba(167,139,250,.2)}
+.ea-followup{background:rgba(96,165,250,.1);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
+.ea-followup:hover{background:rgba(96,165,250,.2)}
+
+/* FIND BRANDS BUTTON */
+.btn-find{width:100%;padding:13px;background:linear-gradient(135deg,rgba(124,58,237,.35),rgba(167,139,250,.15));
+  border:1px solid rgba(167,139,250,.35);border-radius:10px;color:var(--cream);
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:.92rem;
+  letter-spacing:.06em;cursor:pointer;transition:all .2s;margin-bottom:12px}
+.btn-find:hover{background:linear-gradient(135deg,rgba(124,58,237,.5),rgba(167,139,250,.25))}
+.btn-find:disabled{opacity:.4;cursor:not-allowed}
 .divider-or{text-align:center;font-family:var(--mono);font-size:.6rem;color:var(--dim);
   letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
 
-/* brand suggestion chips */
-.suggest-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+/* SUGGEST */
+.suggest-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
 .suggest-item{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
-  background:rgba(124,58,237,.1);border:1px solid rgba(167,139,250,.25);border-radius:10px;
-  padding:10px 12px;cursor:default}
-.suggest-item .si-info{flex:1;min-width:0}
-.suggest-item .si-name{font-weight:600;font-size:.88rem;color:var(--cream);margin-bottom:2px}
-.suggest-item .si-why{font-size:.75rem;color:var(--dim);line-height:1.4}
-.suggest-item .si-btn{background:var(--purple-deep);color:var(--cream);border:none;border-radius:7px;
-  padding:6px 12px;font-size:.72rem;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;
-  transition:opacity .2s;flex-shrink:0}
-.suggest-item .si-btn:hover{opacity:.8}
-.suggest-item .si-btn.added{background:rgba(52,211,153,.2);color:var(--green);border:1px solid rgba(52,211,153,.3);cursor:default}
+  background:rgba(124,58,237,.1);border:1px solid rgba(167,139,250,.22);border-radius:10px;padding:10px 12px}
+.si-name{font-weight:600;font-size:.87rem;color:var(--cream);margin-bottom:2px}
+.si-why{font-size:.74rem;color:var(--dim);line-height:1.4}
+.si-btn{background:var(--purple-deep);color:var(--cream);border:none;border-radius:7px;
+  padding:6px 12px;font-size:.72rem;cursor:pointer;white-space:nowrap;transition:opacity .2s;flex-shrink:0}
+.si-btn:hover{opacity:.8}
+.si-btn.added{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3);cursor:default}
 
+/* TARGET LIST */
 .target-row{display:flex;gap:8px;margin-bottom:10px}
 .target-row input{flex:1;background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.18);
   border-radius:8px;padding:9px 12px;color:var(--cream);font-size:.85rem;outline:none;
@@ -103,165 +179,101 @@ body{font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
 .target-row input:focus{border-color:var(--purple)}
 .target-row input::placeholder{color:var(--dim);opacity:.7}
 .btn-add{background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);color:var(--purple);
-  border-radius:8px;padding:9px 14px;font-size:.8rem;cursor:pointer;white-space:nowrap;transition:all .2s}
+  border-radius:8px;padding:9px 14px;font-size:.8rem;cursor:pointer;transition:all .2s}
 .btn-add:hover{background:rgba(167,139,250,.25)}
-
-.target-list{display:flex;flex-direction:column;gap:6px}
 .target-item{display:flex;align-items:center;justify-content:space-between;
   background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.12);
-  border-radius:8px;padding:8px 12px;font-size:.82rem}
-.target-item .name{color:var(--cream)}
-.target-item .meta{font-family:var(--mono);font-size:.6rem;color:var(--dim)}
-.target-item .remove{background:none;border:none;color:var(--dim);cursor:pointer;font-size:.9rem;padding:0 4px;transition:color .2s}
+  border-radius:8px;padding:8px 12px;font-size:.82rem;margin-bottom:6px}
+.target-item .remove{background:none;border:none;color:var(--dim);cursor:pointer;font-size:.9rem;transition:color .2s}
 .target-item .remove:hover{color:var(--red)}
 
-/* ── GENERATE BUTTON ── */
-.btn-generate{width:100%;padding:16px;background:linear-gradient(135deg,var(--purple-deep),#6d28d9);
-  border:none;border-radius:12px;color:var(--cream);font-family:'Bricolage Grotesque',sans-serif;
-  font-weight:600;font-size:1rem;letter-spacing:.06em;cursor:pointer;position:relative;
-  transition:opacity .2s;margin-bottom:26px;overflow:hidden}
-.btn-generate:hover{opacity:.9}
-.btn-generate:disabled{opacity:.45;cursor:not-allowed}
-.btn-generate .shimmer{position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);
-  transform:translateX(-100%);animation:shimmer 2.4s infinite}
-@keyframes shimmer{to{transform:translateX(100%)}}
+/* EMPTY */
+.empty{text-align:center;padding:36px 20px;color:var(--dim);font-size:.85rem;line-height:1.7}
+.empty-icon{font-size:2.2rem;margin-bottom:10px;opacity:.4}
 
-/* ── STATUS LOG ── */
-.log-box{font-family:var(--mono);font-size:.68rem;color:var(--dim);line-height:2;
-  margin-bottom:20px;padding:10px 14px;background:rgba(0,0,0,.3);border-radius:8px;
-  border:1px solid rgba(167,139,250,.1);min-height:40px;display:none}
-.log-box.active{display:block}
-.log-line{color:var(--purple)}
-.log-line.ok{color:var(--green)}
-.log-line.err{color:var(--red)}
-
-/* ── EMAIL CARDS ── */
-.email-card{background:rgba(14,8,32,.8);border:1px solid rgba(167,139,250,.2);border-radius:16px;
-  margin-bottom:16px;overflow:hidden;transition:border-color .3s}
-.email-card:hover{border-color:rgba(167,139,250,.4)}
-.email-card-hdr{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid rgba(167,139,250,.1);cursor:pointer;user-select:none}
-.email-card-hdr:hover{background:rgba(167,139,250,.04)}
-.email-brand{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:.95rem;color:var(--cream)}
-.email-status{font-family:var(--mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;
-  padding:3px 9px;border-radius:12px}
-.email-status.draft{color:var(--gold);border:1px solid rgba(212,160,23,.3);background:rgba(212,160,23,.08)}
-.email-status.sent{color:var(--green);border:1px solid rgba(52,211,153,.3);background:rgba(52,211,153,.08)}
-.email-status.replied{color:var(--blue);border:1px solid rgba(96,165,250,.3);background:rgba(96,165,250,.08)}
-.email-status.closed{color:var(--purple);border:1px solid rgba(167,139,250,.3);background:rgba(167,139,250,.1)}
-
-.email-body{display:none;padding:18px}
-.email-body.open{display:block}
-
-.email-subject{font-family:var(--mono);font-size:.7rem;color:var(--dim);text-transform:uppercase;
-  letter-spacing:.1em;margin-bottom:6px}
-.email-subject span{color:var(--volt);font-size:.8rem;text-transform:none;letter-spacing:0;
-  font-family:'Inter',sans-serif;font-weight:500}
-.email-text{font-size:.87rem;line-height:1.75;color:var(--volt);white-space:pre-wrap;
-  background:rgba(0,0,0,.25);border-radius:8px;padding:14px;border:1px solid rgba(167,139,250,.1);
-  margin:12px 0;max-height:360px;overflow-y:auto}
-.email-actions{display:flex;gap:8px;flex-wrap:wrap}
-.ea-btn{padding:8px 16px;border-radius:8px;font-size:.75rem;cursor:pointer;
-  font-family:'Inter',sans-serif;font-weight:500;transition:all .2s;border:none;display:flex;align-items:center;gap:6px}
-.ea-gmail{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)}
-.ea-gmail:hover{background:rgba(248,113,113,.28)}
-.ea-copy{background:rgba(167,139,250,.12);color:var(--purple);border:1px solid rgba(167,139,250,.25)}
-.ea-copy:hover{background:rgba(167,139,250,.22)}
-.ea-followup{background:rgba(96,165,250,.1);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
-.ea-followup:hover{background:rgba(96,165,250,.2)}
-.ea-status{background:rgba(52,211,153,.1);color:var(--green);border:1px solid rgba(52,211,153,.25)}
-.ea-status:hover{background:rgba(52,211,153,.2)}
-
-/* ── TRACKER STATS ── */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
-.stat-box{background:rgba(14,8,32,.7);border:1px solid rgba(167,139,250,.15);border-radius:12px;
-  padding:14px 10px;text-align:center}
-.stat-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.6rem;
-  color:var(--purple);line-height:1}
-.stat-label{font-family:var(--mono);font-size:.55rem;text-transform:uppercase;letter-spacing:.1em;
-  color:var(--dim);margin-top:4px}
-
-/* ── MODAL ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:none;
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;display:none;
   align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
 .modal{background:#0e0820;border:1px solid rgba(167,139,250,.3);border-radius:16px;
-  padding:24px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto}
-.modal h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1.05rem;
-  color:var(--purple);margin-bottom:16px}
+  padding:24px;width:100%;max-width:460px;max-height:80vh;overflow-y:auto}
+.modal h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1rem;color:var(--purple);margin-bottom:14px}
 .modal-btns{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
-.modal-btns button{padding:8px 18px;border-radius:8px;font-size:.8rem;cursor:pointer;
-  font-family:'Inter',sans-serif;border:none}
+.modal-btns button{padding:8px 18px;border-radius:8px;font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;border:none}
 .modal-cancel{background:rgba(167,139,250,.1);color:var(--dim)}
 .modal-ok{background:var(--purple-deep);color:var(--cream)}
-
-/* status dropdown in modal */
 .status-select{width:100%;background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.2);
   border-radius:8px;padding:10px 12px;color:var(--cream);font-family:'Inter',sans-serif;font-size:.88rem;outline:none}
 
-/* ── EMPTY STATE ── */
-.empty{text-align:center;padding:40px 20px;color:var(--dim);font-size:.85rem;line-height:1.7}
-.empty-icon{font-size:2.5rem;margin-bottom:12px;opacity:.4}
+/* SETUP NEEDED BANNER */
+.setup-needed{background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.3);border-radius:12px;
+  padding:14px 16px;margin-bottom:18px;font-size:.82rem;color:var(--gold);line-height:1.6;display:none}
+.setup-needed.show{display:block}
+.setup-needed strong{color:var(--cream)}
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px}
 
-/* ── CANVAS BG ── */
-#bgCanvas{position:fixed;inset:0;z-index:0;opacity:.35;pointer-events:none}
-
-/* ── TABS ── */
-.tabs{display:flex;gap:4px;margin-bottom:22px;background:rgba(14,8,32,.6);
-  border:1px solid rgba(167,139,250,.15);border-radius:12px;padding:4px}
-.tab{flex:1;padding:9px;text-align:center;font-family:var(--mono);font-size:.65rem;
-  text-transform:uppercase;letter-spacing:.1em;cursor:pointer;border-radius:9px;
-  transition:all .2s;color:var(--dim);border:none;background:none}
-.tab.active{background:rgba(124,58,237,.35);color:var(--cream);border:1px solid rgba(167,139,250,.3)}
-
-.tab-content{display:none}
-.tab-content.active{display:block}
-
 @media(max-width:480px){
   .grid-2{grid-template-columns:1fr}
   .stats-row{grid-template-columns:repeat(2,1fr)}
-  .grid-3{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
 <canvas id="bgCanvas"></canvas>
-
 <div class="app">
 
   <!-- HEADER -->
   <div class="hdr">
-    <div class="logo-block">
-      <div>
-        <div class="logo">UGC AGENT</div>
-        <div class="logo-sub">Deal Outreach Engine</div>
-      </div>
+    <div>
+      <div class="logo">UGC AGENT</div>
+      <div style="font-family:var(--mono);font-size:.58rem;color:var(--dim);letter-spacing:.18em;text-transform:uppercase;margin-top:2px">Deal Outreach Engine</div>
     </div>
-    <div class="status-pill"><span class="dot"></span>Ready</div>
+    <div class="status-pill"><span class="dot"></span><span id="statusText">Ready</span></div>
   </div>
 
-  <!-- API KEY -->
-  <div class="key-bar">
-    <label>API KEY</label>
+  <!-- SETUP NEEDED BANNER -->
+  <div class="setup-needed" id="setupBanner">
+    <strong>Finish setup to run campaigns:</strong> Enter your Anthropic API key and Google Client ID below, then connect your Gmail.
+  </div>
+
+  <!-- ANTHROPIC API KEY -->
+  <div class="setup-bar">
+    <label>Anthropic Key</label>
     <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off">
-    <button class="key-save" onclick="saveKey()">Save</button>
+    <button class="btn-save" onclick="saveKey()">Save</button>
+  </div>
+
+  <!-- GOOGLE CLIENT ID -->
+  <div class="setup-bar">
+    <label>Google Client ID</label>
+    <input type="text" id="clientIdInput" placeholder="xxxx.apps.googleusercontent.com" autocomplete="off">
+    <button class="btn-save" onclick="saveClientId()">Save</button>
+  </div>
+
+  <!-- GMAIL CONNECT -->
+  <div class="gmail-bar">
+    <div class="gmail-info">
+      <div class="gmail-icon">✉</div>
+      <div>
+        <div class="gmail-label">Gmail Account</div>
+        <div class="gmail-account" id="gmailAccount">Not connected</div>
+      </div>
+    </div>
+    <button class="btn-gmail" id="gmailBtn" onclick="connectGmail()">Connect Gmail</button>
   </div>
 
   <!-- TABS -->
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('compose')">✦ Compose</button>
+    <button class="tab active" onclick="switchTab('compose')">✦ Profile</button>
+    <button class="tab" onclick="switchTab('targets')">✦ Targets</button>
     <button class="tab" onclick="switchTab('outbox')">✦ Outbox</button>
-    <button class="tab" onclick="switchTab('tracker')">✦ Tracker</button>
   </div>
 
-  <!-- ═══ TAB: COMPOSE ═══ -->
+  <!-- ══ TAB: PROFILE ══ -->
   <div class="tab-content active" id="tab-compose">
-
     <div class="section-title">Your Creator Profile</div>
     <div class="card">
       <div class="grid-2" style="margin-bottom:12px">
@@ -281,7 +293,7 @@ body{font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
             <option value="5K–10K" selected>5K – 10K (micro)</option>
             <option value="10K–50K">10K – 50K (micro)</option>
             <option value="50K–100K">50K – 100K (mid)</option>
-            <option value="100K+">100K+ (macro)</option>
+            <option value="100K+">100K+</option>
           </select>
         </div>
         <div class="field">
@@ -291,7 +303,7 @@ body{font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
             <option value="$150–$300 per video" selected>$150 – $300 / video</option>
             <option value="$300–$500 per video">$300 – $500 / video</option>
             <option value="$500–$1,000 per video">$500 – $1K / video</option>
-            <option value="$1,000+ per video">$1,000+ / video</option>
+            <option value="$1,000+ per video">$1,000+</option>
             <option value="open to negotiation">Open to negotiate</option>
           </select>
         </div>
@@ -301,11 +313,25 @@ body{font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
         <input type="url" id="portfolioLink" placeholder="https://drive.google.com/your-ugc-portfolio">
       </div>
       <div class="field full" style="margin-bottom:12px">
-        <label>Email Address (shown in pitches)</label>
-        <input type="email" id="creatorEmail" placeholder="you@email.com">
+        <label>Deal Type Focus</label>
+        <select id="dealType">
+          <option value="UGC video creation (no posting required)" selected>UGC Only (no posting required)</option>
+          <option value="UGC + TikTok posting">UGC + TikTok Posting</option>
+          <option value="TikTok Spark Ads content">Spark Ads Content</option>
+          <option value="product photography + video bundle">Photo + Video Bundle</option>
+        </select>
+      </div>
+      <div class="field full" style="margin-bottom:12px">
+        <label>Email Tone</label>
+        <select id="emailTone">
+          <option value="professional and confident">Professional & Confident</option>
+          <option value="warm and conversational" selected>Warm & Conversational</option>
+          <option value="bold and direct">Bold & Direct</option>
+          <option value="creative and energetic">Creative & Energetic</option>
+        </select>
       </div>
       <div class="field full">
-        <label>Content Niches (pick all that apply)</label>
+        <label>Content Niches</label>
         <div class="chip-grid">
           <button class="chip" onclick="toggleChip(this,'Beauty & Skincare')">Beauty & Skincare</button>
           <button class="chip" onclick="toggleChip(this,'Fashion & Style')">Fashion & Style</button>
@@ -320,87 +346,49 @@ body{font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
         </div>
       </div>
     </div>
+    <div class="field full" style="margin-bottom:20px">
+      <label style="font-family:var(--mono);font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:5px">Extra notes (optional)</label>
+      <textarea id="extraNotes" style="width:100%;background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.18);border-radius:8px;padding:9px 12px;color:var(--cream);font-family:'Inter',sans-serif;font-size:.85rem;outline:none;resize:vertical;min-height:60px;line-height:1.5" placeholder="e.g. 6.2% avg engagement rate, 48hr turnaround, specialize in unboxing hooks..."></textarea>
+    </div>
+  </div>
 
+  <!-- ══ TAB: TARGETS ══ -->
+  <div class="tab-content" id="tab-targets">
     <div class="section-title">Target Companies</div>
     <div class="card">
-      <button class="btn-find" id="findBtn" onclick="findBrands()">
-        ✦ Find Brands For Me
-      </button>
+      <button class="btn-find" id="findBtn" onclick="findBrands()">✦ Find Brands For Me</button>
       <div class="divider-or">— or add manually —</div>
       <div class="target-row">
         <input type="text" id="targetInput" placeholder="Brand name (e.g. Glossier, Fabletics)"
           onkeydown="if(event.key==='Enter')addTarget()">
         <button class="btn-add" onclick="addTarget()">+ Add</button>
       </div>
-      <div class="target-list" id="targetList">
-        <div class="empty" style="padding:16px 0;font-size:.8rem">Click <strong>Find Brands For Me</strong> to get an AI-curated list ↑</div>
+      <div id="targetList">
+        <div class="empty" style="padding:14px 0;font-size:.8rem">Click <strong>Find Brands For Me</strong> to get an AI-curated list ↑</div>
       </div>
     </div>
+  </div>
 
-    <div class="section-title">Email Tone & Angle</div>
-    <div class="card">
-      <div class="grid-2" style="margin-bottom:12px">
-        <div class="field">
-          <label>Email Tone</label>
-          <select id="emailTone">
-            <option value="professional and confident">Professional & Confident</option>
-            <option value="warm and conversational" selected>Warm & Conversational</option>
-            <option value="bold and direct">Bold & Direct</option>
-            <option value="creative and energetic">Creative & Energetic</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Deal Type Focus</label>
-          <select id="dealType">
-            <option value="UGC video creation (no posting required)" selected>UGC (no posting required)</option>
-            <option value="UGC + TikTok posting">UGC + TikTok Posting</option>
-            <option value="TikTok Spark Ads content">Spark Ads Content</option>
-            <option value="product photography + video bundle">Photo + Video Bundle</option>
-          </select>
-        </div>
-      </div>
-      <div class="field full">
-        <label>Any extra notes to include? (optional)</label>
-        <textarea id="extraNotes" placeholder="e.g. I have a 6.2% avg engagement rate, I specialize in unboxing hooks, I can turn around in 48 hours..."></textarea>
-      </div>
-    </div>
-
-    <div class="log-box" id="logBox"></div>
-
-    <button class="btn-generate" id="generateBtn" onclick="generateEmails()">
-      <span class="shimmer"></span>
-      ✦ Generate Pitch Emails
-    </button>
-
-  </div><!-- /tab-compose -->
-
-  <!-- ═══ TAB: OUTBOX ═══ -->
+  <!-- ══ TAB: OUTBOX ══ -->
   <div class="tab-content" id="tab-outbox">
     <div class="stats-row">
-      <div class="stat-box"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Drafted</div></div>
+      <div class="stat-box"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Generated</div></div>
       <div class="stat-box"><div class="stat-num" id="statSent">0</div><div class="stat-label">Sent</div></div>
       <div class="stat-box"><div class="stat-num" id="statReplied">0</div><div class="stat-label">Replied</div></div>
       <div class="stat-box"><div class="stat-num" id="statClosed">0</div><div class="stat-label">Closed</div></div>
     </div>
-
     <div id="emailList">
-      <div class="empty">
-        <div class="empty-icon">📭</div>
-        No emails yet. Go to <strong>Compose</strong> to generate your first batch of pitches.
-      </div>
+      <div class="empty"><div class="empty-icon">📭</div>Run a campaign to see your sent emails here.</div>
     </div>
-  </div><!-- /tab-outbox -->
+  </div>
 
-  <!-- ═══ TAB: TRACKER ═══ -->
-  <div class="tab-content" id="tab-tracker">
-    <div class="section-title">Deal Pipeline</div>
-    <div id="pipelineList">
-      <div class="empty">
-        <div class="empty-icon">📊</div>
-        Mark emails as <strong>Replied</strong> or <strong>Closed</strong> to track your pipeline here.
-      </div>
-    </div>
-  </div><!-- /tab-tracker -->
+  <!-- PROGRESS LOG -->
+  <div class="progress-box" id="progressBox"></div>
+
+  <!-- RUN CAMPAIGN BUTTON -->
+  <button class="btn-campaign" id="campaignBtn" onclick="runCampaign()">
+    ✦ Run Full Campaign
+  </button>
 
 </div><!-- /app -->
 
@@ -408,9 +396,8 @@ body{font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
 <div class="modal-overlay" id="statusModal">
   <div class="modal">
     <h3>Update Deal Status</h3>
-    <p style="font-size:.83rem;color:var(--dim);margin-bottom:14px" id="statusModalBrand"></p>
+    <p style="font-size:.82rem;color:var(--dim);margin-bottom:12px" id="statusModalBrand"></p>
     <select class="status-select" id="statusSelect">
-      <option value="draft">Draft</option>
       <option value="sent">Sent ✓</option>
       <option value="replied">Replied 💬</option>
       <option value="closed">Closed 🎉</option>
@@ -423,480 +410,399 @@ body{font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
 </div>
 
 <script>
-// ─── PARTICLE BG ───────────────────────────────────────────────
-const canvas = document.getElementById('bgCanvas');
-const ctx = canvas.getContext('2d');
-let W,H,particles=[];
+// ── PARTICLE BG ────────────────────────────────────────────────
+const canvas=document.getElementById('bgCanvas');
+const ctx=canvas.getContext('2d');
+let W,H,parts=[];
 function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight}
 resize();window.addEventListener('resize',resize);
-function mkPart(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5,a:Math.random()}}
-for(let i=0;i<55;i++)particles.push(mkPart());
+for(let i=0;i<50;i++)parts.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.4+.4});
 function drawBg(){
   ctx.clearRect(0,0,W,H);
-  particles.forEach(p=>{
+  parts.forEach(p=>{
     p.x+=p.vx;p.y+=p.vy;
     if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
-    p.a=.3+.3*Math.sin(Date.now()*.001+p.x);
+    const a=.25+.2*Math.sin(Date.now()*.001+p.x*.01);
     ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(167,139,250,${p.a})`;ctx.fill();
-    particles.forEach(q=>{
+    ctx.fillStyle=`rgba(167,139,250,${a})`;ctx.fill();
+    parts.forEach(q=>{
       const d=Math.hypot(p.x-q.x,p.y-q.y);
-      if(d<100&&d>0){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
-        ctx.strokeStyle=`rgba(167,139,250,${.08*(1-d/100)})`;ctx.lineWidth=.5;ctx.stroke()}
+      if(d<90&&d>0){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
+        ctx.strokeStyle=`rgba(167,139,250,${.06*(1-d/90)})`;ctx.lineWidth=.5;ctx.stroke()}
     });
   });
   requestAnimationFrame(drawBg);
 }drawBg();
 
-// ─── STATE ─────────────────────────────────────────────────────
-let apiKey = localStorage.getItem('ugc_api_key') || '';
-let targets = JSON.parse(localStorage.getItem('ugc_targets')||'[]');
-let emails  = JSON.parse(localStorage.getItem('ugc_emails') ||'[]');
-let selectedChips = [];
-let statusTargetIdx = null;
+// ── STATE ──────────────────────────────────────────────────────
+let apiKey      = localStorage.getItem('ugc_api_key')||'';
+let googleClientId = localStorage.getItem('ugc_google_client_id')||'';
+let gmailToken  = null;
+let gmailEmail  = localStorage.getItem('ugc_gmail_email')||'';
+let targets     = JSON.parse(localStorage.getItem('ugc_targets')||'[]');
+let emails      = JSON.parse(localStorage.getItem('ugc_emails')||'[]');
+let selectedChips=[];
+let statusTargetIdx=null;
 
-// ─── INIT ──────────────────────────────────────────────────────
-document.getElementById('apiKeyInput').value = apiKey ? '••••••••••••••••' : '';
+// ── INIT ───────────────────────────────────────────────────────
+if(apiKey) document.getElementById('apiKeyInput').value='••••••••••••••••';
+if(googleClientId) document.getElementById('clientIdInput').value=googleClientId.slice(0,18)+'...';
+if(gmailEmail){
+  document.getElementById('gmailAccount').textContent=gmailEmail;
+  document.getElementById('gmailBtn').textContent='✓ Connected';
+  document.getElementById('gmailBtn').classList.add('connected');
+}
+checkSetup();
 renderTargets();
 renderEmails();
-renderTracker();
 updateStats();
 
-function saveKey(){
-  const val = document.getElementById('apiKeyInput').value.trim();
-  if(!val||val.startsWith('•'))return;
-  apiKey = val;
-  localStorage.setItem('ugc_api_key',val);
-  document.getElementById('apiKeyInput').value='••••••••••••••••';
-  log('API key saved ✓','ok');
+function checkSetup(){
+  const ok=apiKey&&googleClientId&&gmailEmail;
+  document.getElementById('setupBanner').classList.toggle('show',!ok);
 }
 
-// ─── TABS ──────────────────────────────────────────────────────
-function switchTab(name){
-  document.querySelectorAll('.tab').forEach((t,i)=>{
-    t.classList.toggle('active',['compose','outbox','tracker'][i]===name);
+// ── SAVE API KEY ───────────────────────────────────────────────
+function saveKey(){
+  const v=document.getElementById('apiKeyInput').value.trim();
+  if(!v||v.startsWith('•'))return;
+  apiKey=v;localStorage.setItem('ugc_api_key',v);
+  document.getElementById('apiKeyInput').value='••••••••••••••••';
+  plog('Anthropic API key saved','ok');checkSetup();
+}
+
+// ── SAVE CLIENT ID ─────────────────────────────────────────────
+function saveClientId(){
+  const v=document.getElementById('clientIdInput').value.trim();
+  if(!v||v.includes('...'))return;
+  googleClientId=v;localStorage.setItem('ugc_google_client_id',v);
+  document.getElementById('clientIdInput').value=v.slice(0,18)+'...';
+  plog('Google Client ID saved','ok');checkSetup();
+}
+
+// ── GMAIL OAUTH ────────────────────────────────────────────────
+function connectGmail(){
+  if(!googleClientId){alert('Enter your Google Client ID first.');return}
+  const client=google.accounts.oauth2.initTokenClient({
+    client_id:googleClientId,
+    scope:'https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/userinfo.email',
+    callback:(resp)=>{
+      if(resp.error){plog('Gmail auth failed: '+resp.error,'err');return}
+      gmailToken=resp.access_token;
+      // fetch user email
+      fetch('https://www.googleapis.com/oauth2/v2/userinfo',{
+        headers:{Authorization:'Bearer '+gmailToken}
+      }).then(r=>r.json()).then(d=>{
+        gmailEmail=d.email||'Gmail connected';
+        localStorage.setItem('ugc_gmail_email',gmailEmail);
+        document.getElementById('gmailAccount').textContent=gmailEmail;
+        document.getElementById('gmailBtn').textContent='✓ Connected';
+        document.getElementById('gmailBtn').classList.add('connected');
+        plog('Gmail connected: '+gmailEmail,'ok');
+        checkSetup();
+      });
+    }
   });
+  client.requestAccessToken();
+}
+
+// ── SEND EMAIL VIA GMAIL API ───────────────────────────────────
+async function sendViaGmail(to,subject,body,fromName){
+  const from=`${fromName} <${gmailEmail}>`;
+  const raw=[
+    `From: ${from}`,
+    `To: ${to}`,
+    `Subject: ${subject}`,
+    `MIME-Version: 1.0`,
+    `Content-Type: text/plain; charset=UTF-8`,
+    '',
+    body
+  ].join('\r\n');
+  const encoded=btoa(unescape(encodeURIComponent(raw)))
+    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  const res=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send',{
+    method:'POST',
+    headers:{Authorization:'Bearer '+gmailToken,'Content-Type':'application/json'},
+    body:JSON.stringify({raw:encoded})
+  });
+  if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'Send failed')}
+  return await res.json();
+}
+
+// ── TABS ───────────────────────────────────────────────────────
+function switchTab(name){
+  const names=['compose','targets','outbox'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
-  if(name==='outbox')renderEmails();
-  if(name==='tracker')renderTracker();
+  if(name==='outbox'){renderEmails();updateStats()}
 }
 
-// ─── CHIPS ─────────────────────────────────────────────────────
+// ── CHIPS ──────────────────────────────────────────────────────
 function toggleChip(el,val){
   el.classList.toggle('active');
-  if(el.classList.contains('active')){
-    if(!selectedChips.includes(val))selectedChips.push(val);
-  } else {
-    selectedChips=selectedChips.filter(v=>v!==val);
-  }
+  selectedChips=el.classList.contains('active')
+    ?[...selectedChips,val]
+    :selectedChips.filter(v=>v!==val);
 }
 
-// ─── FIND BRANDS ───────────────────────────────────────────────
+// ── FIND BRANDS ────────────────────────────────────────────────
 async function findBrands(){
-  if(!apiKey){alert('Please enter your Anthropic API key first.');return}
-
-  const niches  = selectedChips.length ? selectedChips.join(', ') : '';
-  const rate    = document.getElementById('rateRange').value;
-  const followers= document.getElementById('followerCount').value;
-  const deal    = document.getElementById('dealType').value;
-
-  if(!niches){alert('Pick at least one content niche above so I can find the right brands for you.');return}
-
-  const btn = document.getElementById('findBtn');
-  btn.disabled=true;
-  btn.textContent='✦ Finding brands...';
-
-  const prompt=`You are a UGC deal sourcing agent. Find real brands that actively hire UGC creators for TikTok content.
-
-CREATOR PROFILE:
-- Niches: ${niches}
-- Followers: ${followers}
-- Rate range: ${rate}
-- Deal type: ${deal}
-
-Find 8 real brands that:
-1. Match the creator's niches
-2. Are known to run UGC/TikTok ad campaigns
-3. Range from small DTC brands (easier to land) to mid-size brands (higher pay)
-4. Are actively spending on social advertising
-
-Return ONLY a JSON array, no markdown:
-[
-  {"name":"Brand Name","why":"One sentence — why this brand is a great match and why they buy UGC","tier":"easy|medium|competitive"},
-  ...
-]`;
-
+  if(!apiKey){alert('Enter your Anthropic API key first.');return}
+  const niches=selectedChips.join(', ');
+  if(!niches){switchTab('compose');alert('Pick at least one content niche on the Profile tab.');return}
+  const btn=document.getElementById('findBtn');
+  btn.disabled=true;btn.textContent='✦ Finding brands...';
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'content-type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:800,messages:[{role:'user',content:prompt}]})
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:900,messages:[{role:'user',content:
+        `You are a UGC deal sourcing agent. Find 8 real brands that actively hire TikTok UGC creators.\n\nCREATOR NICHES: ${niches}\nRATE: ${document.getElementById('rateRange').value}\nDEAL TYPE: ${document.getElementById('dealType').value}\n\nFind brands known to run UGC/TikTok ad campaigns. Mix easy DTC wins and mid-size brands.\n\nReturn ONLY a JSON array:\n[{"name":"Brand Name","why":"One sentence why great match","tier":"easy|medium|competitive","contact":"press@brandname.com or partnerships@brandname.com (best guess)"}]`
+      }]})
     });
-    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||res.statusText)}
     const data=await res.json();
     const raw=data.content[0].text.trim();
     let brands;
     try{brands=JSON.parse(raw)}catch{const m=raw.match(/\[[\s\S]*\]/);brands=m?JSON.parse(m[0]):null}
-    if(!brands||!brands.length)throw new Error('No brands returned');
-
-    // render suggestion list above the manual input
-    const listEl=document.getElementById('targetList');
+    if(!brands)throw new Error('No brands returned');
     const tierColor={easy:'var(--green)',medium:'var(--gold)',competitive:'var(--red)'};
     const tierLabel={easy:'Easy win',medium:'Mid-range',competitive:'Competitive'};
-
-    const gridHtml=`<div class="suggest-grid" id="suggestGrid">${brands.map((b,i)=>`
-      <div class="suggest-item" id="si-${i}">
-        <div class="si-info">
-          <div class="si-name">${esc(b.name)} <span style="font-family:var(--mono);font-size:.55rem;color:${tierColor[b.tier]||'var(--dim)'};font-weight:400;margin-left:6px">${tierLabel[b.tier]||''}</span></div>
+    const listEl=document.getElementById('targetList');
+    listEl.innerHTML=`<div class="suggest-grid">${brands.map((b,i)=>`
+      <div class="suggest-item">
+        <div style="flex:1;min-width:0">
+          <div class="si-name">${esc(b.name)} <span style="font-family:var(--mono);font-size:.55rem;color:${tierColor[b.tier]||'var(--dim)'}">${tierLabel[b.tier]||''}</span></div>
           <div class="si-why">${esc(b.why)}</div>
+          <div style="font-family:var(--mono);font-size:.6rem;color:var(--dim);margin-top:3px">${esc(b.contact||'')}</div>
         </div>
-        <button class="si-btn" id="sibtn-${i}" onclick="addSuggested(${i},'${esc(b.name).replace(/'/g,"\\'")}')">+ Add</button>
-      </div>`).join('')}
-    </div>
-    <div style="margin-bottom:10px"></div>`;
-
-    listEl.innerHTML=gridHtml+(targets.length?targets.map((t,i)=>`
-      <div class="target-item">
-        <div><div class="name">${esc(t.name)}</div></div>
-        <button class="remove" onclick="removeTarget(${i})">✕</button>
-      </div>`).join(''):'');
-
-  }catch(err){
-    alert('Could not find brands: '+err.message);
-  }
-
-  btn.disabled=false;
-  btn.textContent='✦ Find Brands For Me';
+        <button class="si-btn" id="sibtn-${i}" onclick="addSuggested(${i},'${esc(b.name).replace(/'/g,"\\'")}','${esc(b.contact||'').replace(/'/g,"\\'")}')">+ Add</button>
+      </div>`).join('')}</div>`;
+  }catch(err){alert('Could not find brands: '+err.message)}
+  btn.disabled=false;btn.textContent='✦ Find Brands For Me';
 }
 
-function addSuggested(i,name){
+function addSuggested(i,name,contact){
   if(targets.some(t=>t.name.toLowerCase()===name.toLowerCase()))return;
-  targets.push({name,email:''});
+  targets.push({name,contact});
   localStorage.setItem('ugc_targets',JSON.stringify(targets));
   const btn=document.getElementById('sibtn-'+i);
   if(btn){btn.textContent='✓ Added';btn.classList.add('added');btn.disabled=true}
 }
 
-// ─── TARGETS ──────────────────────────────────────────────────
+// ── MANUAL TARGET ──────────────────────────────────────────────
 function addTarget(){
-  const inp = document.getElementById('targetInput');
-  const val = inp.value.trim();
-  if(!val)return;
-  targets.push({name:val,email:''});
+  const inp=document.getElementById('targetInput');
+  const val=inp.value.trim();if(!val)return;
+  targets.push({name:val,contact:''});
   localStorage.setItem('ugc_targets',JSON.stringify(targets));
-  inp.value='';
-  renderTargets();
+  inp.value='';renderTargets();
 }
-function removeTarget(i){
-  targets.splice(i,1);
-  localStorage.setItem('ugc_targets',JSON.stringify(targets));
-  renderTargets();
-}
+function removeTarget(i){targets.splice(i,1);localStorage.setItem('ugc_targets',JSON.stringify(targets));renderTargets()}
 function renderTargets(){
   const el=document.getElementById('targetList');
-  if(!targets.length){el.innerHTML='<div class="empty" style="padding:16px 0;font-size:.8rem">Add brands you want to pitch above ↑</div>';return}
-  el.innerHTML=targets.map((t,i)=>`
+  const added=targets.filter(t=>t.name);
+  if(!added.length){el.innerHTML='<div class="empty" style="padding:14px 0;font-size:.8rem">Click <strong>Find Brands For Me</strong> to get an AI-curated list ↑</div>';return}
+  el.innerHTML=added.map((t,i)=>`
     <div class="target-item">
-      <div><div class="name">${esc(t.name)}</div></div>
+      <div><span style="color:var(--cream)">${esc(t.name)}</span>${t.contact?`<span style="font-family:var(--mono);font-size:.6rem;color:var(--dim);margin-left:8px">${esc(t.contact)}</span>`:''}</div>
       <button class="remove" onclick="removeTarget(${i})">✕</button>
     </div>`).join('');
 }
 
-// ─── LOG ───────────────────────────────────────────────────────
-function log(msg,type=''){
-  const box=document.getElementById('logBox');
+// ── PROGRESS LOG ───────────────────────────────────────────────
+function plog(msg,type=''){
+  const box=document.getElementById('progressBox');
   box.classList.add('active');
-  box.innerHTML+=`<div class="log-line ${type}">> ${msg}</div>`;
+  box.innerHTML+=`<div class="pl ${type}">> ${msg}</div>`;
   box.scrollTop=box.scrollHeight;
 }
 function clearLog(){
-  const box=document.getElementById('logBox');
-  box.classList.remove('active');
-  box.innerHTML='';
+  const box=document.getElementById('progressBox');
+  box.classList.remove('active');box.innerHTML='';
 }
 
-// ─── GENERATE ─────────────────────────────────────────────────
-async function generateEmails(){
-  if(!apiKey){alert('Please enter your Anthropic API key first.');return}
-  if(!targets.length){alert('Add at least one target brand first.');return}
+// ── RUN FULL CAMPAIGN ──────────────────────────────────────────
+async function runCampaign(){
+  if(!apiKey){alert('Enter your Anthropic API key first.');return}
+  if(!googleClientId){alert('Enter your Google Client ID first.');return}
+  if(!gmailToken){
+    // Try to re-auth silently first
+    connectGmail();
+    return;
+  }
+  const niches=selectedChips.join(', ');
+  if(!niches){switchTab('compose');alert('Pick at least one content niche on the Profile tab.');return}
 
-  const name    = document.getElementById('creatorName').value.trim()||'Your Name';
-  const handle  = document.getElementById('tiktokHandle').value.trim()||'@yourhandle';
-  const followers= document.getElementById('followerCount').value;
-  const rate    = document.getElementById('rateRange').value;
-  const portfolio= document.getElementById('portfolioLink').value.trim();
-  const email   = document.getElementById('creatorEmail').value.trim();
-  const tone    = document.getElementById('emailTone').value;
-  const deal    = document.getElementById('dealType').value;
-  const notes   = document.getElementById('extraNotes').value.trim();
-  const niches  = selectedChips.length ? selectedChips.join(', ') : 'lifestyle';
+  const name     =document.getElementById('creatorName').value.trim()||'Your Name';
+  const handle   =document.getElementById('tiktokHandle').value.trim()||'@yourhandle';
+  const followers=document.getElementById('followerCount').value;
+  const rate     =document.getElementById('rateRange').value;
+  const portfolio=document.getElementById('portfolioLink').value.trim();
+  const deal     =document.getElementById('dealType').value;
+  const tone     =document.getElementById('emailTone').value;
+  const notes    =document.getElementById('extraNotes').value.trim();
 
-  const btn=document.getElementById('generateBtn');
-  btn.disabled=true;
+  const btn=document.getElementById('campaignBtn');
+  btn.disabled=true;btn.textContent='Running...';
   clearLog();
-  log('Initializing UGC Deal Agent...');
-  log(`Preparing ${targets.length} pitch email(s)...`);
+  setStatus('Running campaign...');
+  switchTab('outbox');
 
-  for(let i=0;i<targets.length;i++){
-    const brand = targets[i].name;
-    log(`Writing pitch for ${brand}...`);
-
-    const prompt = `You are a professional UGC (User Generated Content) deal outreach specialist helping a TikTok creator land paid brand partnerships.
-
-Write a SINGLE cold outreach email from the creator to the brand. This is for UGC only — the creator is NOT an influencer posting on their own account; they are creating professional video content for the BRAND to use in ads and social media.
-
-CREATOR DETAILS:
-- Name: ${name}
-- TikTok: ${handle}
-- Followers: ${followers}
-- Content niches: ${niches}
-- Rate: ${rate}
-- Portfolio: ${portfolio||'[portfolio available on request]'}
-- Email: ${email||'[creator email]'}
-- Deal type: ${deal}
-- Tone: ${tone}
-${notes?`- Extra info: ${notes}`:''}
-
-TARGET BRAND: ${brand}
-
-REQUIREMENTS FOR THE EMAIL:
-1. Subject line that is specific to this brand and compelling (not generic)
-2. Opening that shows real knowledge of the brand (make a reasonable assumption about what they sell/value)
-3. Clearly explain UGC vs influencer (brand owns content, no follower count required)
-4. One or two specific value propositions that would matter to THIS brand
-5. Soft CTA — invite a conversation, not an immediate sale
-6. Professional signature
-7. Total length: 150–200 words MAX. Concise is powerful.
-8. Tone must feel human — not a template blast.
-
-Return ONLY a JSON object in this exact format, no markdown, no explanation:
-{"subject":"...","body":"..."}
-
-The body should use \\n for line breaks.`;
-
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages',{
+  // STEP 1: Find brands if no targets
+  let brandList=[...targets];
+  if(!brandList.length){
+    plog('No targets found — finding brands automatically...','info');
+    try{
+      const res=await fetch('https://api.anthropic.com/v1/messages',{
         method:'POST',
-        headers:{
-          'content-type':'application/json',
-          'x-api-key':apiKey,
-          'anthropic-version':'2023-06-01',
-          'anthropic-dangerous-direct-browser-access':'true'
-        },
-        body:JSON.stringify({
-          model:'claude-sonnet-4-5',
-          max_tokens:600,
-          messages:[{role:'user',content:prompt}]
-        })
+        headers:{'content-type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:900,messages:[{role:'user',content:
+          `Find 8 real brands that actively hire TikTok UGC creators for niches: ${niches}.\nRate range: ${rate}. Deal type: ${deal}.\nMix easy DTC and mid-size brands.\nReturn ONLY JSON array:\n[{"name":"Brand","why":"reason","tier":"easy|medium|competitive","contact":"contact@brand.com"}]`
+        }]})
       });
-
-      if(!res.ok){const e=await res.json();throw new Error(e.error?.message||res.statusText)}
       const data=await res.json();
       const raw=data.content[0].text.trim();
-      let parsed;
-      try{parsed=JSON.parse(raw)}catch{
-        const m=raw.match(/\{[\s\S]*\}/);
-        if(m)parsed=JSON.parse(m[0]);else throw new Error('Could not parse response');
-      }
-
-      emails.push({
-        id:Date.now()+'_'+i,
-        brand,
-        subject:parsed.subject,
-        body:parsed.body,
-        creatorName:name,
-        creatorEmail:email,
-        status:'draft',
-        createdAt:new Date().toLocaleDateString()
-      });
-      log(`✓ ${brand} pitch ready`,'ok');
-
-    } catch(err){
-      log(`✗ ${brand}: ${err.message}`,'err');
-    }
-
-    await sleep(600);
+      let found;try{found=JSON.parse(raw)}catch{const m=raw.match(/\[[\s\S]*\]/);found=m?JSON.parse(m[0]):null}
+      if(found){brandList=found.map(b=>({name:b.name,contact:b.contact||''}));targets=[...brandList];localStorage.setItem('ugc_targets',JSON.stringify(targets));}
+      plog(`Found ${brandList.length} brands to pitch`,'ok');
+    }catch(e){plog('Brand search failed: '+e.message,'err');btn.disabled=false;btn.textContent='✦ Run Full Campaign';setStatus('Ready');return}
+  } else {
+    plog(`Using ${brandList.length} saved target brands`,'info');
   }
 
-  localStorage.setItem('ugc_emails',JSON.stringify(emails));
-  updateStats();
-  log('All emails generated. Go to Outbox to review & send.','ok');
-  btn.disabled=false;
+  // STEP 2: Generate + send email for each brand
+  let sentCount=0;
+  for(let i=0;i<brandList.length;i++){
+    const brand=brandList[i];
+    plog(`Writing pitch for ${brand.name}...`);
+    try{
+      // Generate email
+      const res=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'content-type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:600,messages:[{role:'user',content:
+          `Write a cold outreach email from a TikTok UGC creator to a brand's partnerships team.\n\nCREATOR: ${name} | ${handle} | ${followers} followers | niches: ${niches} | rate: ${rate} | deal: ${deal} | portfolio: ${portfolio||'available on request'} | tone: ${tone}${notes?` | notes: ${notes}`:''}\n\nBRAND: ${brand.name}\n\nRules: 150–200 words max. UGC = brand owns content, no follower count needed. Show real knowledge of the brand. Soft CTA. Human, not template.\n\nReturn ONLY JSON: {"subject":"...","body":"..."}`
+        }]})
+      });
+      const data=await res.json();
+      const raw=data.content[0].text.trim();
+      let parsed;try{parsed=JSON.parse(raw)}catch{const m=raw.match(/\{[\s\S]*\}/);parsed=m?JSON.parse(m[0]):null}
+      if(!parsed)throw new Error('Parse failed');
 
-  // Auto-switch to outbox
-  setTimeout(()=>switchTab('outbox'),1200);
+      // Send via Gmail
+      const to=brand.contact||`partnerships@${brand.name.toLowerCase().replace(/\s+/g,'')}.com`;
+      plog(`Sending to ${to}...`,'send');
+      await sendViaGmail(to,parsed.subject,parsed.body,name);
+
+      emails.push({
+        id:Date.now()+'_'+i,brand:brand.name,contact:to,
+        subject:parsed.subject,body:parsed.body,
+        creatorName:name,status:'sent',
+        createdAt:new Date().toLocaleDateString()
+      });
+      localStorage.setItem('ugc_emails',JSON.stringify(emails));
+      sentCount++;
+      plog(`✓ Sent to ${brand.name}`,'ok');
+      renderEmails();updateStats();
+
+    }catch(err){
+      plog(`✗ ${brand.name}: ${err.message}`,'err');
+      // If token expired, stop
+      if(err.message.includes('401')||err.message.includes('token')){
+        plog('Gmail token expired — please reconnect Gmail and run again','err');break;
+      }
+    }
+    await sleep(700);
+  }
+
+  plog(`Campaign complete — ${sentCount}/${brandList.length} emails sent`,'ok');
+  btn.disabled=false;btn.textContent='✦ Run Full Campaign';
+  setStatus('Ready');
 }
 
+// ── HELPERS ────────────────────────────────────────────────────
 function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function setStatus(t){document.getElementById('statusText').textContent=t}
+function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
-// ─── RENDER EMAILS ─────────────────────────────────────────────
+// ── RENDER EMAILS ──────────────────────────────────────────────
 function renderEmails(){
   updateStats();
   const el=document.getElementById('emailList');
-  if(!emails.length){
-    el.innerHTML='<div class="empty"><div class="empty-icon">📭</div>No emails yet. Go to <strong>Compose</strong> to generate your first batch.</div>';
-    return;
-  }
-  el.innerHTML=emails.map((e,i)=>`
-    <div class="email-card" id="ecard-${i}">
-      <div class="email-card-hdr" onclick="toggleEmail(${i})">
-        <div>
-          <div class="email-brand">${esc(e.brand)}</div>
-          <div style="font-family:var(--mono);font-size:.58rem;color:var(--dim);margin-top:3px">${esc(e.createdAt)}</div>
-        </div>
-        <span class="email-status ${e.status}">${statusLabel(e.status)}</span>
-      </div>
-      <div class="email-body" id="ebody-${i}">
-        <div class="email-subject">Subject: <span>${esc(e.subject)}</span></div>
-        <div class="email-text">${esc(e.body)}</div>
-        <div class="email-actions">
-          <button class="ea-btn ea-gmail" onclick="openGmail(${i})">✉ Open in Gmail</button>
-          <button class="ea-btn ea-copy" onclick="copyEmail(${i})">⎘ Copy</button>
-          <button class="ea-btn ea-followup" onclick="generateFollowUp(${i})">↩ Follow-Up</button>
-          <button class="ea-btn ea-status" onclick="openStatusModal(${i})">● Status</button>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-function toggleEmail(i){
-  const body=document.getElementById('ebody-'+i);
-  body.classList.toggle('open');
-}
-
-function statusLabel(s){
-  return{draft:'Draft',sent:'Sent ✓',replied:'Replied 💬',closed:'Closed 🎉'}[s]||s;
-}
-
-function openGmail(i){
-  const e=emails[i];
-  const to=e.creatorEmail?'':undefined;
-  // Open Gmail compose with subject + body pre-filled
-  const sub=encodeURIComponent(e.subject);
-  const bod=encodeURIComponent(e.body);
-  window.open(`https://mail.google.com/mail/?view=cm&fs=1&su=${sub}&body=${bod}`,'_blank');
-  // Auto-mark as sent
-  if(e.status==='draft'){
-    emails[i].status='sent';
-    localStorage.setItem('ugc_emails',JSON.stringify(emails));
-    renderEmails();
-  }
-}
-
-function copyEmail(i){
-  const e=emails[i];
-  const text=`Subject: ${e.subject}\n\n${e.body}`;
-  navigator.clipboard.writeText(text).then(()=>{
-    const btn=document.querySelectorAll('.ea-copy')[i];
-    if(btn){const orig=btn.textContent;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent=orig,1800)}
-  });
-}
-
-async function generateFollowUp(i){
-  if(!apiKey){alert('API key required');return}
-  const e=emails[i];
-  const prompt=`Write a brief, professional follow-up email for a UGC creator named ${esc(e.creatorName)||'the creator'} following up on a cold pitch sent to ${esc(e.brand)}.
-
-The original subject was: "${e.subject}"
-
-Follow-up rules:
-- Reference that they reached out previously (don't be pushy)
-- Keep it under 80 words
-- Add one new value hook or time-sensitive element
-- Warm, confident tone
-- Ask if they have 10 minutes to connect
-
-Return ONLY JSON: {"subject":"...","body":"..."}`;
-
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'content-type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:400,messages:[{role:'user',content:prompt}]})
-    });
-    const data=await res.json();
-    const raw=data.content[0].text.trim();
-    let parsed;
-    try{parsed=JSON.parse(raw)}catch{const m=raw.match(/\{[\s\S]*\}/);parsed=m?JSON.parse(m[0]):null}
-    if(!parsed)throw new Error('Parse failed');
-
-    emails.push({
-      id:Date.now()+'_fu',brand:e.brand+' (Follow-Up)',
-      subject:parsed.subject,body:parsed.body,
-      creatorName:e.creatorName,creatorEmail:e.creatorEmail,
-      status:'draft',createdAt:new Date().toLocaleDateString()
-    });
-    localStorage.setItem('ugc_emails',JSON.stringify(emails));
-    renderEmails();
-    setTimeout(()=>{
-      const idx=emails.length-1;
-      document.getElementById('ebody-'+idx)?.classList.add('open');
-      document.getElementById('ecard-'+idx)?.scrollIntoView({behavior:'smooth'});
-    },100);
-  }catch(err){alert('Follow-up failed: '+err.message)}
-}
-
-// ─── STATUS MODAL ──────────────────────────────────────────────
-function openStatusModal(i){
-  statusTargetIdx=i;
-  document.getElementById('statusModalBrand').textContent=emails[i].brand;
-  document.getElementById('statusSelect').value=emails[i].status;
-  document.getElementById('statusModal').classList.add('open');
-}
-function closeModal(){
-  document.getElementById('statusModal').classList.remove('open');
-  statusTargetIdx=null;
-}
-function applyStatus(){
-  if(statusTargetIdx===null)return;
-  emails[statusTargetIdx].status=document.getElementById('statusSelect').value;
-  localStorage.setItem('ugc_emails',JSON.stringify(emails));
-  closeModal();
-  renderEmails();
-  renderTracker();
-}
-
-// ─── TRACKER ──────────────────────────────────────────────────
-function renderTracker(){
-  updateStats();
-  const el=document.getElementById('pipelineList');
-  const active=emails.filter(e=>['replied','closed'].includes(e.status));
-  if(!active.length){
-    el.innerHTML='<div class="empty"><div class="empty-icon">📊</div>Mark emails as <strong>Replied</strong> or <strong>Closed</strong> to track your pipeline here.</div>';
-    return;
-  }
-  el.innerHTML=active.map((e,_)=>{
-    const realIdx=emails.indexOf(e);
+  if(!emails.length){el.innerHTML='<div class="empty"><div class="empty-icon">📭</div>Run a campaign to see your sent emails here.</div>';return}
+  el.innerHTML=[...emails].reverse().map((e,ri)=>{
+    const i=emails.length-1-ri;
     return`<div class="email-card">
-      <div class="email-card-hdr" onclick="toggleEmail(${realIdx})">
+      <div class="email-card-hdr" onclick="toggleEmail('eb${i}')">
         <div>
           <div class="email-brand">${esc(e.brand)}</div>
-          <div style="font-family:var(--mono);font-size:.58rem;color:var(--dim);margin-top:3px">${esc(e.createdAt)}</div>
+          <div style="font-family:var(--mono);font-size:.58rem;color:var(--dim);margin-top:2px">${esc(e.contact||'')} · ${esc(e.createdAt)}</div>
         </div>
-        <span class="email-status ${e.status}">${statusLabel(e.status)}</span>
+        <span class="email-status status-${e.status}">${statusLabel(e.status)}</span>
       </div>
-      <div class="email-body" id="ebody-${realIdx}">
+      <div class="email-body-wrap" id="eb${i}">
+        <div style="font-family:var(--mono);font-size:.65rem;color:var(--dim);margin-bottom:6px">Subject: <span style="color:var(--volt)">${esc(e.subject)}</span></div>
         <div class="email-text">${esc(e.body)}</div>
         <div class="email-actions">
-          <button class="ea-btn ea-status" onclick="openStatusModal(${realIdx})">● Update Status</button>
-          <button class="ea-btn ea-followup" onclick="generateFollowUp(${realIdx});switchTab('outbox')">↩ Follow-Up</button>
+          <button class="ea-btn ea-resend" onclick="resendEmail(${i})">↩ Resend</button>
+          <button class="ea-btn ea-followup" onclick="generateFollowUp(${i})">+ Follow-Up</button>
+          <button class="ea-btn ea-status" onclick="openStatusModal(${i})">● Status</button>
         </div>
       </div>
     </div>`;
   }).join('');
 }
+function toggleEmail(id){document.getElementById(id)?.classList.toggle('open')}
+function statusLabel(s){return{sent:'Sent ✓',draft:'Draft',replied:'Replied 💬',closed:'Closed 🎉'}[s]||s}
 
-// ─── STATS ────────────────────────────────────────────────────
+// ── RESEND ─────────────────────────────────────────────────────
+async function resendEmail(i){
+  if(!gmailToken){connectGmail();return}
+  const e=emails[i];
+  try{
+    await sendViaGmail(e.contact,e.subject,e.body,e.creatorName);
+    plog(`Resent to ${e.brand}`,'ok');
+  }catch(err){plog('Resend failed: '+err.message,'err')}
+}
+
+// ── FOLLOW-UP ──────────────────────────────────────────────────
+async function generateFollowUp(i){
+  if(!apiKey||!gmailToken){alert('API key and Gmail required.');return}
+  const e=emails[i];
+  plog(`Writing follow-up for ${e.brand}...`,'info');
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'content-type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:400,messages:[{role:'user',content:
+        `Write a brief follow-up email for a UGC creator named ${e.creatorName} following up on a pitch to ${e.brand}. Original subject: "${e.subject}". Under 80 words. Warm, confident. Add one new value hook. Ask if they have 10 minutes.\nReturn ONLY JSON: {"subject":"...","body":"..."}`
+      }]})
+    });
+    const data=await res.json();
+    const raw=data.content[0].text.trim();
+    let parsed;try{parsed=JSON.parse(raw)}catch{const m=raw.match(/\{[\s\S]*\}/);parsed=m?JSON.parse(m[0]):null}
+    if(!parsed)throw new Error('Parse failed');
+    await sendViaGmail(e.contact,parsed.subject,parsed.body,e.creatorName);
+    emails.push({id:Date.now(),brand:e.brand+' (Follow-Up)',contact:e.contact,subject:parsed.subject,body:parsed.body,creatorName:e.creatorName,status:'sent',createdAt:new Date().toLocaleDateString()});
+    localStorage.setItem('ugc_emails',JSON.stringify(emails));
+    plog(`✓ Follow-up sent to ${e.brand}`,'ok');
+    renderEmails();updateStats();
+  }catch(err){plog('Follow-up failed: '+err.message,'err')}
+}
+
+// ── STATUS MODAL ───────────────────────────────────────────────
+function openStatusModal(i){statusTargetIdx=i;document.getElementById('statusModalBrand').textContent=emails[i].brand;document.getElementById('statusSelect').value=emails[i].status;document.getElementById('statusModal').classList.add('open')}
+function closeModal(){document.getElementById('statusModal').classList.remove('open');statusTargetIdx=null}
+function applyStatus(){if(statusTargetIdx===null)return;emails[statusTargetIdx].status=document.getElementById('statusSelect').value;localStorage.setItem('ugc_emails',JSON.stringify(emails));closeModal();renderEmails()}
+
+// ── STATS ──────────────────────────────────────────────────────
 function updateStats(){
   document.getElementById('statTotal').textContent=emails.length;
   document.getElementById('statSent').textContent=emails.filter(e=>['sent','replied','closed'].includes(e.status)).length;
   document.getElementById('statReplied').textContent=emails.filter(e=>e.status==='replied').length;
   document.getElementById('statClosed').textContent=emails.filter(e=>e.status==='closed').length;
 }
-
-// ─── UTIL ─────────────────────────────────────────────────────
-function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 </script>
 </body>
 </html>
