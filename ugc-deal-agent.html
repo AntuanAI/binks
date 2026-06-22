@@ -472,6 +472,24 @@ if(gmailEmail){
   document.getElementById('gmailBtn').textContent='✓ Connected';
   document.getElementById('gmailBtn').classList.add('ok');
 }
+// restore profile fields
+const prof=JSON.parse(localStorage.getItem('ugc_profile')||'{}');
+if(prof.name)document.getElementById('creatorName').value=prof.name;
+if(prof.handle)document.getElementById('tiktokHandle').value=prof.handle;
+if(prof.followers)document.getElementById('followerCount').value=prof.followers;
+if(prof.rate)document.getElementById('rateRange').value=prof.rate;
+if(prof.portfolio)document.getElementById('portfolioLink').value=prof.portfolio;
+if(prof.notes)document.getElementById('extraNotes').value=prof.notes;
+// restore chips
+chips=JSON.parse(localStorage.getItem('ugc_chips')||'[]');
+document.querySelectorAll('.chip').forEach(el=>{if(chips.includes(el.textContent.trim()))el.classList.add('active')});
+// auto-save profile on any input
+['creatorName','tiktokHandle','portfolioLink','extraNotes'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',saveProfile);
+});
+['followerCount','rateRange'].forEach(id=>{
+  document.getElementById(id).addEventListener('change',saveProfile);
+});
 renderTargets();renderDrafts();updateStats();
 
 // ── SAVE KEYS ──────────────────────────────────────────────────
@@ -521,8 +539,24 @@ function switchTab(n){
   if(n==='drafts'){renderDrafts();updateStats()}
 }
 
+// ── PROFILE SAVE ───────────────────────────────────────────────
+function saveProfile(){
+  localStorage.setItem('ugc_profile',JSON.stringify({
+    name:document.getElementById('creatorName').value,
+    handle:document.getElementById('tiktokHandle').value,
+    followers:document.getElementById('followerCount').value,
+    rate:document.getElementById('rateRange').value,
+    portfolio:document.getElementById('portfolioLink').value,
+    notes:document.getElementById('extraNotes').value
+  }));
+}
+
 // ── CHIPS ──────────────────────────────────────────────────────
-function toggleChip(el,v){el.classList.toggle('active');chips=el.classList.contains('active')?[...chips,v]:chips.filter(x=>x!==v)}
+function toggleChip(el,v){
+  el.classList.toggle('active');
+  chips=el.classList.contains('active')?[...chips,v]:chips.filter(x=>x!==v);
+  localStorage.setItem('ugc_chips',JSON.stringify(chips));
+}
 
 // ── BRAND SEARCH ───────────────────────────────────────────────
 async function searchBrands(){
