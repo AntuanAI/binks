@@ -356,8 +356,15 @@ body{font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
         <input type="text" id="brandSearch" placeholder="e.g. skincare, fitness supplements, women's fashion..." onkeydown="if(event.key==='Enter')searchBrands()">
         <button class="btn-search" onclick="searchBrands()">Search</button>
       </div>
-      <div style="font-family:var(--mono);font-size:.62rem;color:var(--dim);margin-bottom:12px">
-        Try: "small skincare brands", "fitness supplement companies", "women's activewear DTC brands"
+      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px">
+        <button class="chip" onclick="quickSearch('beauty & skincare brands')">Beauty & Skincare</button>
+        <button class="chip" onclick="quickSearch('women\'s fashion brands')">Fashion & Style</button>
+        <button class="chip" onclick="quickSearch('wellness supplement brands')">Wellness</button>
+        <button class="chip" onclick="quickSearch('home & lifestyle brands')">Home & Lifestyle</button>
+        <button class="chip" onclick="quickSearch('hair care brands')">Hair Care</button>
+        <button class="chip" onclick="quickSearch('nail & beauty accessories brands')">Nail & Beauty</button>
+        <button class="chip" onclick="quickSearch('activewear women\'s brands')">Activewear</button>
+        <button class="chip" onclick="quickSearch('fragrance & body care brands')">Fragrance</button>
       </div>
       <div id="brandResults">
         <div class="empty" style="padding:20px 0">
@@ -564,6 +571,10 @@ function toggleChip(el,v){
 }
 
 // ── BRAND SEARCH ───────────────────────────────────────────────
+function quickSearch(term){
+  document.getElementById('brandSearch').value=term;
+  searchBrands();
+}
 async function searchBrands(){
   if(!apiKey){alert('Enter your Anthropic API key first.');return}
   const q=document.getElementById('brandSearch').value.trim();
