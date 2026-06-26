@@ -284,14 +284,14 @@ body{font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
 
   <!-- TABS -->
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('profile')">Profile</button>
-    <button class="tab" onclick="switchTab('search')">Find Brands</button>
+    <button class="tab" onclick="switchTab('profile')">Profile</button>
+    <button class="tab active" onclick="switchTab('search')">Find Brands</button>
     <button class="tab" onclick="switchTab('drafts')">Drafts</button>
     <button class="tab" onclick="switchTab('agent')">My Agent</button>
   </div>
 
   <!-- ══ PROFILE ══ -->
-  <div class="tab-content active" id="tab-profile">
+  <div class="tab-content" id="tab-profile">
     <div class="section-title">Creator Profile</div>
     <div class="card">
       <div class="g2" style="margin-bottom:10px">
@@ -349,7 +349,7 @@ body{font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
   </div>
 
   <!-- ══ FIND BRANDS ══ -->
-  <div class="tab-content" id="tab-search">
+  <div class="tab-content active" id="tab-search">
     <div class="section-title">Search for Brands</div>
     <div class="card">
       <div class="search-row">
